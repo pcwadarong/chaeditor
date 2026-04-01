@@ -1,5 +1,8 @@
 export { MarkdownToolbar } from '@/features/edit-markdown';
 export type {
+  AlignPopoverRenderProps,
+  FileEmbedPopoverRenderProps,
+  ImageEmbedPopoverRenderProps,
   LinkEmbedPopoverRenderProps,
   MarkdownToolbarPopoverRegistry,
   MarkdownToolbarProps,
@@ -10,7 +13,12 @@ export type {
   ToolbarSection,
   ToolbarSectionItem,
   ToolbarTokenOption,
+  VideoEmbedModalRenderProps,
 } from '@/features/edit-markdown/model/markdown-toolbar.types';
+export {
+  createDefaultMarkdownToolbarUiRegistry,
+  resolveMarkdownToolbarUiRegistry,
+} from '@/features/edit-markdown/model/markdown-toolbar-ui-registry';
 export { FileEmbedPopover } from '@/features/edit-markdown/ui/file-embed-popover';
 export { ImageEmbedPopover } from '@/features/edit-markdown/ui/image-embed-popover';
 export { LinkEmbedPopover } from '@/features/edit-markdown/ui/link-embed-popover';
@@ -28,5 +36,6 @@ export {
   createRichMarkdownRendererRegistry,
 } from '@/shared/lib/markdown/rich-markdown-renderers';
 export { MarkdownRenderer } from '@/shared/ui/markdown/markdown-renderer';
+export type { MarkdownEditorHostAdapters } from '@/widgets/editor';
 export { MarkdownEditor } from '@/widgets/editor';
 export type { MarkdownEditorProps } from '@/widgets/editor/ui/markdown-editor';

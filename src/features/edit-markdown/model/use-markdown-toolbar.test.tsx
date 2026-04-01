@@ -101,14 +101,14 @@ describe('useMarkdownToolbar', () => {
     textarea.value = '## Title';
     textarea.setSelectionRange(0, textarea.value.length);
 
-    getToolbarTokenOptionByLabel(result.current.toolbarSections, 'Title 3').onClick();
+    getToolbarTokenOptionByLabel(result.current.toolbarSections, 'Heading 3').onClick();
 
     await waitFor(() => {
       expect(textarea.value).toBe('### Title');
     });
 
     textarea.setSelectionRange(0, textarea.value.length);
-    getToolbarTokenOptionByLabel(result.current.toolbarSections, 'Title 3').onClick();
+    getToolbarTokenOptionByLabel(result.current.toolbarSections, 'Heading 3').onClick();
 
     await waitFor(() => {
       expect(textarea.value).toBe('Title');
@@ -116,7 +116,7 @@ describe('useMarkdownToolbar', () => {
 
     textarea.value = '';
     textarea.setSelectionRange(0, 0);
-    getToolbarTokenOptionByLabel(result.current.toolbarSections, 'Title 4').onClick();
+    getToolbarTokenOptionByLabel(result.current.toolbarSections, 'Heading 4').onClick();
 
     await waitFor(() => {
       expect(textarea.value).toBe('#### ');
@@ -133,14 +133,14 @@ describe('useMarkdownToolbar', () => {
     await waitFor(() => {
       expect(textarea.value).toBe('```ts\nEnter code here\n```');
       expect(textarea.selectionStart).toBe(6);
-      expect(textarea.selectionEnd).toBe(15);
+      expect(textarea.selectionEnd).toBe(21);
     });
   });
 
   it('Under an empty editor state, the Toggle action must insert the toggle template', async () => {
     const { result, textarea } = renderMarkdownToolbarHook();
 
-    getToolbarTokenOptionByLabel(result.current.toolbarSections, 'Toggle Title 4').onClick();
+    getToolbarTokenOptionByLabel(result.current.toolbarSections, 'Toggle Heading 4').onClick();
 
     await waitFor(() => {
       expect(textarea.value).toContain(':::toggle #### ');

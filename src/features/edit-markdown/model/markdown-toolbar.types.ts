@@ -1,5 +1,6 @@
 import type React from 'react';
 
+import type { EditorAttachment } from '@/entities/editor/model/editor-attachment';
 import type { EditorContentType } from '@/entities/editor/model/editor-types';
 import type { MarkdownEditorHostAdapters } from '@/entities/editor-core';
 import type {
@@ -45,11 +46,16 @@ export type MarkdownToolbarUiLabels = {
  * Render registry for replacing built-in toolbar popovers.
  */
 export type MarkdownToolbarPopoverRegistry = {
+  alignPopover?: (props: AlignPopoverRenderProps) => React.ReactNode;
   backgroundColorPopover?: (props: TextColorPopoverRenderProps) => React.ReactNode;
+  fileEmbedPopover?: (props: FileEmbedPopoverRenderProps) => React.ReactNode;
   headingPopover?: (props: ToolbarTokenPopoverProps) => React.ReactNode;
+  imageEmbedPopover?: (props: ImageEmbedPopoverRenderProps) => React.ReactNode;
   linkEmbedPopover?: (props: LinkEmbedPopoverRenderProps) => React.ReactNode;
+  mathEmbedPopover?: (props: MathEmbedPopoverRenderProps) => React.ReactNode;
   textColorPopover?: (props: TextColorPopoverRenderProps) => React.ReactNode;
   togglePopover?: (props: ToolbarTokenPopoverProps) => React.ReactNode;
+  videoEmbedModal?: (props: VideoEmbedModalRenderProps) => React.ReactNode;
 };
 
 /**
@@ -67,10 +73,62 @@ export type LinkEmbedPopoverRenderProps = {
   triggerClassName?: string;
 };
 
+export type AlignPopoverRenderProps = {
+  onApply: (align: 'center' | 'left' | 'right', closePopover?: ClosePopover) => void;
+  onTriggerMouseDown?: React.MouseEventHandler<HTMLButtonElement>;
+  triggerClassName?: string;
+};
+
+export type MathEmbedPopoverRenderProps = {
+  onApply: (formula: string, isBlock: boolean, closePopover?: ClosePopover) => void;
+  onTriggerMouseDown?: React.MouseEventHandler<HTMLButtonElement>;
+  triggerClassName?: string;
+};
+
 export type TextColorPopoverRenderProps = {
   labels?: Partial<ColorStylePopoverLabels>;
   onApply: (colorHex: string, closePopover?: ClosePopover) => void;
   onTriggerMouseDown?: React.MouseEventHandler<HTMLButtonElement>;
+  triggerClassName?: string;
+};
+
+export type FileEmbedPopoverRenderProps = {
+  contentType: EditorContentType;
+  onApply: (attachment: EditorAttachment, closePopover?: ClosePopover) => void;
+  onTriggerMouseDown?: React.MouseEventHandler<HTMLButtonElement>;
+  onUploadFile?: MarkdownEditorHostAdapters['uploadFile'];
+  triggerClassName?: string;
+};
+
+export type ImageEmbedPopoverRenderProps = {
+  contentType: EditorContentType;
+  onApply: (
+    payload: {
+      items: Array<{
+        altText: string;
+        url: string;
+      }>;
+      mode: 'gallery' | 'individual';
+    },
+    closePopover?: ClosePopover,
+  ) => void;
+  onTriggerMouseDown?: React.MouseEventHandler<HTMLButtonElement>;
+  onUploadImage?: MarkdownEditorHostAdapters['uploadImage'];
+  triggerClassName?: string;
+};
+
+export type VideoEmbedModalRenderProps = {
+  contentType: EditorContentType;
+  onApply: (
+    payload: {
+      provider: 'upload' | 'youtube';
+      src?: string;
+      videoId?: string;
+    },
+    closePopover?: ClosePopover,
+  ) => void;
+  onTriggerMouseDown?: React.MouseEventHandler<HTMLButtonElement>;
+  onUploadVideo?: MarkdownEditorHostAdapters['uploadVideo'];
   triggerClassName?: string;
 };
 
