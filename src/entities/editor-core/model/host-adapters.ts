@@ -1,7 +1,21 @@
+import type React from 'react';
+
 import type { EditorAttachment } from '@/entities/editor/model/editor-attachment';
 import type { EditorContentType } from '@/entities/editor/model/editor-types';
 import type { EditorImageUploadKind } from '@/shared/lib/image/image-upload-kind';
 import type { LinkEmbedData } from '@/shared/lib/markdown/link-embed';
+
+export type PreviewImageSource = string | { src: string };
+
+export type HostImageRenderProps = {
+  alt: string;
+  className?: string;
+  fill?: boolean;
+  sizes?: string;
+  src: PreviewImageSource;
+};
+
+export type HostImageRenderer = (props: HostImageRenderProps) => React.ReactNode;
 
 export type MarkdownImageViewerLabels = {
   actionBarAriaLabel: string;
@@ -65,6 +79,7 @@ export type FetchLinkPreviewMeta = (
 export type MarkdownRendererHostAdapters = {
   fetchLinkPreviewMeta?: FetchLinkPreviewMeta;
   imageViewerLabels?: Partial<MarkdownImageViewerLabels>;
+  renderImage?: HostImageRenderer;
   resolveAttachmentHref?: ResolveAttachmentHref;
 };
 

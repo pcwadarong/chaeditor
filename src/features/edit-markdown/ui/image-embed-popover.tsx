@@ -4,7 +4,7 @@ import React, { useMemo, useRef, useState } from 'react';
 import { css, cx } from 'styled-system/css';
 
 import type { EditorContentType } from '@/entities/editor/model/editor-types';
-import type { UploadEditorImage } from '@/entities/editor-core';
+import type { HostImageRenderer, UploadEditorImage } from '@/entities/editor-core';
 import {
   normalizeEmbedInput,
   normalizeEmbedInputList,
@@ -44,6 +44,7 @@ type ImageEmbedPopoverProps = {
     closePopover?: ClosePopover,
   ) => void;
   onUploadImage?: UploadEditorImage;
+  renderImage?: HostImageRenderer;
   onTriggerMouseDown?: React.MouseEventHandler<HTMLButtonElement>;
   triggerClassName?: string;
 };
@@ -58,6 +59,7 @@ export const ImageEmbedPopover = ({
   contentType,
   onApply,
   onUploadImage,
+  renderImage,
   onTriggerMouseDown,
   triggerClassName,
 }: ImageEmbedPopoverProps) => {
@@ -464,6 +466,7 @@ export const ImageEmbedPopover = ({
                   onSelectRow={setSelectedRowId}
                   onToggleMobileList={() => setIsMobileListCollapsed(current => !current)}
                   onUpdateRow={updateRow}
+                  renderImage={renderImage}
                   rows={rows}
                   selectedPreviewUrl={selectedPreviewUrl}
                   selectedRow={selectedRow}

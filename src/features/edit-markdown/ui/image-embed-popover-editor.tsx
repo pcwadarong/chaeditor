@@ -1,17 +1,17 @@
 'use client';
 
-import Image from 'next/image';
 import React from 'react';
 import { css, cx } from 'styled-system/css';
 
+import type { HostImageRenderer } from '@/entities/editor-core';
 import { normalizeEmbedInput } from '@/features/edit-markdown/model/embed-popover-state';
 import type {
   FilledImageRow,
   ImageInputRow,
 } from '@/features/edit-markdown/model/image-embed-popover-state';
-import { viewportImageSizes } from '@/shared/config/responsive';
 import { Button } from '@/shared/ui/button/button';
 import { ArrowUpIcon, TrashIcon } from '@/shared/ui/icons/app-icons';
+import { RenderImage } from '@/shared/ui/image/render-image';
 import { Input } from '@/shared/ui/input/input';
 
 type ImageEmbedPopoverEditorProps = {
@@ -21,6 +21,7 @@ type ImageEmbedPopoverEditorProps = {
   isImageUploadEnabled: boolean;
   isMobileListCollapsed: boolean;
   isUploading: boolean;
+  renderImage?: HostImageRenderer;
   rows: ImageInputRow[];
   selectedPreviewUrl: string | null;
   selectedRow: ImageInputRow | null;
@@ -53,6 +54,7 @@ export const ImageEmbedPopoverEditor = ({
   onSelectRow,
   onToggleMobileList,
   onUpdateRow,
+  renderImage,
   rows,
   selectedPreviewUrl,
   selectedRow,
@@ -154,14 +156,13 @@ export const ImageEmbedPopoverEditor = ({
 
       <div className={previewFrameClass} data-image-preview-frame data-preview-shape="square">
         {selectedPreviewUrl ? (
-          <Image
+          <RenderImage
             alt={normalizeEmbedInput(selectedRow?.alt ?? '') ?? 'Image preview'}
             className={previewImageClass}
             data-image-preview-fit="contain"
             fill
-            sizes={viewportImageSizes.imageSourceField}
+            renderImage={renderImage}
             src={selectedPreviewUrl}
-            unoptimized
           />
         ) : (
           <div className={previewPlaceholderClass}>No preview</div>

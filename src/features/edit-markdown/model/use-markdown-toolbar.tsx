@@ -470,6 +470,7 @@ export const useMarkdownToolbar = ({
         toolbarUiRegistry.renderImageEmbedPopover({
           contentType,
           onApply: handleImageApply,
+          renderImage: adapters?.renderImage,
           onUploadImage: adapters?.uploadImage,
           onTriggerMouseDown: event => event.preventDefault(),
           triggerClassName: popoverTriggerClassName,
@@ -497,6 +498,7 @@ export const useMarkdownToolbar = ({
     ],
     [
       adapters?.uploadFile,
+      adapters?.renderImage,
       adapters?.uploadImage,
       adapters?.uploadVideo,
       contentType,

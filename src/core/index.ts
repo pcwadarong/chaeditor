@@ -1,8 +1,11 @@
 export type {
   FetchLinkPreviewMeta,
+  HostImageRenderer,
+  HostImageRenderProps,
   MarkdownEditorHostAdapters,
   MarkdownImageViewerLabels,
   MarkdownRendererHostAdapters,
+  PreviewImageSource,
   ResolveAttachmentHref,
   UploadEditorFile,
   UploadEditorImage,

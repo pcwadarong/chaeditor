@@ -131,7 +131,7 @@ export const reorderRows = (rows: ImageInputRow[], rowId: string, direction: 'do
 };
 
 /**
- * Resolves a safe preview URL for next/image.
+ * Resolves a safe preview URL for image preview rendering.
  *
  * @param value Raw row URL value.
  * @returns A previewable URL or null.

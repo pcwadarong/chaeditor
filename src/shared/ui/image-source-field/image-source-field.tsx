@@ -1,11 +1,11 @@
 'use client';
 
-import Image, { type StaticImageData } from 'next/image';
 import React from 'react';
 import { css, cx } from 'styled-system/css';
 
-import { viewportImageSizes } from '@/shared/config/responsive';
+import type { HostImageRenderer, PreviewImageSource } from '@/entities/editor-core';
 import { normalizeImageUrl } from '@/shared/lib/url/normalize-image-url';
+import { RenderImage } from '@/shared/ui/image/render-image';
 import { Input } from '@/shared/ui/input/input';
 
 type ImageSourceFieldProps = {
@@ -19,7 +19,8 @@ type ImageSourceFieldProps = {
   onFileChange: React.ChangeEventHandler<HTMLInputElement>;
   onValueChange: (value: string) => void;
   previewAlt: string;
-  previewUrl: StaticImageData | string;
+  previewUrl: PreviewImageSource;
+  renderImage?: HostImageRenderer;
   uploadButtonLabel?: string;
   value: string;
 };
@@ -61,6 +62,7 @@ export const ImageSourceField = ({
   onValueChange,
   previewAlt,
   previewUrl,
+  renderImage,
   uploadButtonLabel = 'Upload file',
   value,
 }: ImageSourceFieldProps) => {
@@ -101,13 +103,12 @@ export const ImageSourceField = ({
       ) : null}
       {normalizedPreviewUrl ? (
         <div className={previewFrameClass}>
-          <Image
+          <RenderImage
             alt={previewAlt}
             className={previewImageClass}
             fill
-            sizes={viewportImageSizes.imageSourceField}
+            renderImage={renderImage}
             src={normalizedPreviewUrl}
-            unoptimized
           />
         </div>
       ) : null}

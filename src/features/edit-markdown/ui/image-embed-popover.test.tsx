@@ -3,22 +3,6 @@ import React from 'react';
 
 import { ImageEmbedPopover } from '@/features/edit-markdown/ui/image-embed-popover';
 
-vi.mock('next/image', () => ({
-  __esModule: true,
-  default: ({
-    alt,
-    fill: _fill,
-    unoptimized: _unoptimized,
-    ...props
-  }: React.ImgHTMLAttributes<HTMLImageElement> & {
-    fill?: boolean;
-    unoptimized?: boolean;
-  }) => (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img {...props} alt={alt} />
-  ),
-}));
-
 vi.mock('@/shared/ui/modal/modal', () => ({
   Modal: ({
     ariaLabel,
@@ -49,18 +33,19 @@ const renderImageModal = ({
   fireEvent.click(screen.getByRole('button', { name: 'Image' }));
 
   return {
-    dialog: screen.getByRole('dialog', { name: 'Image Insert' }),
+    dialog: screen.getByRole('dialog', { name: 'Insert images' }),
     onApply,
     onUploadImage,
   };
 };
 
-const addUrls = (dialog: HTMLElement, urls: string[]) => {
-  const urlToggle = within(dialog).queryByRole('button', { name: 'URL Add' });
+const addUrls = async (dialog: HTMLElement, urls: string[]) => {
+  const urlToggle = within(dialog).queryByRole('button', { name: 'Add URLs' });
   if (urlToggle) {
     fireEvent.click(urlToggle);
   }
-  fireEvent.change(within(dialog).getByLabelText('Add web URLs'), {
+  const urlInput = await within(dialog).findByLabelText('Add web URLs');
+  fireEvent.change(urlInput, {
     target: { value: urls.join('\n') },
   });
   fireEvent.click(within(dialog).getByRole('button', { name: 'Add' }));
@@ -111,31 +96,31 @@ describe('ImageEmbedPopover', () => {
     });
 
     await waitFor(() => {
-      expect(within(dialog).getAllByText('Image List').length).toBeGreaterThan(0);
+      expect(within(dialog).getAllByText('Images').length).toBeGreaterThan(0);
     });
     expect(onUploadImage).toHaveBeenCalled();
 
-    expect(within(dialog).getByLabelText('Image Upload file')).toBeTruthy();
-    expect(within(dialog).getByRole('button', { name: 'URL Add' })).toBeTruthy();
+    expect(within(dialog).getByLabelText('Upload image files')).toBeTruthy();
+    expect(within(dialog).getByRole('button', { name: 'Add URLs' })).toBeTruthy();
     expect(within(dialog).getByLabelText('URL')).toBeTruthy();
     expect(within(dialog).getByLabelText('Upload selected image')).toBeTruthy();
   });
 
-  it('Under multiline URL input, ImageEmbedPopover must create edit-state rows', () => {
+  it('Under multiline URL input, ImageEmbedPopover must create edit-state rows', async () => {
     const { dialog } = renderImageModal();
 
-    addUrls(dialog, ['https://example.com/one.png', 'https://example.com/two.png']);
+    await addUrls(dialog, ['https://example.com/one.png', 'https://example.com/two.png']);
 
-    expect(within(dialog).getAllByText('Image List').length).toBeGreaterThan(0);
+    expect(within(dialog).getAllByText('Images').length).toBeGreaterThan(0);
     expect(within(dialog).getAllByRole('button', { name: /https:\/\/example\.com/ })).toHaveLength(
       2,
     );
   });
 
-  it('Under individual image insertion, ImageEmbedPopover must pass the edited image list payload', () => {
+  it('Under individual image insertion, ImageEmbedPopover must pass the edited image list payload', async () => {
     const { dialog, onApply } = renderImageModal();
 
-    addUrls(dialog, ['https://example.com/one.png', 'https://example.com/two.png']);
+    await addUrls(dialog, ['https://example.com/one.png', 'https://example.com/two.png']);
     fireEvent.change(within(dialog).getByLabelText('URL'), {
       target: { value: 'https://example.com/one.png' },
     });
@@ -161,10 +146,10 @@ describe('ImageEmbedPopover', () => {
     });
   });
 
-  it('Under only one valid image, ImageEmbedPopover must disable the gallery insert button', () => {
+  it('Under only one valid image, ImageEmbedPopover must disable the gallery insert button', async () => {
     const { dialog } = renderImageModal();
 
-    addUrls(dialog, ['https://example.com/one.png']);
+    await addUrls(dialog, ['https://example.com/one.png']);
     fireEvent.change(within(dialog).getByLabelText('URL'), {
       target: { value: 'https://example.com/one.png' },
     });
@@ -179,19 +164,19 @@ describe('ImageEmbedPopover', () => {
     const onUploadImage = vi.fn().mockResolvedValue('https://cdn.example.com/uploaded.png');
     const { dialog, onApply } = renderImageModal({ onUploadImage });
 
-    addUrls(dialog, ['https://example.com/first.png']);
+    await addUrls(dialog, ['https://example.com/first.png']);
     fireEvent.change(within(dialog).getByLabelText('URL'), {
       target: { value: 'https://example.com/first.png' },
     });
 
-    const fileInput = within(dialog).getByLabelText('Image Upload file');
+    const fileInput = within(dialog).getByLabelText('Upload image files');
     fireEvent.change(fileInput, {
       target: {
         files: [new File([''], 'from-upload.png', { type: 'image/png' })],
       },
     });
 
-    addUrls(dialog, ['https://example.com/second.png']);
+    await addUrls(dialog, ['https://example.com/second.png']);
 
     await waitFor(() => {
       expect(onUploadImage).toHaveBeenCalledWith({
@@ -206,9 +191,9 @@ describe('ImageEmbedPopover', () => {
     fireEvent.click(within(dialog).getByRole('button', { name: 'Insert as individual images' }));
     expect(onApply).toHaveBeenCalledWith({
       items: expect.arrayContaining([
-        { altText: 'Image Description', url: 'https://example.com/first.png' },
+        { altText: 'Image description', url: 'https://example.com/first.png' },
         { altText: 'from-upload.png', url: 'https://cdn.example.com/uploaded.png' },
-        { altText: 'Image Description', url: 'https://example.com/second.png' },
+        { altText: 'Image description', url: 'https://example.com/second.png' },
       ]),
       mode: 'individual',
     });

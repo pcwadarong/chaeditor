@@ -29,7 +29,7 @@ export const viewportMediaQuery = {
 } as const;
 
 /**
- * Reusable responsive `sizes` values for `next/image`.
+ * Reusable responsive image size hints shared by preview renderers.
  */
 export const viewportImageSizes = {
   imageSourceField: `${viewportMediaQuery.mobileSmallDown} 100vw, ${VIEWPORT_BREAKPOINTS.mobileSmallMax}px`,

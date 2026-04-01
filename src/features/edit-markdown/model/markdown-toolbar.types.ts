@@ -113,6 +113,7 @@ export type ImageEmbedPopoverRenderProps = {
     closePopover?: ClosePopover,
   ) => void;
   onTriggerMouseDown?: React.MouseEventHandler<HTMLButtonElement>;
+  renderImage?: MarkdownEditorHostAdapters['renderImage'];
   onUploadImage?: MarkdownEditorHostAdapters['uploadImage'];
   triggerClassName?: string;
 };
