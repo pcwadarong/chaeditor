@@ -1,6 +1,4 @@
 import { defineConfig } from '@pandacss/dev';
-import { LAYOUT_WIDTHS } from './src/shared/config/layout';
-import { viewportMediaQuery } from './src/shared/config/responsive';
 
 export default defineConfig({
   preflight: true,
@@ -18,17 +16,16 @@ export default defineConfig({
   conditions: {
     extend: {
       dark: '[data-theme="dark"] &',
-      desktopDown: `@media ${viewportMediaQuery.desktopDown}`,
-      desktopUp: `@media ${viewportMediaQuery.desktopUp}`,
-      mobileLargeDown: `@media ${viewportMediaQuery.mobileLargeDown}`,
-      mobileLargeUp: `@media ${viewportMediaQuery.mobileLargeUp}`,
-      mobileSmallDown: `@media ${viewportMediaQuery.mobileSmallDown}`,
-      tabletDown: `@media ${viewportMediaQuery.tabletDown}`,
-      tabletUp: `@media ${viewportMediaQuery.tabletUp}`,
     },
   },
   theme: {
     extend: {
+      breakpoints: {
+        sm: '480px',
+        md: '768px',
+        lg: '960px',
+        xl: '1280px',
+      },
       tokens: {
         fontSizes: {
           32: { value: '2rem' },
@@ -45,20 +42,6 @@ export default defineConfig({
           mono: {
             value:
               "var(--font-d2coding), 'SFMono-Regular', 'JetBrains Mono', Consolas, 'Liberation Mono', monospace",
-          },
-        },
-        sizes: {
-          appFrameMax: {
-            value: `${LAYOUT_WIDTHS.appFrameMax}px`,
-          },
-          contentCompact: {
-            value: `${LAYOUT_WIDTHS.contentCompact}px`,
-          },
-          contentDefault: {
-            value: `${LAYOUT_WIDTHS.contentDefault}px`,
-          },
-          contentWide: {
-            value: `${LAYOUT_WIDTHS.contentWide}px`,
           },
         },
         shadows: {

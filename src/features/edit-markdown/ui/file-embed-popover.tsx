@@ -163,8 +163,9 @@ const rowClass = css({
   display: 'flex',
   alignItems: 'stretch',
   gap: '3',
-  _mobileSmallDown: {
-    flexDirection: 'column',
+  flexDirection: {
+    base: 'column',
+    sm: 'row',
   },
 });
 

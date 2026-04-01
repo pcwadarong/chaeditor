@@ -69,7 +69,14 @@ export const MarkdownAttachment = ({
 
 const attachmentCardClass = css({
   display: 'flex',
-  alignItems: 'center',
+  alignItems: {
+    base: 'stretch',
+    lg: 'center',
+  },
+  flexWrap: {
+    base: 'wrap',
+    lg: 'nowrap',
+  },
   gap: '3',
   width: 'full',
   px: '4',
@@ -80,10 +87,6 @@ const attachmentCardClass = css({
   borderColor: 'border',
   background: 'surfaceMuted',
   color: 'text',
-  _tabletDown: {
-    alignItems: 'stretch',
-    flexWrap: 'wrap',
-  },
 });
 
 const iconWrapClass = css({
@@ -119,8 +122,12 @@ const metaTextClass = css({
 
 const actionWrapClass = css({
   flex: 'none',
-  marginLeft: 'auto',
-  _tabletDown: {
-    width: 'full',
+  width: {
+    base: 'full',
+    lg: 'auto',
+  },
+  marginLeft: {
+    base: '0',
+    lg: 'auto',
   },
 });

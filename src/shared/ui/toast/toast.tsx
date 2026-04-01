@@ -47,15 +47,19 @@ export const ToastViewport = ({ closeLabel: _closeLabel, items, onClose }: Toast
 
 const viewportClass = css({
   position: 'fixed',
-  right: '4',
-  bottom: '4',
+  right: '3',
+  bottom: '3',
   zIndex: '70',
   display: 'grid',
   gap: '3',
   width: '[min(24rem,calc(100vw-1.5rem))]',
-  _mobileLargeDown: {
+  md: {
     right: '3',
     bottom: '3',
+  },
+  lg: {
+    right: '4',
+    bottom: '4',
   },
 });
 

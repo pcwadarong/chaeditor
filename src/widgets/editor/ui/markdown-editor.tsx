@@ -16,7 +16,7 @@ import {
 } from '@/entities/editor-core';
 import type { MarkdownToolbarUiRegistry } from '@/features/edit-markdown/model/markdown-toolbar.types';
 import { MarkdownToolbar } from '@/features/edit-markdown/ui/markdown-toolbar';
-import { viewportMediaQuery } from '@/shared/config/responsive';
+import { mediaQueryDown } from '@/shared/config/breakpoints';
 import { collectMarkdownImages } from '@/shared/lib/markdown/collect-markdown-images';
 import { getMarkdownOptions, markdownBodyClass } from '@/shared/lib/markdown/markdown-config';
 import { renderRichMarkdown } from '@/shared/lib/markdown/rich-markdown';
@@ -226,13 +226,13 @@ const useMobileEditorLayout = () => {
       return false;
     }
 
-    return window.matchMedia(viewportMediaQuery.tabletDown).matches;
+    return window.matchMedia(mediaQueryDown.md).matches;
   });
 
   React.useLayoutEffect(() => {
     if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return;
 
-    const mediaQueryList = window.matchMedia(viewportMediaQuery.tabletDown);
+    const mediaQueryList = window.matchMedia(mediaQueryDown.md);
     const handleChange = (event: MediaQueryListEvent) => {
       setIsMobile(event.matches);
     };

@@ -234,13 +234,13 @@ const cardClass = cx(
   sharedCardSurfaceClass,
   css({
     display: 'grid',
-    gridTemplateColumns: 'minmax(0, 1fr) auto',
+    gridTemplateColumns: {
+      base: '1fr',
+      md: 'minmax(0, 1fr) auto',
+    },
     gap: '4',
     alignItems: 'start',
     padding: '4',
-    _mobileLargeDown: {
-      gridTemplateColumns: '1fr',
-    },
   }),
 );
 
@@ -284,15 +284,15 @@ const urlClass = css({
 });
 
 const previewImageClass = css({
-  width: '[10rem]',
-  height: '[7rem]',
+  width: 'full',
+  height: '[10rem]',
   objectFit: 'cover',
   borderRadius: 'lg',
   background: 'surfaceMuted',
   flexShrink: '0',
-  _mobileLargeDown: {
-    width: 'full',
-    height: '[10rem]',
+  md: {
+    width: '[10rem]',
+    height: '[7rem]',
   },
 });
 
