@@ -83,6 +83,11 @@ export type AppIconProps = Omit<SVGProps<SVGSVGElement>, 'color' | 'height' | 'w
 };
 export type AppIconComponent = (props: AppIconProps) => ReactElement;
 
+type SvgModuleLike = {
+  ReactComponent?: ComponentType<SVGProps<SVGSVGElement>>;
+  default?: ComponentType<SVGProps<SVGSVGElement>> | string;
+};
+
 const baseIconStyle: React.CSSProperties = {
   display: 'block',
   flex: '0 0 auto',
@@ -111,14 +116,39 @@ const resolveIconColor = ({
 /**
  * Wraps an SVGR icon with the shared icon props and style contract.
  */
+const resolveSvgComponent = (
+  svgSource: ComponentType<SVGProps<SVGSVGElement>> | SvgModuleLike | string,
+): ComponentType<SVGProps<SVGSVGElement>> | string => {
+  if (typeof svgSource === 'string' || typeof svgSource === 'function') {
+    return svgSource;
+  }
+
+  if (svgSource && typeof svgSource === 'object') {
+    if (typeof svgSource.default === 'function' || typeof svgSource.default === 'string') {
+      return svgSource.default;
+    }
+
+    if (typeof svgSource.ReactComponent === 'function') {
+      return svgSource.ReactComponent;
+    }
+  }
+
+  return () => null;
+};
+
+/**
+ * Wraps an SVG module with the shared icon props and style contract.
+ */
 const createAppIcon = (
-  Svg: ComponentType<SVGProps<SVGSVGElement>> | string,
+  svgSource: ComponentType<SVGProps<SVGSVGElement>> | SvgModuleLike | string,
   {
     defaultSize = 16,
   }: {
     defaultSize?: number;
   } = {},
 ) => {
+  const Svg = resolveSvgComponent(svgSource);
+
   /**
    * Shared SVG icon component.
    */

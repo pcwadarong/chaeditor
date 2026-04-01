@@ -1,4 +1,6 @@
 import type { Preview } from '@storybook/nextjs-vite';
+import React from 'react';
+import { css } from 'styled-system/css';
 
 import '../styled-system/styles.css';
 
@@ -38,6 +40,17 @@ const viewportOptions = {
 } as const;
 
 const preview: Preview = {
+  decorators: [
+    (Story, context) => {
+      const tone = context.globals.backgroundTone === 'dark' ? 'dark' : 'light';
+
+      return React.createElement(
+        'div',
+        { className: previewCanvasClass, 'data-theme': tone },
+        React.createElement(Story),
+      );
+    },
+  ],
   globalTypes: {
     backgroundTone: {
       defaultValue: 'light',
@@ -53,13 +66,6 @@ const preview: Preview = {
     },
   },
   parameters: {
-    backgrounds: {
-      default: 'light',
-      options: {
-        dark: { name: 'Dark canvas', value: '#111827' },
-        light: { name: 'Light canvas', value: '#f8fafc' },
-      },
-    },
     controls: {
       expanded: true,
       sort: 'requiredFirst',
@@ -81,3 +87,10 @@ const preview: Preview = {
 };
 
 export default preview;
+
+const previewCanvasClass = css({
+  minHeight: '100dvh',
+  padding: '6',
+  backgroundColor: 'appBackdrop',
+  color: 'text',
+});

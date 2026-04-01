@@ -149,8 +149,8 @@ export default defineConfig({
           },
           textSubtle: {
             value: {
-              base: '{colors.zinc.100}',
-              _dark: '{colors.zinc.800}',
+              base: '{colors.zinc.500}',
+              _dark: '{colors.zinc.400}',
             },
           },
           success: {

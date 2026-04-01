@@ -113,7 +113,7 @@ const cardGridClass = css({
 });
 
 const cardClass = css({
-  bg: 'white',
+  bg: 'surfaceMuted',
   border: '[1px solid var(--colors-border)]',
   borderRadius: '2xl',
   display: 'grid',
