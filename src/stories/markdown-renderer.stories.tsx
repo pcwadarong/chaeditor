@@ -70,6 +70,17 @@ const MarkdownRendererReference = ({ adapters, markdown }: MarkdownRendererRefer
 };
 
 const meta = {
+  argTypes: {
+    adapters: {
+      control: false,
+      table: {
+        disable: true,
+      },
+    },
+    markdown: {
+      control: 'object',
+    },
+  },
   args: {
     adapters: createStorybookAdapters(),
     markdown: sampleMarkdown,
@@ -86,3 +97,12 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const FeatureShowcase: Story = {};
+
+export const MinimalMarkdown: Story = {
+  args: {
+    adapters: createStorybookAdapters(),
+    markdown: ['# Minimal example', '', 'Plain markdown works alongside custom rendering.'].join(
+      '\n',
+    ),
+  },
+};

@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import React from 'react';
 import { css } from 'styled-system/css';
 
+import type { EditorContentType } from '@/entities/editor/model/editor-types';
 import {
   FileEmbedPopover,
   ImageEmbedPopover,
@@ -20,7 +21,11 @@ import {
   valuePanelClass,
 } from '@/stories/storybook-fixtures';
 
-const EmbedWorkflowsReference = () => {
+type EmbedWorkflowsReferenceProps = {
+  contentType: EditorContentType;
+};
+
+const EmbedWorkflowsReference = ({ contentType }: EmbedWorkflowsReferenceProps) => {
   const adapters = React.useMemo(() => createStorybookAdapters(), []);
   const [events, setEvents] = React.useState<string[]>([]);
 
@@ -41,18 +46,18 @@ const EmbedWorkflowsReference = () => {
 
         <div className={toolbarRowClass}>
           <ImageEmbedPopover
-            contentType="article"
+            contentType={contentType}
             onApply={payload => appendEvent('ImageEmbedPopover', payload)}
             onUploadImage={adapters.uploadImage}
             renderImage={adapters.renderImage}
           />
           <FileEmbedPopover
-            contentType="article"
+            contentType={contentType}
             onApply={payload => appendEvent('FileEmbedPopover', payload)}
             onUploadFile={adapters.uploadFile}
           />
           <VideoEmbedModal
-            contentType="article"
+            contentType={contentType}
             onApply={payload => appendEvent('VideoEmbedModal', payload)}
             onUploadVideo={adapters.uploadVideo}
           />
@@ -87,6 +92,15 @@ const EmbedWorkflowsReference = () => {
 };
 
 const meta = {
+  argTypes: {
+    contentType: {
+      control: 'inline-radio',
+      options: ['article', 'project', 'resume'],
+    },
+  },
+  args: {
+    contentType: 'article',
+  },
   component: EmbedWorkflowsReference,
   parameters: {
     layout: 'fullscreen',

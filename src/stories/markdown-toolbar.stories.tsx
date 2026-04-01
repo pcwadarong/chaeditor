@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import React from 'react';
 
+import type { EditorContentType } from '@/entities/editor/model/editor-types';
 import { MarkdownToolbar } from '@/react';
 import { Textarea } from '@/shared/ui/textarea/textarea';
 import {
@@ -15,13 +16,23 @@ import {
 } from '@/stories/storybook-fixtures';
 
 type ToolbarReferenceProps = {
+  contentType: EditorContentType;
   customLabels?: boolean;
+  initialValue: string;
 };
 
-const ToolbarReference = ({ customLabels = false }: ToolbarReferenceProps) => {
+const ToolbarReference = ({
+  contentType,
+  customLabels = false,
+  initialValue,
+}: ToolbarReferenceProps) => {
   const textareaRef = React.useRef<HTMLTextAreaElement | null>(null);
-  const [value, setValue] = React.useState('');
+  const [value, setValue] = React.useState(initialValue);
   const adapters = React.useMemo(() => createStorybookAdapters(), []);
+
+  React.useEffect(() => {
+    setValue(initialValue);
+  }, [initialValue]);
 
   return (
     <main className={pageClass}>
@@ -38,7 +49,7 @@ const ToolbarReference = ({ customLabels = false }: ToolbarReferenceProps) => {
           <div className={panelClass}>
             <MarkdownToolbar
               adapters={adapters}
-              contentType="article"
+              contentType={contentType}
               onChange={setValue}
               textareaRef={textareaRef}
               uiRegistry={
@@ -82,6 +93,20 @@ const ToolbarReference = ({ customLabels = false }: ToolbarReferenceProps) => {
 };
 
 const meta = {
+  argTypes: {
+    contentType: {
+      control: 'inline-radio',
+      options: ['article', 'project', 'resume'],
+    },
+    initialValue: {
+      control: 'text',
+    },
+  },
+  args: {
+    contentType: 'article',
+    customLabels: false,
+    initialValue: '',
+  },
   component: ToolbarReference,
   parameters: {
     layout: 'fullscreen',
@@ -97,6 +122,8 @@ export const Default: Story = {};
 
 export const CustomLabels: Story = {
   args: {
+    contentType: 'article',
     customLabels: true,
+    initialValue: '',
   },
 };

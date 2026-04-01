@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import React from 'react';
 
+import type { EditorContentType } from '@/entities/editor/model/editor-types';
 import { MarkdownEditor } from '@/react';
 import {
   createStorybookAdapters,
@@ -11,9 +12,25 @@ import {
   sectionTitleClass,
 } from '@/stories/storybook-fixtures';
 
-const MarkdownEditorReference = () => {
-  const [value, setValue] = React.useState(sampleMarkdown);
+type MarkdownEditorReferenceProps = {
+  contentType: EditorContentType;
+  initialValue: string;
+  placeholder?: string;
+  previewEmptyText?: string;
+};
+
+const MarkdownEditorReference = ({
+  contentType,
+  initialValue,
+  placeholder,
+  previewEmptyText,
+}: MarkdownEditorReferenceProps) => {
+  const [value, setValue] = React.useState(initialValue);
   const adapters = React.useMemo(() => createStorybookAdapters(), []);
+
+  React.useEffect(() => {
+    setValue(initialValue);
+  }, [initialValue]);
 
   return (
     <main className={pageClass}>
@@ -27,8 +44,10 @@ const MarkdownEditorReference = () => {
         </div>
         <MarkdownEditor
           adapters={adapters}
-          contentType="article"
+          contentType={contentType}
           onChange={setValue}
+          placeholder={placeholder}
+          previewEmptyText={previewEmptyText}
           value={value}
         />
       </section>
@@ -37,6 +56,21 @@ const MarkdownEditorReference = () => {
 };
 
 const meta = {
+  argTypes: {
+    contentType: {
+      control: 'inline-radio',
+      options: ['article', 'project', 'resume'],
+    },
+    initialValue: {
+      control: 'object',
+    },
+  },
+  args: {
+    contentType: 'article',
+    initialValue: sampleMarkdown,
+    placeholder: 'Write markdown content',
+    previewEmptyText: 'Nothing to preview yet.',
+  },
   component: MarkdownEditorReference,
   parameters: {
     layout: 'fullscreen',
