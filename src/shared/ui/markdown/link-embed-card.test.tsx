@@ -111,29 +111,11 @@ describe('LinkEmbedCard', () => {
     expect(link.getAttribute('href')).toBe('https://example.com');
   });
 
-  it('Under no host fetcher, LinkEmbedCard must keep using the default app preview request', async () => {
-    vi.stubGlobal(
-      'fetch',
-      vi.fn().mockResolvedValue({
-        json: async () => ({
-          description: '',
-          favicon: null,
-          image: null,
-          siteName: 'example.com',
-          title: 'https://example.com/',
-          url: 'https://example.com/',
-        }),
-        ok: true,
-      }),
-    );
-
+  it('Under no host fetcher, LinkEmbedCard must fall back to a regular external link immediately', async () => {
     render(<LinkEmbedCard fallbackLabel="Fallback" url="https://example.com" variant="card" />);
 
     const link = await screen.findByRole('link', { name: 'Fallback' });
 
-    expect(fetch).toHaveBeenCalledWith('/api/og?url=https%3A%2F%2Fexample.com', {
-      signal: expect.any(AbortSignal),
-    });
-    expect(link.getAttribute('href')).toBe('https://example.com/');
+    expect(link.getAttribute('href')).toBe('https://example.com');
   });
 });

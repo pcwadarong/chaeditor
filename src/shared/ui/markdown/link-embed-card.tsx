@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import { css, cx } from 'styled-system/css';
 
 import type { FetchLinkPreviewMeta } from '@/entities/editor-core';
-import { fetchLinkPreviewMetaAdapter } from '@/features/edit-markdown-adapter';
 import { type LinkEmbedData, shouldFallbackToPlainLink } from '@/shared/lib/markdown/link-embed';
 
 type LinkEmbedCardProps = {
@@ -64,14 +63,21 @@ export const LinkEmbedCard = ({
   const [state, setState] = useState<LinkEmbedState>({
     status: 'loading',
   });
-  const resolvedFetchLinkPreviewMeta = fetchLinkPreviewMeta ?? fetchLinkPreviewMetaAdapter;
 
   useEffect(() => {
+    if (!fetchLinkPreviewMeta) {
+      setState({
+        data: createFallbackLinkEmbedData(url, fallbackLabel),
+        status: 'fallback',
+      });
+      return;
+    }
+
     const controller = new AbortController();
 
     const fetchEmbedData = async () => {
       try {
-        const data = await resolvedFetchLinkPreviewMeta(url, controller.signal);
+        const data = await fetchLinkPreviewMeta(url, controller.signal);
 
         if (!data) {
           throw new Error('link preview data is empty');
@@ -94,7 +100,7 @@ export const LinkEmbedCard = ({
     void fetchEmbedData();
 
     return () => controller.abort();
-  }, [fallbackLabel, resolvedFetchLinkPreviewMeta, url]);
+  }, [fallbackLabel, fetchLinkPreviewMeta, url]);
 
   if (state.status === 'loading') {
     return (

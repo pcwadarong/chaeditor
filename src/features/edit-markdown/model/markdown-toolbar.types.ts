@@ -1,6 +1,7 @@
 import type React from 'react';
 
 import type { EditorContentType } from '@/entities/editor/model/editor-types';
+import type { MarkdownEditorHostAdapters } from '@/entities/editor-core';
 import type {
   MarkdownToolbarPresetItemKey,
   MarkdownToolbarSectionKey,
@@ -23,6 +24,7 @@ import type { ClosePopover } from '@/shared/ui/popover/popover';
  */
 export type MarkdownToolbarProps = {
   contentType: EditorContentType;
+  adapters?: MarkdownEditorHostAdapters;
   onChange: (value: string) => void;
   textareaRef: React.RefObject<HTMLTextAreaElement | null>;
   uiRegistry?: MarkdownToolbarUiRegistry;

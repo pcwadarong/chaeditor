@@ -12,6 +12,7 @@ type ImageEmbedPopoverEmptyStateProps = {
   canAddRow: boolean;
   errorMessage: string | null;
   isDragActive: boolean;
+  isImageUploadEnabled: boolean;
   isUploading: boolean;
   pendingUrls: string;
   onAddUrls: () => void;
@@ -35,6 +36,7 @@ export const ImageEmbedPopoverEmptyState = ({
   canAddRow,
   errorMessage,
   isDragActive,
+  isImageUploadEnabled,
   isUploading,
   onAddUrls,
   onDropzoneDragLeave,
@@ -58,7 +60,7 @@ export const ImageEmbedPopoverEmptyState = ({
         accept={acceptedFileTypes}
         aria-label="Dropzone image upload"
         className={fileInputClass}
-        disabled={isUploading || !canAddRow}
+        disabled={isUploading || !canAddRow || !isImageUploadEnabled}
         multiple
         onChange={onFileChange}
         type="file"
@@ -83,7 +85,11 @@ export const ImageEmbedPopoverEmptyState = ({
         value={pendingUrls}
       />
       <div className={urlPanelActionRowClass}>
-        <p className={metaTextClass}>Enter one URL per line.</p>
+        <p className={metaTextClass}>
+          {isImageUploadEnabled
+            ? 'Enter one URL per line.'
+            : 'Enter one URL per line. Image upload is currently disabled.'}
+        </p>
         <Button disabled={urlAddDisabled} onClick={onAddUrls} size="sm" tone="white">
           Add
         </Button>

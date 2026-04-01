@@ -15,12 +15,14 @@ import { ToolbarActionButton } from '@/features/edit-markdown/ui/toolbar-action-
  * Renders the markdown formatting toolbar for a textarea editor.
  */
 export const MarkdownToolbar = ({
+  adapters,
   contentType,
   onChange,
   textareaRef,
   uiRegistry,
 }: MarkdownToolbarProps) => {
   const { toolbarSections } = useMarkdownToolbar({
+    adapters,
     contentType,
     onChange,
     popoverTriggerClassName: popoverTriggerResetClass,

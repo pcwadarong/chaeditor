@@ -4,6 +4,7 @@ import React, { useMemo, useRef, useState } from 'react';
 import { css, cx } from 'styled-system/css';
 
 import type { EditorContentType } from '@/entities/editor/model/editor-types';
+import type { UploadEditorImage } from '@/entities/editor-core';
 import {
   normalizeEmbedInput,
   normalizeEmbedInputList,
@@ -23,7 +24,6 @@ import {
 } from '@/features/edit-markdown/model/image-embed-popover-state';
 import { ImageEmbedPopoverEditor } from '@/features/edit-markdown/ui/image-embed-popover-editor';
 import { ImageEmbedPopoverEmptyState } from '@/features/edit-markdown/ui/image-embed-popover-empty-state';
-import { uploadEditorImageAdapter } from '@/features/edit-markdown-adapter';
 import { Button } from '@/shared/ui/button/button';
 import { ImageIcon } from '@/shared/ui/icons/app-icons';
 import { Modal } from '@/shared/ui/modal/modal';
@@ -43,7 +43,7 @@ type ImageEmbedPopoverProps = {
     },
     closePopover?: ClosePopover,
   ) => void;
-  onUploadImage?: typeof uploadEditorImageAdapter;
+  onUploadImage?: UploadEditorImage;
   onTriggerMouseDown?: React.MouseEventHandler<HTMLButtonElement>;
   triggerClassName?: string;
 };
@@ -57,7 +57,7 @@ type ImageEmbedPopoverProps = {
 export const ImageEmbedPopover = ({
   contentType,
   onApply,
-  onUploadImage = uploadEditorImageAdapter,
+  onUploadImage,
   onTriggerMouseDown,
   triggerClassName,
 }: ImageEmbedPopoverProps) => {
@@ -84,6 +84,7 @@ export const ImageEmbedPopover = ({
   const selectedRow = rows.find(row => row.id === selectedRowId) ?? rows[0] ?? null;
   const selectedPreviewUrl = resolvePreviewImageSrc(selectedRow?.url ?? '');
   const isAddUrlsDisabled = normalizeEmbedInputList(pendingUrls).length === 0;
+  const isImageUploadEnabled = Boolean(onUploadImage);
 
   /**
    * Applies a partial update to a row.
@@ -125,6 +126,11 @@ export const ImageEmbedPopover = ({
    * @param files Files to upload.
    */
   const handleUploadFiles = async (files: File[]) => {
+    if (!onUploadImage) {
+      setErrorMessage('Image upload is not configured in the host application.');
+      return;
+    }
+
     if (files.length === 0) return;
 
     if (files.length > MAX_IMAGE_EMBED_ITEMS) {
@@ -262,6 +268,10 @@ export const ImageEmbedPopover = ({
     event.target.value = '';
 
     if (!file || !selectedRow) return;
+    if (!onUploadImage) {
+      setErrorMessage('Image upload is not configured in the host application.');
+      return;
+    }
 
     setIsUploading(true);
     setErrorMessage(null);
@@ -364,7 +374,7 @@ export const ImageEmbedPopover = ({
                       accept={ACCEPTED_IMAGE_FILE_TYPES}
                       aria-label="Upload image files"
                       className={fileInputClass}
-                      disabled={isUploading || !canAddRow}
+                      disabled={isUploading || !canAddRow || !isImageUploadEnabled}
                       multiple
                       onChange={handleFileChange}
                       type="file"
@@ -390,6 +400,7 @@ export const ImageEmbedPopover = ({
                 acceptedFileTypes={ACCEPTED_IMAGE_FILE_TYPES}
                 canAddRow={canAddRow}
                 errorMessage={errorMessage}
+                isImageUploadEnabled={isImageUploadEnabled}
                 isDragActive={isDragActive}
                 isUploading={isUploading}
                 onAddUrls={handleAddUrls}
@@ -444,6 +455,7 @@ export const ImageEmbedPopover = ({
                   duplicateRowIds={duplicateRowIds}
                   errorMessage={errorMessage}
                   filledRows={filledRows}
+                  isImageUploadEnabled={isImageUploadEnabled}
                   isMobileListCollapsed={isMobileListCollapsed}
                   isUploading={isUploading}
                   onFileChange={handleReplaceSelectedRowImage}

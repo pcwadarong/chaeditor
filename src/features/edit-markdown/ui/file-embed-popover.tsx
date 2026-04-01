@@ -6,7 +6,7 @@ import { css } from 'styled-system/css';
 import type { EditorAttachment } from '@/entities/editor/model/editor-attachment';
 import { EDITOR_ATTACHMENT_FILE_INPUT_ACCEPT } from '@/entities/editor/model/editor-attachment-policy';
 import type { EditorContentType } from '@/entities/editor/model/editor-types';
-import { uploadEditorFileAdapter } from '@/features/edit-markdown-adapter';
+import type { UploadEditorFile } from '@/entities/editor-core';
 import { Button } from '@/shared/ui/button/button';
 import { FileIcon } from '@/shared/ui/icons/app-icons';
 import { Input } from '@/shared/ui/input/input';
@@ -15,7 +15,7 @@ import { type ClosePopover, Popover } from '@/shared/ui/popover/popover';
 type FileEmbedPopoverProps = {
   contentType: EditorContentType;
   onApply: (attachment: EditorAttachment, closePopover?: ClosePopover) => void;
-  onUploadFile?: typeof uploadEditorFileAdapter;
+  onUploadFile?: UploadEditorFile;
   onTriggerMouseDown?: React.MouseEventHandler<HTMLButtonElement>;
   triggerClassName?: string;
 };
@@ -26,18 +26,26 @@ type FileEmbedPopoverProps = {
 export const FileEmbedPopover = ({
   contentType,
   onApply,
-  onUploadFile = uploadEditorFileAdapter,
+  onUploadFile,
   onTriggerMouseDown,
   triggerClassName,
 }: FileEmbedPopoverProps) => {
   const [attachment, setAttachment] = useState<EditorAttachment | null>(null);
   const [attachmentError, setAttachmentError] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const isFileUploadEnabled = Boolean(onUploadFile);
 
   /**
    * Uploads a file and stores the resulting attachment metadata.
    */
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!onUploadFile) {
+      setAttachment(null);
+      setAttachmentError('File upload is not configured in the host application.');
+      event.target.value = '';
+      return;
+    }
+
     const file = event.target.files?.[0];
 
     if (!file) return;
@@ -104,7 +112,7 @@ export const FileEmbedPopover = ({
                   accept={EDITOR_ATTACHMENT_FILE_INPUT_ACCEPT}
                   aria-label="Upload attachment"
                   className={fileInputClass}
-                  disabled={isUploading}
+                  disabled={isUploading || !isFileUploadEnabled}
                   onChange={handleFileChange}
                   type="file"
                 />
@@ -118,6 +126,10 @@ export const FileEmbedPopover = ({
             {attachmentError ? (
               <p className={errorTextClass} role="alert">
                 {attachmentError}
+              </p>
+            ) : !isFileUploadEnabled ? (
+              <p className={metaTextClass}>
+                File upload is not configured in the host application.
               </p>
             ) : null}
           </div>

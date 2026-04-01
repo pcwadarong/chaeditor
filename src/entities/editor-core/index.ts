@@ -1,8 +1,12 @@
 export type {
   FetchLinkPreviewMeta,
+  MarkdownEditorHostAdapters,
   MarkdownImageViewerLabels,
   MarkdownRendererHostAdapters,
   ResolveAttachmentHref,
+  UploadEditorFile,
+  UploadEditorImage,
+  UploadEditorVideo,
 } from '@/entities/editor-core/model/host-adapters';
 export {
   normalizeMarkdownHtmlAliases,

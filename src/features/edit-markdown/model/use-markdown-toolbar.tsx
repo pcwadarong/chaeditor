@@ -70,6 +70,7 @@ const tableTemplate = [
  * Builds textarea actions and section data for the markdown toolbar.
  */
 export const useMarkdownToolbar = ({
+  adapters,
   contentType,
   onChange,
   textareaRef,
@@ -513,6 +514,7 @@ export const useMarkdownToolbar = ({
         <FileEmbedPopover
           contentType={contentType}
           onApply={handleAttachmentApply}
+          onUploadFile={adapters?.uploadFile}
           onTriggerMouseDown={event => event.preventDefault()}
           triggerClassName={popoverTriggerClassName}
         />,
@@ -522,6 +524,7 @@ export const useMarkdownToolbar = ({
         <ImageEmbedPopover
           contentType={contentType}
           onApply={handleImageApply}
+          onUploadImage={adapters?.uploadImage}
           onTriggerMouseDown={event => event.preventDefault()}
           triggerClassName={popoverTriggerClassName}
         />,
@@ -540,12 +543,16 @@ export const useMarkdownToolbar = ({
         <VideoEmbedModal
           contentType={contentType}
           onApply={handleVideoApply}
+          onUploadVideo={adapters?.uploadVideo}
           onTriggerMouseDown={event => event.preventDefault()}
           triggerClassName={popoverTriggerClassName}
         />,
       ),
     ],
     [
+      adapters?.uploadFile,
+      adapters?.uploadImage,
+      adapters?.uploadVideo,
       contentType,
       handleAttachmentApply,
       handleImageApply,
@@ -595,11 +602,14 @@ export const useMarkdownToolbar = ({
                 triggerToken: 'T',
               }),
             ),
-            ...embedItems,
+            ...embedItems.filter(
+              item => item.key !== 'file-embed' || Boolean(adapters?.uploadFile),
+            ),
           ].map(item => [item.key as MarkdownToolbarPresetItemKey, item] as const),
         ) as Partial<Record<MarkdownToolbarPresetItemKey, ToolbarSectionItem>>,
       }),
     [
+      adapters?.uploadFile,
       blockSyntaxActions,
       embedItems,
       headingPopoverOptions,

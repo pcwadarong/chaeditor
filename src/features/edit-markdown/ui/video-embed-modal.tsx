@@ -9,8 +9,8 @@ import {
   EDITOR_VIDEO_MAX_FILE_SIZE,
   isAllowedEditorVideoFile,
 } from '@/entities/editor/model/editor-video-policy';
+import type { UploadEditorVideo } from '@/entities/editor-core';
 import { extractVideoEmbedReference } from '@/entities/editor-core/model/video-embed';
-import { uploadEditorVideoAdapter } from '@/features/edit-markdown-adapter';
 import { Button } from '@/shared/ui/button/button';
 import { YoutubeIcon } from '@/shared/ui/icons/app-icons';
 import { Input } from '@/shared/ui/input/input';
@@ -28,7 +28,7 @@ type VideoEmbedModalProps = {
     },
     closePopover?: ClosePopover,
   ) => void;
-  onUploadVideo?: typeof uploadEditorVideoAdapter;
+  onUploadVideo?: UploadEditorVideo;
   onTriggerMouseDown?: React.MouseEventHandler<HTMLButtonElement>;
   triggerClassName?: string;
 };
@@ -45,7 +45,7 @@ const VIDEO_MAX_FILE_SIZE_MB = Math.round(EDITOR_VIDEO_MAX_FILE_SIZE / MB);
 export const VideoEmbedModal = ({
   contentType,
   onApply,
-  onUploadVideo = uploadEditorVideoAdapter,
+  onUploadVideo,
   onTriggerMouseDown,
   triggerClassName,
 }: VideoEmbedModalProps) => {
@@ -62,6 +62,7 @@ export const VideoEmbedModal = ({
   const videoReference = useMemo(() => extractVideoEmbedReference(videoUrl), [videoUrl]);
   const videoId = videoReference?.provider === 'youtube' ? videoReference.videoId : null;
   const previewMode = uploadedVideoUrl ? 'upload' : videoId ? 'youtube' : null;
+  const isVideoUploadEnabled = Boolean(onUploadVideo);
   const helperStatusMessage = errorMessage
     ? errorMessage
     : isUploading && uploadProgress !== null
@@ -70,7 +71,9 @@ export const VideoEmbedModal = ({
         ? 'The uploaded video is ready to insert.'
         : videoId
           ? 'The video is ready to insert.'
-          : 'Currently supports YouTube URLs or uploaded video files.';
+          : isVideoUploadEnabled
+            ? 'Currently supports YouTube URLs or uploaded video files.'
+            : 'Currently supports YouTube URLs. Local video upload is disabled.';
 
   /**
    * Opens the video modal and clears pending tooltip and focus state.
@@ -124,6 +127,12 @@ export const VideoEmbedModal = ({
    * @param event File input change event.
    */
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!onUploadVideo) {
+      setErrorMessage('Video upload is not configured in the host application.');
+      event.target.value = '';
+      return;
+    }
+
     const file = event.target.files?.[0];
     event.target.value = '';
 
@@ -295,7 +304,7 @@ export const VideoEmbedModal = ({
                       accept={EDITOR_VIDEO_FILE_INPUT_ACCEPT}
                       aria-label="Upload video"
                       className={fileInputClass}
-                      disabled={isUploading}
+                      disabled={isUploading || !isVideoUploadEnabled}
                       onChange={handleFileChange}
                       type="file"
                     />

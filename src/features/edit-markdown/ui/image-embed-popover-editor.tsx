@@ -18,6 +18,7 @@ type ImageEmbedPopoverEditorProps = {
   duplicateRowIds: Set<string>;
   errorMessage: string | null;
   filledRows: FilledImageRow[];
+  isImageUploadEnabled: boolean;
   isMobileListCollapsed: boolean;
   isUploading: boolean;
   rows: ImageInputRow[];
@@ -43,6 +44,7 @@ export const ImageEmbedPopoverEditor = ({
   duplicateRowIds,
   errorMessage,
   filledRows,
+  isImageUploadEnabled,
   isMobileListCollapsed,
   isUploading,
   onFileChange,
@@ -208,13 +210,16 @@ export const ImageEmbedPopoverEditor = ({
               accept={uploadAccept}
               aria-label="Upload selected image"
               className={fileInputClass}
-              disabled={isUploading || !selectedRow}
+              disabled={isUploading || !selectedRow || !isImageUploadEnabled}
               onChange={onFileChange}
               type="file"
             />
           </label>
         </div>
 
+        {!isImageUploadEnabled ? (
+          <p className={metaTextClass}>Image upload is not configured in the host application.</p>
+        ) : null}
         {selectedRow && duplicateRowIds.has(selectedRow.id) ? (
           <p className={metaErrorTextClass} role="alert">
             Duplicate URLs cannot be inserted.

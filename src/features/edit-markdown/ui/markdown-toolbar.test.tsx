@@ -4,25 +4,32 @@ import React from 'react';
 import { MarkdownToolbar } from '@/features/edit-markdown/ui/markdown-toolbar';
 import { Textarea } from '@/shared/ui/textarea/textarea';
 
-vi.mock('@/entities/editor/api/upload-editor-file', () => ({
-  uploadEditorFile: vi.fn(async () => ({
-    contentType: 'application/pdf',
-    fileName: 'resume.pdf',
-    fileSize: 2048,
-    url: 'https://example.com/resume.pdf',
-  })),
-}));
-
 /**
  * Combines the toolbar and textarea to verify real edit interactions.
  */
 const ToolbarHarness = () => {
   const textareaRef = React.useRef<HTMLTextAreaElement | null>(null);
   const [value, setValue] = React.useState('');
+  const adapters = React.useMemo(
+    () => ({
+      uploadFile: async () => ({
+        contentType: 'application/pdf',
+        fileName: 'resume.pdf',
+        fileSize: 2048,
+        url: 'https://example.com/resume.pdf',
+      }),
+    }),
+    [],
+  );
 
   return (
     <>
-      <MarkdownToolbar contentType="article" onChange={setValue} textareaRef={textareaRef} />
+      <MarkdownToolbar
+        adapters={adapters}
+        contentType="article"
+        onChange={setValue}
+        textareaRef={textareaRef}
+      />
       <Textarea
         aria-label="Content input"
         autoResize={false}
@@ -83,7 +90,7 @@ describe('MarkdownToolbar', () => {
     fireEvent.change(screen.getByRole('textbox', { name: 'Link URL' }), {
       target: { value: 'https://openai.com' },
     });
-    fireEvent.click(screen.getByRole('button', { name: 'Title Link' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Preview link' }));
 
     await waitFor(() => {
       expect(textarea.value).toBe('[https://openai.com](https://openai.com/ "preview")');
@@ -102,7 +109,7 @@ describe('MarkdownToolbar', () => {
     fireEvent.change(screen.getByRole('textbox', { name: 'Link URL' }), {
       target: { value: 'https://openai.com' },
     });
-    fireEvent.click(screen.getByRole('button', { name: 'Title Link' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Preview link' }));
 
     const insertedLink = '[https://openai.com](https://openai.com/ "preview")';
 
@@ -127,7 +134,7 @@ describe('MarkdownToolbar', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Insert as individual images' }));
 
     await waitFor(() => {
-      expect(textarea.value).toBe('![Image Description](https://example.com/image.png)');
+      expect(textarea.value).toBe('![Image description](https://example.com/image.png)');
     });
   });
 
@@ -162,7 +169,7 @@ describe('MarkdownToolbar', () => {
     const textarea = screen.getByRole('textbox', { name: 'Content input' }) as HTMLTextAreaElement;
 
     fireEvent.click(screen.getByRole('button', { name: 'Math' }));
-    fireEvent.change(screen.getByRole('textbox', { name: 'LaTeX Formula' }), {
+    fireEvent.change(screen.getByRole('textbox', { name: 'LaTeX formula' }), {
       target: { value: 'a^2 + b^2 = c^2' },
     });
     fireEvent.click(screen.getByRole('button', { name: 'Inline' }));
@@ -197,8 +204,8 @@ describe('MarkdownToolbar', () => {
     fireEvent.change(textarea, { target: { value: 'Content to align' } });
     textarea.setSelectionRange(0, textarea.value.length);
 
-    fireEvent.click(screen.getByRole('button', { name: 'Align' }));
-    fireEvent.click(screen.getByRole('button', { name: 'Center align' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Alignment' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Align center' }));
 
     await waitFor(() => {
       expect(textarea.value).toBe(':::align center\nContent to align\n:::');
@@ -249,7 +256,7 @@ describe('MarkdownToolbar', () => {
     expect(screen.queryByRole('button', { name: 'Toggle List' })).toBeNull();
     expect(screen.queryByRole('button', { name: 'Title 4' })).toBeNull();
     expect(screen.queryByRole('button', { name: 'Toggle Title 4' })).toBeNull();
-    expect(screen.getByRole('button', { name: 'Title' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Heading' })).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Toggle' })).toBeTruthy();
   });
 
@@ -270,8 +277,8 @@ describe('MarkdownToolbar', () => {
     textarea.focus();
     textarea.setSelectionRange(0, 0);
 
-    fireEvent.click(screen.getByRole('button', { name: 'Title' }));
-    fireEvent.click(screen.getByRole('button', { name: 'Title 2' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Heading' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Heading 2' }));
 
     await waitFor(() => {
       expect(textarea.value).toBe('## Section title');
@@ -287,7 +294,7 @@ describe('MarkdownToolbar', () => {
     textarea.setSelectionRange(0, textarea.value.length);
 
     fireEvent.click(screen.getByRole('button', { name: 'Toggle' }));
-    fireEvent.click(screen.getByRole('button', { name: 'Toggle Title 3' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Toggle Heading 3' }));
 
     await waitFor(() => {
       expect(textarea.value).toBe(':::toggle ### Toggle content\nContent\n:::');
