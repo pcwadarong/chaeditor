@@ -60,6 +60,7 @@ vitest.config.ts.timestamp-*
 .claude/
 .code-review-graph/
 job/
+AGENT.md
 
 # Misc
 *.pem
@@ -68,5 +69,6 @@ job/
 # Panda CSS
 styled-system/
 
+# Storybook
 *storybook.log
 storybook-static
