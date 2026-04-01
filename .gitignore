@@ -1,0 +1,72 @@
+# OS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Editors / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Node / Package managers
+node_modules/
+.pnpm-store/
+.npm/
+.yarn/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Docs
+docs/*
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Build outputs
+.next/
+out/
+dist/
+build/
+coverage/
+.turbo/
+
+# Next.js
+*.tsbuildinfo
+
+# ESLint / Prettier
+.eslintcache
+.prettier-cache
+
+# Test (Vitest)
+vitest.config.ts.timestamp-*
+
+# Husky / lint-staged generated temp files
+.husky/_/
+
+# ai
+.codex/
+.claude/
+.code-review-graph/
+job/
+
+# Misc
+*.pem
+.vercel/
+
+# Panda CSS
+styled-system/
+
+*storybook.log
+storybook-static

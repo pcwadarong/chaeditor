@@ -1,0 +1,85 @@
+const MB = 1024 * 1024;
+
+export const EDITOR_ATTACHMENT_MAX_FILE_SIZE = 50 * MB;
+
+export const EDITOR_ATTACHMENT_ALLOWED_EXTENSIONS = [
+  'csv',
+  'doc',
+  'docx',
+  'hwp',
+  'hwpx',
+  'md',
+  'pdf',
+  'ppt',
+  'pptx',
+  'txt',
+  'xls',
+  'xlsx',
+  'zip',
+] as const;
+
+export const EDITOR_ATTACHMENT_ALLOWED_MIME_TYPES = [
+  'application/msword',
+  'application/hwp+zip',
+  'application/pdf',
+  'application/vnd.hancom.hwpx',
+  'application/x-hwp+zip',
+  'application/vnd.ms-excel',
+  'application/vnd.ms-powerpoint',
+  'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'application/x-hwp',
+  'application/x-zip-compressed',
+  'application/zip',
+  'text/csv',
+  'text/markdown',
+  'text/plain',
+] as const;
+
+export const EDITOR_ATTACHMENT_FILE_INPUT_ACCEPT = EDITOR_ATTACHMENT_ALLOWED_EXTENSIONS.map(
+  extension => `.${extension}`,
+).join(',');
+
+/**
+ * Checks whether the file name uses an allowed attachment extension.
+ *
+ * @param fileName Original file name to validate.
+ * @returns `true` when the extension is allowed.
+ */
+export const isAllowedEditorAttachmentExtension = (fileName: string) => {
+  const baseName = fileName.trim().split('/').pop()?.split('\\').pop()?.trim() ?? '';
+  const lastDotIndex = baseName.lastIndexOf('.');
+
+  if (lastDotIndex <= 0 || lastDotIndex === baseName.length - 1) return false;
+
+  const extension = baseName.slice(lastDotIndex + 1).toLowerCase();
+
+  return EDITOR_ATTACHMENT_ALLOWED_EXTENSIONS.includes(
+    extension as (typeof EDITOR_ATTACHMENT_ALLOWED_EXTENSIONS)[number],
+  );
+};
+
+/**
+ * Checks whether the file matches the attachment upload policy.
+ *
+ * @param file File to validate.
+ * @returns `true` when the MIME type and size are allowed.
+ */
+export const isAllowedEditorAttachmentFile = (file: File) => {
+  if (!file.name.trim() || file.size <= 0 || file.size > EDITOR_ATTACHMENT_MAX_FILE_SIZE) {
+    return false;
+  }
+
+  if (!isAllowedEditorAttachmentExtension(file.name)) {
+    return false;
+  }
+
+  if (!file.type) {
+    return true;
+  }
+
+  return EDITOR_ATTACHMENT_ALLOWED_MIME_TYPES.includes(
+    file.type as (typeof EDITOR_ATTACHMENT_ALLOWED_MIME_TYPES)[number],
+  );
+};

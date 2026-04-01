@@ -1,0 +1,39 @@
+name: Feature Request
+description: Template for proposing a new feature
+title: '[Feature] '
+labels:
+  - feature
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: Describe the feature and expected outcome.
+      placeholder: |
+        1.
+        2.
+        3.
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem-solving
+    attributes:
+      label: Risks and Approach
+      description: Describe expected risks and the proposed implementation direction.
+      placeholder: |
+        ### Risks
+
+        ### Approach
+    validations:
+      required: false
+
+  - type: textarea
+    id: references
+    attributes:
+      label: References
+      description: Add links to related documents if available.
+      placeholder: |
+        - https://...
+    validations:
+      required: false
