@@ -3,23 +3,15 @@
 import React, { useState } from 'react';
 import { css } from 'styled-system/css';
 
-import { normalizeEmbedInput } from '@/features/edit-markdown/image/model/embed-popover-state';
+import { normalizeEmbedInput } from '@/features/edit-markdown/image';
+import type {
+  LinkEmbedMode,
+  LinkEmbedPopoverLabels,
+} from '@/features/edit-markdown/link/model/link-embed';
 import { Button } from '@/shared/ui/button/button';
 import { LinkIcon } from '@/shared/ui/icons/app-icons';
 import { Input } from '@/shared/ui/input/input';
 import { type ClosePopover, Popover } from '@/shared/ui/popover/popover';
-
-type LinkEmbedMode = 'card' | 'link' | 'preview';
-export type LinkEmbedPopoverLabels = {
-  cardButtonLabel: string;
-  panelLabel: string;
-  previewButtonLabel: string;
-  triggerAriaLabel: string;
-  triggerTooltip: string;
-  urlInputAriaLabel: string;
-  urlPlaceholder: string;
-  hyperlinkButtonLabel: string;
-};
 
 type LinkEmbedPopoverProps = {
   labels?: Partial<LinkEmbedPopoverLabels>;

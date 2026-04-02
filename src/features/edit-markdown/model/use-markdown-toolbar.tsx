@@ -21,12 +21,13 @@ import {
   toggleHeadingLine,
   wrapSelection,
 } from '@/entities/editor-core/model/selection-utils';
+import type { ImageEmbedApplyPayload } from '@/features/edit-markdown/image';
+import type { LinkEmbedMode } from '@/features/edit-markdown/link';
 import type {
   AlignPopoverRenderProps,
   FileEmbedPopoverRenderProps,
   ImageEmbedModalRenderProps,
   LinkEmbedPopoverRenderProps,
-  LinkMode,
   MarkdownToolbarPresetItemKey,
   MarkdownToolbarProps,
   MathEmbedPopoverRenderProps,
@@ -155,7 +156,7 @@ export const useMarkdownToolbar = ({
   );
 
   const handleLinkApply = React.useCallback(
-    (url: string, mode: LinkMode, closePopover?: ClosePopover) => {
+    (url: string, mode: LinkEmbedMode, closePopover?: ClosePopover) => {
       const selectedText = getSelectedText();
       const nextValue = createMarkdownLinkByMode({
         label: selectedText || url,
@@ -172,16 +173,7 @@ export const useMarkdownToolbar = ({
   );
 
   const handleImageApply = React.useCallback(
-    (
-      payload: {
-        items: Array<{
-          altText: string;
-          url: string;
-        }>;
-        mode: 'gallery' | 'individual';
-      },
-      closePopover?: ClosePopover,
-    ) => {
+    (payload: ImageEmbedApplyPayload, closePopover?: ClosePopover) => {
       if (!payload?.items || payload.items.length === 0) {
         closePopover?.({ restoreFocus: false });
         return;

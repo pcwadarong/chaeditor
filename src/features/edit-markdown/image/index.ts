@@ -3,6 +3,10 @@ export {
   normalizeEmbedInputList,
   uploadImageEmbedSource,
 } from '@/features/edit-markdown/image/model/embed-popover-state';
+export type {
+  ImageEmbedApplyPayload,
+  ImageEmbedItem,
+} from '@/features/edit-markdown/image/model/image-embed';
 export {
   ACCEPTED_IMAGE_FILE_TYPES,
   ACCEPTED_IMAGE_FORMAT_LABEL,

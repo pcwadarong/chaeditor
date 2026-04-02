@@ -10,7 +10,8 @@ import type {
   MarkdownToolbarSectionKey,
 } from '@/entities/editor-core/model/toolbar-preset';
 import type { ColorStylePopoverLabels } from '@/features/edit-markdown/formatting';
-import type { LinkEmbedPopoverLabels } from '@/features/edit-markdown/link';
+import type { ImageEmbedApplyPayload } from '@/features/edit-markdown/image';
+import type { LinkEmbedMode, LinkEmbedPopoverLabels } from '@/features/edit-markdown/link';
 import type {
   ToolbarTokenPopoverLabels,
   ToolbarTokenPopoverProps,
@@ -94,7 +95,7 @@ export type LinkEmbedPopoverRenderProps = {
   /** Optional label overrides merged into the built-in defaults. */
   labels?: Partial<LinkEmbedPopoverLabels>;
   /** Applies the selected link mode and URL to the active editor selection. */
-  onApply: (url: string, mode: LinkMode, closePopover?: ClosePopover) => void;
+  onApply: (url: string, mode: LinkEmbedMode, closePopover?: ClosePopover) => void;
   /** Mouse-down hook used to preserve textarea focus before opening the helper. */
   onTriggerMouseDown?: React.MouseEventHandler<HTMLButtonElement>;
   /** Optional class name for the trigger button wrapper. */
@@ -153,16 +154,7 @@ export type ImageEmbedModalRenderProps = {
   /** Current editor content type forwarded to the upload adapter. */
   contentType: EditorContentType;
   /** Inserts one or more image references into the editor. */
-  onApply: (
-    payload: {
-      items: Array<{
-        altText: string;
-        url: string;
-      }>;
-      mode: 'gallery' | 'individual';
-    },
-    closePopover?: ClosePopover,
-  ) => void;
+  onApply: (payload: ImageEmbedApplyPayload, closePopover?: ClosePopover) => void;
   onTriggerMouseDown?: React.MouseEventHandler<HTMLButtonElement>;
   /** Optional framework-specific image renderer override for previews. */
   renderImage?: MarkdownEditorHostAdapters['renderImage'];
@@ -192,7 +184,7 @@ export type VideoEmbedModalRenderProps = {
   triggerClassName?: string;
 };
 
-export type LinkMode = 'card' | 'link' | 'preview';
+export type { LinkEmbedMode as LinkMode };
 
 export type ToolbarActionItem = {
   icon?: React.ReactNode;
