@@ -21,8 +21,8 @@ import type {
   MathEmbedPopoverRenderProps,
   TextColorPopoverRenderProps,
   VideoEmbedModalRenderProps,
-} from '@/features/edit-markdown/model/markdown-toolbar.types';
-import { ToolbarTokenPopover } from '@/features/edit-markdown/toolbar';
+} from '@/features/edit-markdown/toolbar/contracts/markdown-toolbar.types';
+import { ToolbarTokenPopover } from '@/features/edit-markdown/toolbar/ui/toolbar-token-popover';
 import { VideoEmbedModal } from '@/features/edit-markdown/video';
 
 type ResolvedMarkdownToolbarUiRegistry = {

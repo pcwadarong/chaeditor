@@ -3,7 +3,7 @@
 import React from 'react';
 import { css } from 'styled-system/css';
 
-import type { ToolbarTokenOption } from '@/features/edit-markdown/model/markdown-toolbar.types';
+import type { ToolbarTokenOption } from '@/features/edit-markdown/toolbar/contracts/markdown-toolbar.types';
 import { Button } from '@/shared/ui/button/button';
 import { type ClosePopover, Popover } from '@/shared/ui/popover/popover';
 

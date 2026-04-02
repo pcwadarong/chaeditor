@@ -8,7 +8,7 @@ import {
   createToolbarActionItems,
   createToolbarCustomItem,
   createToolbarTokenOptions,
-} from '@/features/edit-markdown/model/markdown-toolbar-composition';
+} from '@/features/edit-markdown/toolbar/contracts/markdown-toolbar-composition';
 
 describe('markdown-toolbar composition helpers', () => {
   it('Under tokenized toolbar actions, createToolbarTokenOptions must preserve action keys and tokens for popover options', () => {

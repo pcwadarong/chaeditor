@@ -13,7 +13,7 @@ import type { MathEmbedApplyPayload } from '@/features/edit-markdown/math';
 import type {
   ToolbarTokenPopoverLabels,
   ToolbarTokenPopoverProps,
-} from '@/features/edit-markdown/toolbar';
+} from '@/features/edit-markdown/toolbar/ui/toolbar-token-popover';
 import type { VideoEmbedApplyPayload } from '@/features/edit-markdown/video';
 import type { ClosePopover } from '@/shared/ui/popover/popover';
 

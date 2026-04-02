@@ -9,7 +9,7 @@ import type {
   ToolbarSection,
   ToolbarSectionItem,
   ToolbarTokenOption,
-} from '@/features/edit-markdown/model/markdown-toolbar.types';
+} from '@/features/edit-markdown/toolbar/contracts/markdown-toolbar.types';
 
 type CreateMarkdownToolbarSectionsArgs = {
   itemRegistry: Partial<Record<MarkdownToolbarPresetItemKey, ToolbarSectionItem>>;

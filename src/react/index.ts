@@ -19,11 +19,11 @@ export type {
   ToolbarSectionItem,
   ToolbarTokenOption,
   VideoEmbedModalRenderProps,
-} from '@/features/edit-markdown/model/markdown-toolbar.types';
+} from '@/features/edit-markdown/toolbar';
 export {
   createDefaultMarkdownToolbarUiRegistry,
   resolveMarkdownToolbarUiRegistry,
-} from '@/features/edit-markdown/model/markdown-toolbar-ui-registry';
+} from '@/features/edit-markdown/toolbar';
 export { VideoEmbedModal } from '@/features/edit-markdown/video';
 export { renderRichMarkdown } from '@/shared/lib/markdown/rich-markdown';
 export type {

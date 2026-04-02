@@ -1,7 +1,7 @@
 import { cleanup, renderHook, waitFor } from '@testing-library/react';
 import React from 'react';
 
-import { useMarkdownToolbar } from '@/features/edit-markdown/model/use-markdown-toolbar';
+import { useMarkdownToolbar } from '@/features/edit-markdown/toolbar/shell/use-markdown-toolbar';
 
 /**
  * Finds a regular toolbar action by label from the actions created by the hook.

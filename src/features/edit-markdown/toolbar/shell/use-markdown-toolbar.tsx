@@ -37,14 +37,14 @@ import type {
   ToolbarCustomItem,
   ToolbarSectionItem,
   VideoEmbedModalRenderProps,
-} from '@/features/edit-markdown/model/markdown-toolbar.types';
+} from '@/features/edit-markdown/toolbar/contracts/markdown-toolbar.types';
 import {
   createMarkdownToolbarSections,
   createToolbarActionItems,
   createToolbarCustomItem,
   createToolbarTokenOptions,
-} from '@/features/edit-markdown/model/markdown-toolbar-composition';
-import { resolveMarkdownToolbarUiRegistry } from '@/features/edit-markdown/model/markdown-toolbar-ui-registry';
+} from '@/features/edit-markdown/toolbar/contracts/markdown-toolbar-composition';
+import { resolveMarkdownToolbarUiRegistry } from '@/features/edit-markdown/toolbar/shell/markdown-toolbar-ui-registry';
 import type { VideoEmbedApplyPayload } from '@/features/edit-markdown/video';
 import {
   CodeBlockIcon,

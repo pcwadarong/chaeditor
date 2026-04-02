@@ -7,8 +7,8 @@ import type {
   MarkdownToolbarProps,
   ToolbarActionItem,
   ToolbarSectionItem,
-} from '@/features/edit-markdown/model/markdown-toolbar.types';
-import { useMarkdownToolbar } from '@/features/edit-markdown/model/use-markdown-toolbar';
+} from '@/features/edit-markdown/toolbar/contracts/markdown-toolbar.types';
+import { useMarkdownToolbar } from '@/features/edit-markdown/toolbar/shell/use-markdown-toolbar';
 import { ToolbarActionButton } from '@/features/edit-markdown/toolbar/ui/toolbar-action-button';
 
 /**
