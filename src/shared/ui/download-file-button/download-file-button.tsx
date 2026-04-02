@@ -1,37 +1,36 @@
 import React from 'react';
 import { css } from 'styled-system/css';
 
-import { Button } from '@/shared/ui/button/button';
+import { Button } from '@/shared/ui/button';
 
-type DownloadFileButtonMode = 'download' | 'open';
-
-type DownloadFileButtonProps = {
+export type DownloadFileButtonProps = {
+  /**
+   * Download URL. When it is null, the button is rendered in a disabled state.
+   */
   href: string | null;
+  /**
+   * Visible button label.
+   */
   label: string;
-  mode?: DownloadFileButtonMode;
+  /**
+   * Suggested file name forwarded to the browser download attribute.
+   */
   fileName?: string;
 };
 
 /**
- * Shared button for file download and open actions.
+ * Renders a shared button for explicit file downloads.
+ *
+ * This component is intentionally download-focused. Use it when the primary user intent
+ * is to save a file, not to open or preview it in a new tab.
  */
-export const DownloadFileButton = ({
-  href,
-  label,
-  mode = 'open',
-  fileName,
-}: DownloadFileButtonProps) => {
+export const DownloadFileButton = ({ href, label, fileName }: DownloadFileButtonProps) => {
   const isDisabled = !href;
 
   if (href) {
     return (
       <Button asChild className={downloadButtonClass} tone="white" variant="solid">
-        <a
-          download={mode === 'download' ? fileName : undefined}
-          href={href}
-          rel="noopener noreferrer"
-          target="_blank"
-        >
+        <a download={fileName} href={href}>
           {label}
         </a>
       </Button>

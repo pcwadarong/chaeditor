@@ -2,8 +2,8 @@ import React from 'react';
 import { css } from 'styled-system/css';
 
 import type { ResolveAttachmentHref } from '@/entities/editor-core';
-import { DownloadFileButton } from '@/shared/ui/download-file-button/download-file-button';
-import { FileIcon } from '@/shared/ui/icons/app-icons';
+import { DownloadFileButton } from '@/shared/ui/download-file-button';
+import { FileIcon } from '@/shared/ui/icons';
 
 type MarkdownAttachmentProps = {
   contentType?: string;
@@ -56,12 +56,7 @@ export const MarkdownAttachment = ({
         </span>
       </span>
       <div className={actionWrapClass}>
-        <DownloadFileButton
-          fileName={fileName}
-          href={downloadHref}
-          label="Download"
-          mode="download"
-        />
+        <DownloadFileButton fileName={fileName} href={downloadHref} label="Download" />
       </div>
     </section>
   );
