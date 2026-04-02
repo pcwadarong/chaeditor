@@ -34,7 +34,11 @@ const getNextDemoImageUrl = () => {
 };
 
 /**
- * Creates host adapters used by Storybook reference stories.
+ * Creates mock host adapters used by Storybook reference stories.
+ *
+ * These adapters are intentionally in-memory and demo-oriented. The reference stories do
+ * not call the package's default-host network adapters because Storybook should stay
+ * self-contained and predictable without a backend.
  */
 export const createStorybookAdapters = (): MarkdownEditorHostAdapters => ({
   fetchLinkPreviewMeta: async url => {

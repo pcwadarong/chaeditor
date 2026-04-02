@@ -103,7 +103,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'Standalone formatting toolbar reference with a host-controlled textarea and optional custom labels.',
+          'Standalone formatting toolbar reference with a host-controlled textarea, mock host adapters, and optional custom labels. The story keeps adapter behavior local so it remains deterministic without a backend.',
       },
     },
     layout: 'fullscreen',

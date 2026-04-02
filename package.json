@@ -10,6 +10,12 @@
     "toolbar",
     "renderer"
   ],
+  "exports": {
+    ".": "./src/index.ts",
+    "./core": "./src/core/index.ts",
+    "./react": "./src/react/index.ts",
+    "./default-host": "./src/default-host/index.ts"
+  },
   "packageManager": "pnpm@10.18.3",
   "private": true,
   "scripts": {

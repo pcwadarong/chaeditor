@@ -97,7 +97,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'Standalone embed and formatting helper reference for image, file, video, link, and color workflows.',
+          'Standalone embed and formatting helper reference for image, file, video, link, and color workflows. Each flow is wired to mock host adapters so the story demonstrates integration contracts without depending on a live backend.',
       },
     },
     layout: 'fullscreen',

@@ -67,7 +67,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'Integrated authoring surface with toolbar actions, live preview, and host adapters for uploads, image rendering, and link previews.',
+          'Integrated authoring surface with toolbar actions, live preview, and mock host adapters for uploads, image rendering, and link previews. These stories intentionally stay backend-free instead of using the optional default-host network adapters.',
       },
     },
     layout: 'fullscreen',

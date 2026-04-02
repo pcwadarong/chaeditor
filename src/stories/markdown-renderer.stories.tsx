@@ -81,7 +81,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'Markdown rendering reference for custom blocks, media embeds, Mermaid diagrams, math, and host-driven link previews.',
+          'Markdown rendering reference for custom blocks, media embeds, Mermaid diagrams, math, and host-driven link previews. The renderer stories use mock adapters instead of the optional default-host HTTP adapters so the preview stays fully local.',
       },
     },
     layout: 'fullscreen',
