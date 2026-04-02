@@ -11,7 +11,6 @@ import {
   pageClass,
   panelClass,
   sampleMarkdown,
-  sectionDescriptionClass,
   sectionTitleClass,
   splitLayoutClass,
   valuePanelClass,
@@ -36,14 +35,6 @@ const MarkdownRendererReference = ({ adapters, markdown }: MarkdownRendererRefer
   return (
     <main className={pageClass}>
       <section className={panelClass}>
-        <div>
-          <h2 className={sectionTitleClass}>MarkdownRenderer</h2>
-          <p className={sectionDescriptionClass}>
-            This reference renders custom blocks, media embeds, Mermaid diagrams, and host-driven
-            link previews from one markdown source.
-          </p>
-        </div>
-
         <div className={splitLayoutClass}>
           <div className={panelClass}>
             <div className={markdownBodyClass}>
@@ -87,8 +78,15 @@ const meta = {
   },
   component: MarkdownRendererReference,
   parameters: {
+    docs: {
+      description: {
+        component:
+          'Markdown rendering reference for custom blocks, media embeds, Mermaid diagrams, math, and host-driven link previews.',
+      },
+    },
     layout: 'fullscreen',
   },
+  tags: ['autodocs'],
   title: 'Reference/MarkdownRenderer',
 } satisfies Meta<typeof MarkdownRendererReference>;
 

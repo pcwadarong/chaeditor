@@ -9,7 +9,6 @@ import {
   createStorybookAdapters,
   pageClass,
   panelClass,
-  sectionDescriptionClass,
   sectionTitleClass,
   splitLayoutClass,
   valuePanelClass,
@@ -37,14 +36,6 @@ const ToolbarReference = ({
   return (
     <main className={pageClass}>
       <section className={panelClass}>
-        <div>
-          <h2 className={sectionTitleClass}>MarkdownToolbar</h2>
-          <p className={sectionDescriptionClass}>
-            The toolbar can operate as a standalone editing control. Use the textarea below to see
-            how inserts and wrappers are applied to a host-controlled value.
-          </p>
-        </div>
-
         <div className={splitLayoutClass}>
           <div className={panelClass}>
             <MarkdownToolbar
@@ -109,8 +100,15 @@ const meta = {
   },
   component: ToolbarReference,
   parameters: {
+    docs: {
+      description: {
+        component:
+          'Standalone formatting toolbar reference with a host-controlled textarea and optional custom labels.',
+      },
+    },
     layout: 'fullscreen',
   },
+  tags: ['autodocs'],
   title: 'Reference/MarkdownToolbar',
 } satisfies Meta<typeof ToolbarReference>;
 

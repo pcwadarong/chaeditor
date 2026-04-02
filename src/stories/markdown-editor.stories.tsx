@@ -8,8 +8,6 @@ import {
   pageClass,
   panelClass,
   sampleMarkdown,
-  sectionDescriptionClass,
-  sectionTitleClass,
 } from '@/stories/storybook-fixtures';
 
 type MarkdownEditorReferenceProps = {
@@ -35,13 +33,6 @@ const MarkdownEditorReference = ({
   return (
     <main className={pageClass}>
       <section className={panelClass}>
-        <div>
-          <h2 className={sectionTitleClass}>MarkdownEditor</h2>
-          <p className={sectionDescriptionClass}>
-            This reference shows the integrated authoring surface with toolbar actions, live
-            preview, and host adapters connected to uploads, image rendering, and link previews.
-          </p>
-        </div>
         <MarkdownEditor
           adapters={adapters}
           contentType={contentType}
@@ -73,8 +64,15 @@ const meta = {
   },
   component: MarkdownEditorReference,
   parameters: {
+    docs: {
+      description: {
+        component:
+          'Integrated authoring surface with toolbar actions, live preview, and host adapters for uploads, image rendering, and link previews.',
+      },
+    },
     layout: 'fullscreen',
   },
+  tags: ['autodocs'],
   title: 'Reference/MarkdownEditor',
 } satisfies Meta<typeof MarkdownEditorReference>;
 

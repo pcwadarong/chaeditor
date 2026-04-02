@@ -45,8 +45,15 @@ const IntroPage = () => (
 const meta = {
   component: IntroPage,
   parameters: {
+    docs: {
+      description: {
+        component:
+          'Overview of the package goals, composable editor surface, and host-adapter-first integration model.',
+      },
+    },
     layout: 'fullscreen',
   },
+  tags: ['autodocs'],
   title: 'Introduction/Overview',
 } satisfies Meta<typeof IntroPage>;
 

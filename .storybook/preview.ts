@@ -3,6 +3,7 @@ import React from 'react';
 import { css } from 'styled-system/css';
 
 import '../styled-system/styles.css';
+import 'katex/dist/katex.min.css';
 
 const viewportOptions = {
   desktop: {

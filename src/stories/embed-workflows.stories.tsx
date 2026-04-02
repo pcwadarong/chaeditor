@@ -16,7 +16,6 @@ import {
   createStorybookAdapters,
   pageClass,
   panelClass,
-  sectionDescriptionClass,
   sectionTitleClass,
   valuePanelClass,
 } from '@/stories/storybook-fixtures';
@@ -36,14 +35,6 @@ const EmbedWorkflowsReference = ({ contentType }: EmbedWorkflowsReferenceProps) 
   return (
     <main className={pageClass}>
       <section className={panelClass}>
-        <div>
-          <h2 className={sectionTitleClass}>Embed workflows</h2>
-          <p className={sectionDescriptionClass}>
-            These stories focus on the standalone helper UI used by the toolbar. Each trigger writes
-            its apply payload into a small event log so host integration points stay visible.
-          </p>
-        </div>
-
         <div className={toolbarRowClass}>
           <ImageEmbedPopover
             contentType={contentType}
@@ -81,7 +72,7 @@ const EmbedWorkflowsReference = ({ contentType }: EmbedWorkflowsReferenceProps) 
               ))}
             </div>
           ) : (
-            <p className={sectionDescriptionClass}>
+            <p className={emptyStateClass}>
               Open a helper, complete the flow, and the resulting payload will appear here.
             </p>
           )}
@@ -103,8 +94,15 @@ const meta = {
   },
   component: EmbedWorkflowsReference,
   parameters: {
+    docs: {
+      description: {
+        component:
+          'Standalone embed and formatting helper reference for image, file, video, link, and color workflows.',
+      },
+    },
     layout: 'fullscreen',
   },
+  tags: ['autodocs'],
   title: 'Reference/EmbedWorkflows',
 } satisfies Meta<typeof EmbedWorkflowsReference>;
 
@@ -124,4 +122,10 @@ const toolbarRowClass = css({
 const eventListClass = css({
   display: 'grid',
   gap: '3',
+});
+
+const emptyStateClass = css({
+  fontSize: 'sm',
+  color: 'muted',
+  lineHeight: 'relaxed',
 });
