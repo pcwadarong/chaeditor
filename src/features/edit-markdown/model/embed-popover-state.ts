@@ -1,5 +1,6 @@
-import { EDITOR_ERROR_MESSAGE } from '@/entities/editor/model/editor-error';
-import type { EditorContentType } from '@/entities/editor/model/editor-types';
+import type { EditorContentType } from '@/entities/editor-core/model/content-types';
+
+const IMAGE_UPLOAD_FAILED_WITH_RETRY_MESSAGE = 'Failed to upload the image. Please try again.';
 
 type UploadEditorImageForEmbed = (input: {
   contentType: EditorContentType;
@@ -80,7 +81,7 @@ export const uploadImageEmbedSource = async ({
     });
 
     return {
-      errorMessage: EDITOR_ERROR_MESSAGE.imageUploadFailedWithRetry,
+      errorMessage: IMAGE_UPLOAD_FAILED_WITH_RETRY_MESSAGE,
       url: null,
     };
   }

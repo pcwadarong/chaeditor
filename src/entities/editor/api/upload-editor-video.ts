@@ -1,4 +1,4 @@
-import type { EditorContentType } from '@/entities/editor/model/editor-types';
+import type { EditorContentType } from '@/entities/editor-core/model/content-types';
 
 type UploadEditorVideoOptions = {
   contentType: EditorContentType;

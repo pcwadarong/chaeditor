@@ -19,9 +19,6 @@ export const EDITOR_VIDEO_FILE_INPUT_ACCEPT = [
 
 /**
  * Checks whether the file name uses an allowed video extension.
- *
- * @param fileName Original file name to validate.
- * @returns `true` when the extension is allowed.
  */
 export const isAllowedEditorVideoExtension = (fileName: string) => {
   const baseName = fileName.trim().split('/').pop()?.split('\\').pop()?.trim() ?? '';
@@ -38,9 +35,6 @@ export const isAllowedEditorVideoExtension = (fileName: string) => {
 
 /**
  * Checks whether the file matches the video upload policy.
- *
- * @param file File to validate.
- * @returns `true` when the MIME type and size are allowed.
  */
 export const isAllowedEditorVideoFile = (file: File) => {
   if (!file.name.trim() || file.size <= 0 || file.size > EDITOR_VIDEO_MAX_FILE_SIZE) {

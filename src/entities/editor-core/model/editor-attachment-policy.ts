@@ -43,9 +43,6 @@ export const EDITOR_ATTACHMENT_FILE_INPUT_ACCEPT = EDITOR_ATTACHMENT_ALLOWED_EXT
 
 /**
  * Checks whether the file name uses an allowed attachment extension.
- *
- * @param fileName Original file name to validate.
- * @returns `true` when the extension is allowed.
  */
 export const isAllowedEditorAttachmentExtension = (fileName: string) => {
   const baseName = fileName.trim().split('/').pop()?.split('\\').pop()?.trim() ?? '';
@@ -62,9 +59,6 @@ export const isAllowedEditorAttachmentExtension = (fileName: string) => {
 
 /**
  * Checks whether the file matches the attachment upload policy.
- *
- * @param file File to validate.
- * @returns `true` when the MIME type and size are allowed.
  */
 export const isAllowedEditorAttachmentFile = (file: File) => {
   if (!file.name.trim() || file.size <= 0 || file.size > EDITOR_ATTACHMENT_MAX_FILE_SIZE) {

@@ -1,4 +1,4 @@
-import type { EditorContentType } from '@/entities/editor/model/editor-types';
+import type { EditorContentType } from '@/entities/editor-core/model/content-types';
 import type { EditorImageUploadKind } from '@/shared/lib/image/image-upload-kind';
 import { optimizeContentImageFile } from '@/shared/lib/image/optimize-content-image-file';
 import { optimizeThumbnailImageFile } from '@/shared/lib/image/optimize-thumbnail-image-file';

@@ -1,5 +1,5 @@
-import type { EditorAttachment } from '@/entities/editor/model/editor-attachment';
-import type { EditorContentType } from '@/entities/editor/model/editor-types';
+import type { EditorContentType } from '@/entities/editor-core/model/content-types';
+import type { EditorAttachment } from '@/entities/editor-core/model/editor-attachment';
 
 type UploadEditorFileResponseBody = Partial<EditorAttachment> & {
   error?: string;

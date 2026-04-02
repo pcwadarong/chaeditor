@@ -1,6 +1,5 @@
 // @vitest-environment node
 
-import { EDITOR_ERROR_MESSAGE } from '@/entities/editor/model/editor-error';
 import {
   normalizeEmbedInput,
   normalizeEmbedInputList,
@@ -64,7 +63,7 @@ describe('embed-popover-state', () => {
         uploadEditorImage,
       }),
     ).resolves.toEqual({
-      errorMessage: EDITOR_ERROR_MESSAGE.imageUploadFailedWithRetry,
+      errorMessage: 'Failed to upload the image. Please try again.',
       url: null,
     });
 

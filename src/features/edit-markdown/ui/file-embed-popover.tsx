@@ -3,10 +3,12 @@
 import React, { useState } from 'react';
 import { css } from 'styled-system/css';
 
-import type { EditorAttachment } from '@/entities/editor/model/editor-attachment';
-import { EDITOR_ATTACHMENT_FILE_INPUT_ACCEPT } from '@/entities/editor/model/editor-attachment-policy';
-import type { EditorContentType } from '@/entities/editor/model/editor-types';
-import type { UploadEditorFile } from '@/entities/editor-core';
+import {
+  EDITOR_ATTACHMENT_FILE_INPUT_ACCEPT,
+  type EditorAttachment,
+  type EditorContentType,
+  type UploadEditorFile,
+} from '@/entities/editor-core';
 import { Button } from '@/shared/ui/button/button';
 import { FileIcon } from '@/shared/ui/icons/app-icons';
 import { Input } from '@/shared/ui/input/input';

@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import React from 'react';
 
-import type { EditorContentType } from '@/entities/editor/model/editor-types';
+import type { EditorContentType } from '@/entities/editor-core/model/content-types';
 import { MarkdownToolbar } from '@/react';
 import { Textarea } from '@/shared/ui/textarea/textarea';
 import {

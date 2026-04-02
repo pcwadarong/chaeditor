@@ -4,8 +4,6 @@ import React, { useMemo, useRef, useState } from 'react';
 import { MarkdownHooks } from 'react-markdown';
 import { css, cva, cx } from 'styled-system/css';
 
-import type { EditorContentType } from '@/entities/editor/model/editor-types';
-import { buildEditorLinkInsertion } from '@/entities/editor/model/markdown-link';
 import type { MarkdownEditorHostAdapters } from '@/entities/editor-core';
 import {
   applyTextareaTransform,
@@ -14,6 +12,8 @@ import {
   insertTemplate,
   outdentMarkdownList,
 } from '@/entities/editor-core';
+import type { EditorContentType } from '@/entities/editor-core/model/content-types';
+import { buildEditorLinkInsertion } from '@/entities/editor-core/model/markdown-link';
 import type { MarkdownToolbarUiRegistry } from '@/features/edit-markdown/model/markdown-toolbar.types';
 import { MarkdownToolbar } from '@/features/edit-markdown/ui/markdown-toolbar';
 import { mediaQueryDown } from '@/shared/config/breakpoints';

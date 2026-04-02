@@ -1,3 +1,17 @@
+export type { EditorContentType } from '@/entities/editor-core/model/content-types';
+export type { EditorAttachment } from '@/entities/editor-core/model/editor-attachment';
+export {
+  EDITOR_ATTACHMENT_FILE_INPUT_ACCEPT,
+  EDITOR_ATTACHMENT_MAX_FILE_SIZE,
+  isAllowedEditorAttachmentExtension,
+  isAllowedEditorAttachmentFile,
+} from '@/entities/editor-core/model/editor-attachment-policy';
+export {
+  EDITOR_VIDEO_FILE_INPUT_ACCEPT,
+  EDITOR_VIDEO_MAX_FILE_SIZE,
+  isAllowedEditorVideoExtension,
+  isAllowedEditorVideoFile,
+} from '@/entities/editor-core/model/editor-video-policy';
 export type {
   FetchLinkPreviewMeta,
   HostImageRenderer,
@@ -16,6 +30,12 @@ export {
   preprocessMarkdownInlineSyntax,
   transformMarkdownOutsideCode,
 } from '@/entities/editor-core/model/markdown-inline';
+export type { EditorLinkMode } from '@/entities/editor-core/model/markdown-link';
+export {
+  buildEditorLinkInsertion,
+  createMarkdownLink,
+  createMarkdownLinkByMode,
+} from '@/entities/editor-core/model/markdown-link';
 export type {
   MarkdownSegment,
   RichMarkdownRenderArgs,

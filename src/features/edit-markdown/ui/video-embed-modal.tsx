@@ -3,13 +3,12 @@
 import React, { useMemo, useRef, useState } from 'react';
 import { css, cx } from 'styled-system/css';
 
-import type { EditorContentType } from '@/entities/editor/model/editor-types';
+import type { EditorContentType, UploadEditorVideo } from '@/entities/editor-core';
 import {
   EDITOR_VIDEO_FILE_INPUT_ACCEPT,
   EDITOR_VIDEO_MAX_FILE_SIZE,
   isAllowedEditorVideoFile,
-} from '@/entities/editor/model/editor-video-policy';
-import type { UploadEditorVideo } from '@/entities/editor-core';
+} from '@/entities/editor-core/model/editor-video-policy';
 import { extractVideoEmbedReference } from '@/entities/editor-core/model/video-embed';
 import { Button } from '@/shared/ui/button/button';
 import { YoutubeIcon } from '@/shared/ui/icons/app-icons';
