@@ -24,6 +24,15 @@ export {
   createToolbarTokenOptions,
 } from '@/features/edit-markdown/toolbar/contracts/markdown-toolbar-composition';
 export {
+  createAlignBlockMarkdown,
+  createAttachmentEmbedMarkdown,
+  createImageEmbedMarkdown,
+  createImageEmbedMarkdownGroup,
+  createImageGalleryMarkdown,
+  createMathEmbedMarkdown,
+  createToggleBlockMarkdown,
+} from '@/features/edit-markdown/toolbar/contracts/markdown-toolbar-templates';
+export {
   createDefaultMarkdownToolbarUiRegistry,
   resolveMarkdownToolbarUiRegistry,
 } from '@/features/edit-markdown/toolbar/shell/markdown-toolbar-ui-registry';

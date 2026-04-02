@@ -70,7 +70,7 @@ describe('markdown-toolbar template helpers', () => {
 
   it('Under a selected toggle title, createToggleBlockMarkdown must include the body placeholder', () => {
     expect(createToggleBlockMarkdown(2, 'Title')).toEqual({
-      cursorOffset: 15,
+      cursorOffset: 18,
       text: ':::toggle ## Title\nContent\n:::',
     });
   });
