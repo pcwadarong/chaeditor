@@ -15,6 +15,8 @@ let uploadImageCallCount = 0;
 let uploadFileCallCount = 0;
 let uploadVideoCallCount = 0;
 
+export type StorybookAdapterMode = 'full' | 'none';
+
 /**
  * Sleeps for the given number of milliseconds.
  */
@@ -116,6 +118,19 @@ export const createStorybookAdapters = (): MarkdownEditorHostAdapters => ({
     return `${VIDEO_DEMO_URL}?v=${uploadVideoCallCount}&name=${encodeURIComponent(file.name || 'video.mp4')}`;
   },
 });
+
+/**
+ * Resolves the Storybook host adapter set for the requested reference mode.
+ */
+export const createStorybookAdapterSet = (
+  mode: StorybookAdapterMode,
+): MarkdownEditorHostAdapters | undefined => {
+  if (mode === 'none') {
+    return undefined;
+  }
+
+  return createStorybookAdapters();
+};
 
 export const sampleMarkdown = [
   '# chaeditor Reference',

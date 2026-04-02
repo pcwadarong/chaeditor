@@ -4,13 +4,15 @@ import React from 'react';
 import type { EditorContentType } from '@/entities/editor-core/model/content-types';
 import { MarkdownEditor } from '@/react';
 import {
-  createStorybookAdapters,
+  createStorybookAdapterSet,
   pageClass,
   panelClass,
   sampleMarkdown,
+  type StorybookAdapterMode,
 } from '@/stories/storybook-fixtures';
 
 type MarkdownEditorReferenceProps = {
+  adapterMode: StorybookAdapterMode;
   contentType: EditorContentType;
   initialValue: string;
   placeholder?: string;
@@ -18,13 +20,14 @@ type MarkdownEditorReferenceProps = {
 };
 
 const MarkdownEditorReference = ({
+  adapterMode,
   contentType,
   initialValue,
   placeholder,
   previewEmptyText,
 }: MarkdownEditorReferenceProps) => {
   const [value, setValue] = React.useState(initialValue);
-  const adapters = React.useMemo(() => createStorybookAdapters(), []);
+  const adapters = React.useMemo(() => createStorybookAdapterSet(adapterMode), [adapterMode]);
 
   React.useEffect(() => {
     setValue(initialValue);
@@ -48,6 +51,10 @@ const MarkdownEditorReference = ({
 
 const meta = {
   argTypes: {
+    adapterMode: {
+      control: 'inline-radio',
+      options: ['full', 'none'],
+    },
     contentType: {
       control: 'inline-radio',
       options: ['article', 'project', 'resume'],
@@ -57,6 +64,7 @@ const meta = {
     },
   },
   args: {
+    adapterMode: 'full',
     contentType: 'article',
     initialValue: sampleMarkdown,
     placeholder: 'Write markdown content',
@@ -67,7 +75,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'Integrated authoring surface with toolbar actions, live preview, and mock host adapters for uploads, image rendering, and link previews. These stories intentionally stay backend-free instead of using the optional default-host network adapters.',
+          'Integrated authoring surface reference for the editor shell. The full mode uses mock host adapters, while the core-only mode keeps the same editor surface without upload, image, or link-preview integrations.',
       },
     },
     layout: 'fullscreen',
@@ -81,3 +89,11 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
+
+export const CoreOnly: Story = {
+  args: {
+    adapterMode: 'none',
+    contentType: 'article',
+    initialValue: sampleMarkdown,
+  },
+};

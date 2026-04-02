@@ -6,28 +6,31 @@ import { MarkdownToolbar } from '@/react';
 import { Textarea } from '@/shared/ui/textarea/textarea';
 import {
   codeBlockClass,
-  createStorybookAdapters,
+  createStorybookAdapterSet,
   pageClass,
   panelClass,
   sectionTitleClass,
   splitLayoutClass,
+  type StorybookAdapterMode,
   valuePanelClass,
 } from '@/stories/storybook-fixtures';
 
 type ToolbarReferenceProps = {
+  adapterMode: StorybookAdapterMode;
   contentType: EditorContentType;
   customLabels?: boolean;
   initialValue: string;
 };
 
 const ToolbarReference = ({
+  adapterMode,
   contentType,
   customLabels = false,
   initialValue,
 }: ToolbarReferenceProps) => {
   const textareaRef = React.useRef<HTMLTextAreaElement | null>(null);
   const [value, setValue] = React.useState(initialValue);
-  const adapters = React.useMemo(() => createStorybookAdapters(), []);
+  const adapters = React.useMemo(() => createStorybookAdapterSet(adapterMode), [adapterMode]);
 
   React.useEffect(() => {
     setValue(initialValue);
@@ -85,6 +88,10 @@ const ToolbarReference = ({
 
 const meta = {
   argTypes: {
+    adapterMode: {
+      control: 'inline-radio',
+      options: ['full', 'none'],
+    },
     contentType: {
       control: 'inline-radio',
       options: ['article', 'project', 'resume'],
@@ -94,6 +101,7 @@ const meta = {
     },
   },
   args: {
+    adapterMode: 'full',
     contentType: 'article',
     customLabels: false,
     initialValue: '',
@@ -103,7 +111,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'Standalone formatting toolbar reference with a host-controlled textarea, mock host adapters, and optional custom labels. The story keeps adapter behavior local so it remains deterministic without a backend.',
+          'Standalone formatting toolbar reference for the toolbar shell. Use the adapter mode control to switch between a core-only surface and a host-enabled surface with mock upload adapters.',
       },
     },
     layout: 'fullscreen',
@@ -120,8 +128,18 @@ export const Default: Story = {};
 
 export const CustomLabels: Story = {
   args: {
+    adapterMode: 'full',
     contentType: 'article',
     customLabels: true,
+    initialValue: '',
+  },
+};
+
+export const CoreOnly: Story = {
+  args: {
+    adapterMode: 'none',
+    contentType: 'article',
+    customLabels: false,
     initialValue: '',
   },
 };
