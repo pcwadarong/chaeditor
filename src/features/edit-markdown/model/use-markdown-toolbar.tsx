@@ -292,25 +292,25 @@ export const useMarkdownToolbar = ({
   const inlineFormatActions = React.useMemo<ToolbarActionItem[]>(
     () => [
       {
-        icon: <MarkDownBoldIcon aria-hidden color="text" size="sm" />,
+        icon: <MarkDownBoldIcon aria-hidden color="current" size="sm" />,
         key: 'bold',
         label: 'Bold',
         onClick: () => applyWrap('**', '**', 'Bold'),
       },
       {
-        icon: <MarkDownItalicIcon aria-hidden color="text" size="sm" />,
+        icon: <MarkDownItalicIcon aria-hidden color="current" size="sm" />,
         key: 'italic',
         label: 'Italic',
         onClick: () => applyWrap('*', '*', 'Italic'),
       },
       {
-        icon: <MarkDownStrikeIcon aria-hidden color="text" size="sm" />,
+        icon: <MarkDownStrikeIcon aria-hidden color="current" size="sm" />,
         key: 'strike',
         label: 'Strikethrough',
         onClick: () => applyWrap('~~', '~~', 'Strikethrough'),
       },
       {
-        icon: <MarkDownUnderlineIcon aria-hidden color="text" size="sm" />,
+        icon: <MarkDownUnderlineIcon aria-hidden color="current" size="sm" />,
         key: 'underline',
         label: 'Underline',
         onClick: () => applyWrap('<u>', '</u>', 'Underline'),
@@ -322,7 +322,7 @@ export const useMarkdownToolbar = ({
   const textStructureActions = React.useMemo<ToolbarActionItem[]>(
     () => [
       {
-        icon: <SubtextIcon aria-hidden color="text" size="sm" />,
+        icon: <SubtextIcon aria-hidden color="current" size="sm" />,
         key: 'subtext',
         label: 'Subtext',
         onClick: () => applyPrefix('-# '),
@@ -334,31 +334,31 @@ export const useMarkdownToolbar = ({
   const blockSyntaxActions = React.useMemo<ToolbarActionItem[]>(
     () => [
       {
-        icon: <DashIcon aria-hidden color="text" size="sm" />,
+        icon: <DashIcon aria-hidden color="current" size="sm" />,
         key: 'horizontal-rule',
         label: 'Divider',
         onClick: () => applyTemplate('\n---\n'),
       },
       {
-        icon: <QuoteIcon aria-hidden color="text" size="sm" />,
+        icon: <QuoteIcon aria-hidden color="current" size="sm" />,
         key: 'quote',
         label: 'Quote',
         onClick: () => applyPrefix('> '),
       },
       {
-        icon: <CodeBlockIcon aria-hidden color="text" size="sm" />,
+        icon: <CodeBlockIcon aria-hidden color="current" size="sm" />,
         key: 'code-block',
         label: 'Code block',
         onClick: () => applyWrap('```ts\n', '\n```', 'Enter code here'),
       },
       {
-        icon: <TableIcon aria-hidden color="text" size="sm" />,
+        icon: <TableIcon aria-hidden color="current" size="sm" />,
         key: 'table',
         label: 'Table',
         onClick: () => applyTemplate(tableTemplate, 2),
       },
       {
-        icon: <SpoilerIcon aria-hidden color="text" size="sm" />,
+        icon: <SpoilerIcon aria-hidden color="current" size="sm" />,
         key: 'spoiler',
         label: 'Spoiler',
         onClick: () => applyWrap('||', '||', 'Spoiler'),
