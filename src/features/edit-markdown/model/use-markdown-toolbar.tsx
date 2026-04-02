@@ -2,8 +2,8 @@
 
 import React from 'react';
 
-import type { EditorAttachment } from '@/entities/editor/model/editor-attachment';
-import { createMarkdownLinkByMode } from '@/entities/editor/model/markdown-link';
+import type { EditorAttachment } from '@/entities/editor-core';
+import { createMarkdownLinkByMode } from '@/entities/editor-core';
 import {
   createAlignBlockMarkdown,
   createAttachmentEmbedMarkdown,
@@ -24,7 +24,7 @@ import {
 import type {
   AlignPopoverRenderProps,
   FileEmbedPopoverRenderProps,
-  ImageEmbedPopoverRenderProps,
+  ImageEmbedModalRenderProps,
   LinkEmbedPopoverRenderProps,
   LinkMode,
   MarkdownToolbarPresetItemKey,
@@ -467,14 +467,14 @@ export const useMarkdownToolbar = ({
       ),
       createToolbarCustomItem(
         'image-embed',
-        toolbarUiRegistry.renderImageEmbedPopover({
+        toolbarUiRegistry.renderImageEmbedModal({
           contentType,
           onApply: handleImageApply,
           renderImage: adapters?.renderImage,
           onUploadImage: adapters?.uploadImage,
           onTriggerMouseDown: event => event.preventDefault(),
           triggerClassName: popoverTriggerClassName,
-        } satisfies ImageEmbedPopoverRenderProps),
+        } satisfies ImageEmbedModalRenderProps),
       ),
       createToolbarCustomItem(
         'link-embed',

@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import React from 'react';
 
-import { ImageEmbedPopover } from '@/features/edit-markdown/ui/image-embed-popover';
+import { ImageEmbedModal } from '@/features/edit-markdown/ui/image-embed-modal';
 
 vi.mock('@/shared/ui/modal/modal', () => ({
   Modal: ({
@@ -27,9 +27,7 @@ const renderImageModal = ({
   onApply?: ReturnType<typeof vi.fn>;
   onUploadImage?: ReturnType<typeof vi.fn>;
 } = {}) => {
-  render(
-    <ImageEmbedPopover contentType="article" onApply={onApply} onUploadImage={onUploadImage} />,
-  );
+  render(<ImageEmbedModal contentType="article" onApply={onApply} onUploadImage={onUploadImage} />);
   fireEvent.click(screen.getByRole('button', { name: 'Image' }));
 
   return {
@@ -51,13 +49,13 @@ const addUrls = async (dialog: HTMLElement, urls: string[]) => {
   fireEvent.click(within(dialog).getByRole('button', { name: 'Add' }));
 };
 
-describe('ImageEmbedPopover', () => {
+describe('ImageEmbedModal', () => {
   afterEach(() => {
     vi.clearAllMocks();
   });
 
-  it('Under trigger hover and focus, ImageEmbedPopover must close the tooltip immediately when opening the modal', async () => {
-    render(<ImageEmbedPopover contentType="article" onApply={vi.fn()} />);
+  it('Under trigger hover and focus, ImageEmbedModal must close the tooltip immediately when opening the modal', async () => {
+    render(<ImageEmbedModal contentType="article" onApply={vi.fn()} />);
     const trigger = screen.getByRole('button', { name: 'Image' });
     fireEvent.mouseEnter(trigger);
     expect(await screen.findByRole('tooltip')).toBeTruthy();
@@ -69,7 +67,7 @@ describe('ImageEmbedPopover', () => {
     });
   });
 
-  it('Under the initial state, ImageEmbedPopover must render only the dropzone and the default URL input', () => {
+  it('Under the initial state, ImageEmbedModal must render only the dropzone and the default URL input', () => {
     const { dialog } = renderImageModal();
 
     expect(within(dialog).getByText('Drop images here.')).toBeTruthy();
@@ -81,7 +79,7 @@ describe('ImageEmbedPopover', () => {
     ).toBeNull();
   });
 
-  it('Under a file drop on the initial dropzone, ImageEmbedPopover must render the edit layout and top actions', async () => {
+  it('Under a file drop on the initial dropzone, ImageEmbedModal must render the edit layout and top actions', async () => {
     const { dialog, onUploadImage } = renderImageModal({
       onUploadImage: vi.fn().mockResolvedValue('https://cdn.example.com/dropped.png'),
     });
@@ -106,7 +104,7 @@ describe('ImageEmbedPopover', () => {
     expect(within(dialog).getByLabelText('Upload selected image')).toBeTruthy();
   });
 
-  it('Under multiline URL input, ImageEmbedPopover must create edit-state rows', async () => {
+  it('Under multiline URL input, ImageEmbedModal must create edit-state rows', async () => {
     const { dialog } = renderImageModal();
 
     await addUrls(dialog, ['https://example.com/one.png', 'https://example.com/two.png']);
@@ -117,7 +115,7 @@ describe('ImageEmbedPopover', () => {
     );
   });
 
-  it('Under individual image insertion, ImageEmbedPopover must pass the edited image list payload', async () => {
+  it('Under individual image insertion, ImageEmbedModal must pass the edited image list payload', async () => {
     const { dialog, onApply } = renderImageModal();
 
     await addUrls(dialog, ['https://example.com/one.png', 'https://example.com/two.png']);
@@ -146,7 +144,7 @@ describe('ImageEmbedPopover', () => {
     });
   });
 
-  it('Under only one valid image, ImageEmbedPopover must disable the gallery insert button', async () => {
+  it('Under only one valid image, ImageEmbedModal must disable the gallery insert button', async () => {
     const { dialog } = renderImageModal();
 
     await addUrls(dialog, ['https://example.com/one.png']);
@@ -160,7 +158,7 @@ describe('ImageEmbedPopover', () => {
     ).toBe(true);
   });
 
-  it('Under mixed uploads and URL additions, ImageEmbedPopover must merge them into a single insert flow', async () => {
+  it('Under mixed uploads and URL additions, ImageEmbedModal must merge them into a single insert flow', async () => {
     const onUploadImage = vi.fn().mockResolvedValue('https://cdn.example.com/uploaded.png');
     const { dialog, onApply } = renderImageModal({ onUploadImage });
 

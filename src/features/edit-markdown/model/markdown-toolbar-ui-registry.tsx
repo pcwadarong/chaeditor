@@ -5,7 +5,7 @@ import React from 'react';
 import type {
   AlignPopoverRenderProps,
   FileEmbedPopoverRenderProps,
-  ImageEmbedPopoverRenderProps,
+  ImageEmbedModalRenderProps,
   LinkEmbedPopoverRenderProps,
   MarkdownToolbarPopoverRegistry,
   MarkdownToolbarUiRegistry,
@@ -15,7 +15,7 @@ import type {
 } from '@/features/edit-markdown/model/markdown-toolbar.types';
 import { AlignPopover } from '@/features/edit-markdown/ui/align-popover';
 import { FileEmbedPopover } from '@/features/edit-markdown/ui/file-embed-popover';
-import { ImageEmbedPopover } from '@/features/edit-markdown/ui/image-embed-popover';
+import { ImageEmbedModal } from '@/features/edit-markdown/ui/image-embed-modal';
 import { LinkEmbedPopover } from '@/features/edit-markdown/ui/link-embed-popover';
 import { MathEmbedPopover } from '@/features/edit-markdown/ui/math-embed-popover';
 import { TextBackgroundColorPopover } from '@/features/edit-markdown/ui/text-background-color-popover';
@@ -30,7 +30,7 @@ type ResolvedMarkdownToolbarUiRegistry = {
   renderHeadingPopover: (
     props: React.ComponentProps<typeof ToolbarTokenPopover>,
   ) => React.ReactNode;
-  renderImageEmbedPopover: (props: ImageEmbedPopoverRenderProps) => React.ReactNode;
+  renderImageEmbedModal: (props: ImageEmbedModalRenderProps) => React.ReactNode;
   renderLinkEmbedPopover: (props: LinkEmbedPopoverRenderProps) => React.ReactNode;
   renderMathEmbedPopover: (props: MathEmbedPopoverRenderProps) => React.ReactNode;
   renderTextColorPopover: (props: TextColorPopoverRenderProps) => React.ReactNode;
@@ -46,7 +46,7 @@ export const createDefaultMarkdownToolbarUiRegistry = (): MarkdownToolbarPopover
   backgroundColorPopover: props => <TextBackgroundColorPopover {...props} />,
   fileEmbedPopover: props => <FileEmbedPopover {...props} />,
   headingPopover: props => <ToolbarTokenPopover {...props} />,
-  imageEmbedPopover: props => <ImageEmbedPopover {...props} />,
+  imageEmbedModal: props => <ImageEmbedModal {...props} />,
   linkEmbedPopover: props => <LinkEmbedPopover {...props} />,
   mathEmbedPopover: props => <MathEmbedPopover {...props} />,
   textColorPopover: props => <TextColorPopover {...props} />,
@@ -72,8 +72,8 @@ export const resolveMarkdownToolbarUiRegistry = (
       (hostRegistry?.fileEmbedPopover ?? defaultRegistry.fileEmbedPopover)?.(props),
     renderHeadingPopover: props =>
       (hostRegistry?.headingPopover ?? defaultRegistry.headingPopover)?.(props),
-    renderImageEmbedPopover: props =>
-      (hostRegistry?.imageEmbedPopover ?? defaultRegistry.imageEmbedPopover)?.(props),
+    renderImageEmbedModal: props =>
+      (hostRegistry?.imageEmbedModal ?? defaultRegistry.imageEmbedModal)?.(props),
     renderLinkEmbedPopover: props =>
       (hostRegistry?.linkEmbedPopover ?? defaultRegistry.linkEmbedPopover)?.(props),
     renderMathEmbedPopover: props =>

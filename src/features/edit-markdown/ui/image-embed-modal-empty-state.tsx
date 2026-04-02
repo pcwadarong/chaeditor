@@ -7,7 +7,7 @@ import { Button } from '@/shared/ui/button/button';
 import { ImageIcon } from '@/shared/ui/icons/app-icons';
 import { Textarea } from '@/shared/ui/textarea/textarea';
 
-type ImageEmbedPopoverEmptyStateProps = {
+type ImageEmbedModalEmptyStateProps = {
   acceptedFileTypes: string;
   canAddRow: boolean;
   errorMessage: string | null;
@@ -31,7 +31,7 @@ type ImageEmbedPopoverEmptyStateProps = {
  * @param props Props required to render and control the empty state.
  * @returns The empty-state UI for image insertion.
  */
-export const ImageEmbedPopoverEmptyState = ({
+export const ImageEmbedModalEmptyState = ({
   acceptedFileTypes,
   canAddRow,
   errorMessage,
@@ -47,7 +47,7 @@ export const ImageEmbedPopoverEmptyState = ({
   pendingUrls,
   urlAddDisabled,
   urlInputRef,
-}: ImageEmbedPopoverEmptyStateProps) => (
+}: ImageEmbedModalEmptyStateProps) => (
   <section className={emptyStateLayoutClass}>
     <label
       className={cx(emptyStateClass, isDragActive ? emptyStateActiveClass : undefined)}

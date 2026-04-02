@@ -2,10 +2,10 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import React from 'react';
 import { css } from 'styled-system/css';
 
-import type { EditorContentType } from '@/entities/editor/model/editor-types';
+import type { EditorContentType } from '@/entities/editor-core/model/content-types';
 import {
   FileEmbedPopover,
-  ImageEmbedPopover,
+  ImageEmbedModal,
   LinkEmbedPopover,
   TextBackgroundColorPopover,
   TextColorPopover,
@@ -36,9 +36,9 @@ const EmbedWorkflowsReference = ({ contentType }: EmbedWorkflowsReferenceProps) 
     <main className={pageClass}>
       <section className={panelClass}>
         <div className={toolbarRowClass}>
-          <ImageEmbedPopover
+          <ImageEmbedModal
             contentType={contentType}
-            onApply={payload => appendEvent('ImageEmbedPopover', payload)}
+            onApply={payload => appendEvent('ImageEmbedModal', payload)}
             onUploadImage={adapters.uploadImage}
             renderImage={adapters.renderImage}
           />

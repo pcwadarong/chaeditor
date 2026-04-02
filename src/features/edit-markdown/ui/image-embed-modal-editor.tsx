@@ -8,13 +8,13 @@ import { normalizeEmbedInput } from '@/features/edit-markdown/model/embed-popove
 import type {
   FilledImageRow,
   ImageInputRow,
-} from '@/features/edit-markdown/model/image-embed-popover-state';
+} from '@/features/edit-markdown/model/image-embed-modal-state';
 import { Button } from '@/shared/ui/button/button';
 import { ArrowUpIcon, TrashIcon } from '@/shared/ui/icons/app-icons';
 import { RenderImage } from '@/shared/ui/image/render-image';
 import { Input } from '@/shared/ui/input/input';
 
-type ImageEmbedPopoverEditorProps = {
+type ImageEmbedModalEditorProps = {
   duplicateRowIds: Set<string>;
   errorMessage: string | null;
   filledRows: FilledImageRow[];
@@ -41,7 +41,7 @@ type ImageEmbedPopoverEditorProps = {
  * @param props Props required to render and control the editing state.
  * @returns Image list, preview, and detail fields.
  */
-export const ImageEmbedPopoverEditor = ({
+export const ImageEmbedModalEditor = ({
   duplicateRowIds,
   errorMessage,
   filledRows,
@@ -60,7 +60,7 @@ export const ImageEmbedPopoverEditor = ({
   selectedRow,
   selectedUrlInputRef,
   uploadAccept,
-}: ImageEmbedPopoverEditorProps) => (
+}: ImageEmbedModalEditorProps) => (
   <div className={editorLayoutClass}>
     <div className={bodyClass}>
       <aside className={sidebarClass}>

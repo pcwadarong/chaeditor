@@ -3,8 +3,8 @@
 import React, { useMemo, useRef, useState } from 'react';
 import { css, cx } from 'styled-system/css';
 
-import type { EditorContentType } from '@/entities/editor/model/editor-types';
 import type { HostImageRenderer, UploadEditorImage } from '@/entities/editor-core';
+import type { EditorContentType } from '@/entities/editor-core/model/content-types';
 import {
   normalizeEmbedInput,
   normalizeEmbedInputList,
@@ -21,9 +21,9 @@ import {
   mergeImageRows,
   reorderRows,
   resolvePreviewImageSrc,
-} from '@/features/edit-markdown/model/image-embed-popover-state';
-import { ImageEmbedPopoverEditor } from '@/features/edit-markdown/ui/image-embed-popover-editor';
-import { ImageEmbedPopoverEmptyState } from '@/features/edit-markdown/ui/image-embed-popover-empty-state';
+} from '@/features/edit-markdown/model/image-embed-modal-state';
+import { ImageEmbedModalEditor } from '@/features/edit-markdown/ui/image-embed-modal-editor';
+import { ImageEmbedModalEmptyState } from '@/features/edit-markdown/ui/image-embed-modal-empty-state';
 import { Button } from '@/shared/ui/button/button';
 import { ImageIcon } from '@/shared/ui/icons/app-icons';
 import { Modal } from '@/shared/ui/modal/modal';
@@ -31,7 +31,7 @@ import type { ClosePopover } from '@/shared/ui/popover/popover';
 import { Textarea } from '@/shared/ui/textarea/textarea';
 import { Tooltip } from '@/shared/ui/tooltip/tooltip';
 
-type ImageEmbedPopoverProps = {
+type ImageEmbedModalProps = {
   contentType: EditorContentType;
   onApply: (
     payload: {
@@ -55,14 +55,14 @@ type ImageEmbedPopoverProps = {
  * @param props Image modal props.
  * @returns The trigger button and modal UI.
  */
-export const ImageEmbedPopover = ({
+export const ImageEmbedModal = ({
   contentType,
   onApply,
   onUploadImage,
   renderImage,
   onTriggerMouseDown,
   triggerClassName,
-}: ImageEmbedPopoverProps) => {
+}: ImageEmbedModalProps) => {
   const nextRowIdRef = useRef(0);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
   const emptyStateUrlInputRef = useRef<HTMLTextAreaElement | null>(null);
@@ -398,7 +398,7 @@ export const ImageEmbedPopover = ({
 
           <div className={modalScrollableContentClass}>
             {isEmptyState ? (
-              <ImageEmbedPopoverEmptyState
+              <ImageEmbedModalEmptyState
                 acceptedFileTypes={ACCEPTED_IMAGE_FILE_TYPES}
                 canAddRow={canAddRow}
                 errorMessage={errorMessage}
@@ -453,7 +453,7 @@ export const ImageEmbedPopover = ({
                     </div>
                   </section>
                 ) : null}
-                <ImageEmbedPopoverEditor
+                <ImageEmbedModalEditor
                   duplicateRowIds={duplicateRowIds}
                   errorMessage={errorMessage}
                   filledRows={filledRows}

@@ -6,9 +6,9 @@ import {
   mergeImageRows,
   reorderRows,
   resolvePreviewImageSrc,
-} from '@/features/edit-markdown/model/image-embed-popover-state';
+} from '@/features/edit-markdown/model/image-embed-modal-state';
 
-describe('image-embed-popover-state', () => {
+describe('image-embed-modal-state', () => {
   it('Under rows with valid URLs, getFilledImageRows must return only insertable image items', () => {
     expect(
       getFilledImageRows([

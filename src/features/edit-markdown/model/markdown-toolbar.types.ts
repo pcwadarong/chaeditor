@@ -1,8 +1,10 @@
 import type React from 'react';
 
-import type { EditorAttachment } from '@/entities/editor/model/editor-attachment';
-import type { EditorContentType } from '@/entities/editor/model/editor-types';
-import type { MarkdownEditorHostAdapters } from '@/entities/editor-core';
+import type {
+  EditorAttachment,
+  EditorContentType,
+  MarkdownEditorHostAdapters,
+} from '@/entities/editor-core';
 import type {
   MarkdownToolbarPresetItemKey,
   MarkdownToolbarSectionKey,
@@ -50,7 +52,7 @@ export type MarkdownToolbarPopoverRegistry = {
   backgroundColorPopover?: (props: TextColorPopoverRenderProps) => React.ReactNode;
   fileEmbedPopover?: (props: FileEmbedPopoverRenderProps) => React.ReactNode;
   headingPopover?: (props: ToolbarTokenPopoverProps) => React.ReactNode;
-  imageEmbedPopover?: (props: ImageEmbedPopoverRenderProps) => React.ReactNode;
+  imageEmbedModal?: (props: ImageEmbedModalRenderProps) => React.ReactNode;
   linkEmbedPopover?: (props: LinkEmbedPopoverRenderProps) => React.ReactNode;
   mathEmbedPopover?: (props: MathEmbedPopoverRenderProps) => React.ReactNode;
   textColorPopover?: (props: TextColorPopoverRenderProps) => React.ReactNode;
@@ -100,7 +102,7 @@ export type FileEmbedPopoverRenderProps = {
   triggerClassName?: string;
 };
 
-export type ImageEmbedPopoverRenderProps = {
+export type ImageEmbedModalRenderProps = {
   contentType: EditorContentType;
   onApply: (
     payload: {

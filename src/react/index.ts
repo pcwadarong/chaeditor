@@ -2,7 +2,7 @@ export { MarkdownToolbar } from '@/features/edit-markdown';
 export type {
   AlignPopoverRenderProps,
   FileEmbedPopoverRenderProps,
-  ImageEmbedPopoverRenderProps,
+  ImageEmbedModalRenderProps,
   LinkEmbedPopoverRenderProps,
   MarkdownToolbarPopoverRegistry,
   MarkdownToolbarProps,
@@ -20,7 +20,7 @@ export {
   resolveMarkdownToolbarUiRegistry,
 } from '@/features/edit-markdown/model/markdown-toolbar-ui-registry';
 export { FileEmbedPopover } from '@/features/edit-markdown/ui/file-embed-popover';
-export { ImageEmbedPopover } from '@/features/edit-markdown/ui/image-embed-popover';
+export { ImageEmbedModal } from '@/features/edit-markdown/ui/image-embed-modal';
 export { LinkEmbedPopover } from '@/features/edit-markdown/ui/link-embed-popover';
 export { TextBackgroundColorPopover } from '@/features/edit-markdown/ui/text-background-color-popover';
 export { TextColorPopover } from '@/features/edit-markdown/ui/text-color-popover';
