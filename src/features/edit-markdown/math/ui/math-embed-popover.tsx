@@ -3,12 +3,13 @@
 import React, { useLayoutEffect, useRef, useState } from 'react';
 import { css } from 'styled-system/css';
 
+import type { MathEmbedApplyPayload } from '@/features/edit-markdown/math/model/math-embed';
 import { Button } from '@/shared/ui/button/button';
 import { type ClosePopover, Popover } from '@/shared/ui/popover/popover';
 import { Textarea } from '@/shared/ui/textarea/textarea';
 
 type MathEmbedPopoverProps = {
-  onApply: (formula: string, isBlock: boolean, closePopover?: ClosePopover) => void;
+  onApply: (payload: MathEmbedApplyPayload, closePopover?: ClosePopover) => void;
   onTriggerMouseDown?: React.MouseEventHandler<HTMLButtonElement>;
   triggerClassName?: string;
 };
@@ -125,7 +126,13 @@ export const MathEmbedPopover = ({
     const normalizedInput = mathInput.trim();
     if (!normalizedInput) return;
 
-    onApply(normalizedInput, isBlock, closePopover);
+    onApply(
+      {
+        formula: normalizedInput,
+        isBlock,
+      },
+      closePopover,
+    );
     setMathInput('');
   };
 

@@ -2,7 +2,6 @@
 
 import React from 'react';
 
-import type { EditorAttachment } from '@/entities/editor-core';
 import { createMarkdownLinkByMode } from '@/entities/editor-core';
 import {
   createAlignBlockMarkdown,
@@ -21,8 +20,10 @@ import {
   toggleHeadingLine,
   wrapSelection,
 } from '@/entities/editor-core/model/selection-utils';
+import type { FileEmbedApplyPayload } from '@/features/edit-markdown/file';
 import type { ImageEmbedApplyPayload } from '@/features/edit-markdown/image';
 import type { LinkEmbedMode } from '@/features/edit-markdown/link';
+import type { MathEmbedApplyPayload } from '@/features/edit-markdown/math';
 import type {
   AlignPopoverRenderProps,
   FileEmbedPopoverRenderProps,
@@ -44,6 +45,7 @@ import {
   createToolbarTokenOptions,
 } from '@/features/edit-markdown/model/markdown-toolbar-composition';
 import { resolveMarkdownToolbarUiRegistry } from '@/features/edit-markdown/model/markdown-toolbar-ui-registry';
+import type { VideoEmbedApplyPayload } from '@/features/edit-markdown/video';
 import {
   CodeBlockIcon,
   DashIcon,
@@ -193,7 +195,7 @@ export const useMarkdownToolbar = ({
   );
 
   const handleAttachmentApply = React.useCallback(
-    (attachment: EditorAttachment, closePopover?: ClosePopover) => {
+    (attachment: FileEmbedApplyPayload, closePopover?: ClosePopover) => {
       applyTemplate(createAttachmentEmbedMarkdown(attachment));
       closePopover?.({ restoreFocus: false });
     },
@@ -201,11 +203,11 @@ export const useMarkdownToolbar = ({
   );
 
   const handleMathApply = React.useCallback(
-    (formula: string, isBlock: boolean, closePopover?: ClosePopover) => {
+    (payload: MathEmbedApplyPayload, closePopover?: ClosePopover) => {
       applyTemplate(
         createMathEmbedMarkdown({
-          formula,
-          isBlock,
+          formula: payload.formula,
+          isBlock: payload.isBlock,
         }),
       );
       closePopover?.({ restoreFocus: false });
@@ -230,14 +232,7 @@ export const useMarkdownToolbar = ({
   );
 
   const handleVideoApply = React.useCallback(
-    (
-      payload: {
-        provider: 'upload' | 'youtube';
-        src?: string;
-        videoId?: string;
-      },
-      closePopover?: ClosePopover,
-    ) => {
+    (payload: VideoEmbedApplyPayload, closePopover?: ClosePopover) => {
       if (payload.provider === 'upload') {
         if (!payload.src) return;
 

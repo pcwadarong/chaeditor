@@ -9,7 +9,8 @@ import {
   EDITOR_VIDEO_MAX_FILE_SIZE,
   isAllowedEditorVideoFile,
 } from '@/entities/editor-core/model/editor-video-policy';
-import { extractVideoEmbedReference } from '@/entities/editor-core/model/video-embed';
+import type { VideoEmbedApplyPayload } from '@/features/edit-markdown/video';
+import { extractVideoEmbedReference } from '@/features/edit-markdown/video';
 import { Button } from '@/shared/ui/button/button';
 import { YoutubeIcon } from '@/shared/ui/icons/app-icons';
 import { Input } from '@/shared/ui/input/input';
@@ -19,14 +20,7 @@ import { Tooltip } from '@/shared/ui/tooltip/tooltip';
 
 type VideoEmbedModalProps = {
   contentType: EditorContentType;
-  onApply: (
-    payload: {
-      provider: 'upload' | 'youtube';
-      src?: string;
-      videoId?: string;
-    },
-    closePopover?: ClosePopover,
-  ) => void;
+  onApply: (payload: VideoEmbedApplyPayload, closePopover?: ClosePopover) => void;
   onUploadVideo?: UploadEditorVideo;
   onTriggerMouseDown?: React.MouseEventHandler<HTMLButtonElement>;
   triggerClassName?: string;

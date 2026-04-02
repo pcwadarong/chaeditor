@@ -7,6 +7,15 @@ export type {
   VideoProvider,
   YoutubeVideoEmbedReference,
 } from '@/entities/editor-core/model/video-embed';
+export type VideoEmbedApplyPayload =
+  | {
+      provider: 'upload';
+      src?: string;
+    }
+  | {
+      provider: 'youtube';
+      videoId?: string;
+    };
 export {
   createUploadedVideoEmbedMarkdown,
   createVideoEmbedMarkdown,

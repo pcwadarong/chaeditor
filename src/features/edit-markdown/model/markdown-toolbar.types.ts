@@ -1,21 +1,20 @@
 import type React from 'react';
 
-import type {
-  EditorAttachment,
-  EditorContentType,
-  MarkdownEditorHostAdapters,
-} from '@/entities/editor-core';
+import type { EditorContentType, MarkdownEditorHostAdapters } from '@/entities/editor-core';
 import type {
   MarkdownToolbarPresetItemKey,
   MarkdownToolbarSectionKey,
 } from '@/entities/editor-core/model/toolbar-preset';
+import type { FileEmbedApplyPayload } from '@/features/edit-markdown/file';
 import type { ColorStylePopoverLabels } from '@/features/edit-markdown/formatting';
 import type { ImageEmbedApplyPayload } from '@/features/edit-markdown/image';
 import type { LinkEmbedMode, LinkEmbedPopoverLabels } from '@/features/edit-markdown/link';
+import type { MathEmbedApplyPayload } from '@/features/edit-markdown/math';
 import type {
   ToolbarTokenPopoverLabels,
   ToolbarTokenPopoverProps,
 } from '@/features/edit-markdown/toolbar';
+import type { VideoEmbedApplyPayload } from '@/features/edit-markdown/video';
 import type { ClosePopover } from '@/shared/ui/popover/popover';
 
 /**
@@ -117,7 +116,7 @@ export type AlignPopoverRenderProps = {
  */
 export type MathEmbedPopoverRenderProps = {
   /** Inserts the provided math formula into the editor. */
-  onApply: (formula: string, isBlock: boolean, closePopover?: ClosePopover) => void;
+  onApply: (payload: MathEmbedApplyPayload, closePopover?: ClosePopover) => void;
   onTriggerMouseDown?: React.MouseEventHandler<HTMLButtonElement>;
   triggerClassName?: string;
 };
@@ -140,7 +139,7 @@ export type FileEmbedPopoverRenderProps = {
   /** Current editor content type forwarded to the upload adapter. */
   contentType: EditorContentType;
   /** Inserts the uploaded attachment into the editor. */
-  onApply: (attachment: EditorAttachment, closePopover?: ClosePopover) => void;
+  onApply: (attachment: FileEmbedApplyPayload, closePopover?: ClosePopover) => void;
   onTriggerMouseDown?: React.MouseEventHandler<HTMLButtonElement>;
   /** Optional upload adapter. When omitted, upload-specific actions should be disabled. */
   onUploadFile?: MarkdownEditorHostAdapters['uploadFile'];
@@ -170,14 +169,7 @@ export type VideoEmbedModalRenderProps = {
   /** Current editor content type forwarded to the upload adapter. */
   contentType: EditorContentType;
   /** Inserts either an uploaded video or a YouTube reference into the editor. */
-  onApply: (
-    payload: {
-      provider: 'upload' | 'youtube';
-      src?: string;
-      videoId?: string;
-    },
-    closePopover?: ClosePopover,
-  ) => void;
+  onApply: (payload: VideoEmbedApplyPayload, closePopover?: ClosePopover) => void;
   onTriggerMouseDown?: React.MouseEventHandler<HTMLButtonElement>;
   /** Optional upload adapter. When omitted, upload-specific actions should be disabled. */
   onUploadVideo?: MarkdownEditorHostAdapters['uploadVideo'];
