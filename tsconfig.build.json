@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "incremental": false,
+    "jsx": "react-jsx",
+    "noEmit": false,
+    "plugins": [],
+    "types": ["node", "react", "react-dom"]
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.d.ts", "styled-system/**/*.d.ts"],
+  "exclude": ["node_modules", "dist", "storybook-static"]
+}

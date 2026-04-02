@@ -3,12 +3,12 @@
 commit_msg=$(cat "$1")
 
 case "$commit_msg" in
-  "✨ feat:"*|"🐛 fix:"*|"♻️ refactor:"*|"💄 style:"*|"📝 docs:"*|"🔧 chore:"*|"🔥 remove:"*|"🧪 test:"*|"⚡ perf"*|"⚙️ ci:"*|"🧹 lint:"*|"Merge"*)
+  "✨ feat:"*|"🐛 fix:"*|"♻️ refactor:"*|"💄 style:"*|"📝 docs:"*|"🔧 chore:"*|"🔥 remove:"*|"🧪 test:"*|"⚡ perf"*|"🚀 deploy:"*|"⚙️ ci:"*|"🧹 lint:"*|"Merge"*)
     exit 0
     ;;
   *)
     echo "❌ Commit message must start with an allowed type."
-    echo "Allowed types: ✨ feat:, 🐛 fix:, ♻️ refactor:, 💄 style:, 📝 docs:, 🔧 chore:, 🔥 remove:, 🧪 test:, ⚙️ ci:, 🧹 lint:, Merge"
+    echo "Allowed types: ✨ feat:, 🐛 fix:, ♻️ refactor:, 💄 style:, 📝 docs:, 🚀 deploy:, 🔧 chore:, 🔥 remove:, 🧪 test:, ⚙️ ci:, 🧹 lint:, Merge"
     echo "Example: ✨ feat: add markdown toolbar preset registry"
     exit 1
     ;;

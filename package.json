@@ -10,20 +10,48 @@
     "toolbar",
     "renderer"
   ],
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
   "exports": {
-    ".": "./src/index.ts",
-    "./core": "./src/core/index.ts",
-    "./react": "./src/react/index.ts",
-    "./default-host": "./src/default-host/index.ts"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    },
+    "./core": {
+      "types": "./dist/core.d.ts",
+      "import": "./dist/core.mjs",
+      "require": "./dist/core.cjs"
+    },
+    "./react": {
+      "types": "./dist/react.d.ts",
+      "import": "./dist/react.mjs",
+      "require": "./dist/react.cjs"
+    },
+    "./default-host": {
+      "types": "./dist/default-host.d.ts",
+      "import": "./dist/default-host.mjs",
+      "require": "./dist/default-host.cjs"
+    },
+    "./styles.css": "./styled-system/styles.css",
+    "./package.json": "./package.json"
   },
   "packageManager": "pnpm@10.18.3",
-  "private": true,
+  "files": [
+    "dist",
+    "styled-system/styles.css",
+    "README.md"
+  ],
   "scripts": {
+    "build": "pnpm run clean && tsup",
+    "clean": "rm -rf dist",
     "commit": "cz",
     "format": "prettier --check .",
     "format:write": "prettier --write .",
     "lint": "eslint .",
     "postinstall": "husky",
+    "prepack": "pnpm run prepare && pnpm run build",
     "prepare": "panda codegen && panda cssgen --outfile styled-system/styles.css",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -33,6 +61,12 @@
     "chromatic": "npx chromatic --project-token=chpt_e7dfd62937e7687"
   },
   "version": "0.0.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "sideEffects": [
+    "./styled-system/styles.css"
+  ],
   "config": {
     "commitizen": {
       "path": "cz-customizable",
@@ -42,15 +76,16 @@
   "dependencies": {
     "katex": "^0.16.44",
     "mermaid": "^11.13.0",
-    "next": "^15.5.3",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1",
     "react-markdown": "^10.1.0",
     "rehype-pretty-code": "^0.14.3",
     "remark-breaks": "^4.0.0",
     "remark-gfm": "^4.0.1",
     "shiki": "^4.0.1",
     "zod": "^4.3.6"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",
@@ -67,6 +102,7 @@
     "chromatic": "^16.0.0",
     "commitizen": "^4.3.1",
     "cz-customizable": "^7.5.1",
+    "esbuild": "^0.27.4",
     "eslint": "^9.35.0",
     "eslint-config-next": "^15.5.3",
     "eslint-config-prettier": "^10.1.8",
@@ -77,8 +113,10 @@
     "husky": "^9.1.7",
     "jsdom": "^27.0.0",
     "lint-staged": "^16.1.6",
+    "next": "^15.5.3",
     "prettier": "^3.6.2",
     "storybook": "^10.3.3",
+    "tsup": "^8.5.0",
     "typescript": "^5.9.2",
     "typescript-eslint": "^8.43.0",
     "vite": "^8.0.3",
