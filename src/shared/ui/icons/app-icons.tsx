@@ -279,7 +279,7 @@ const createAppIcon = (
       return () => {
         isActive = false;
       };
-    }, [svgAssetUrl]);
+    }, []);
 
     if (ComponentIcon) {
       return (

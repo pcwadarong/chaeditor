@@ -55,6 +55,7 @@
     "prepare": "panda codegen && panda cssgen --outfile styled-system/styles.css",
     "test": "vitest run",
     "test:watch": "vitest",
+    "check-types": "tsc --noEmit",
     "typecheck": "tsc --noEmit",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
