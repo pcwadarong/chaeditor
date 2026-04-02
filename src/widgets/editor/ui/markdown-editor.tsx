@@ -15,7 +15,7 @@ import {
 import type { EditorContentType } from '@/entities/editor-core/model/content-types';
 import { buildEditorLinkInsertion } from '@/entities/editor-core/model/markdown-link';
 import type { MarkdownToolbarUiRegistry } from '@/features/edit-markdown/model/markdown-toolbar.types';
-import { MarkdownToolbar } from '@/features/edit-markdown/ui/markdown-toolbar';
+import { MarkdownToolbar } from '@/features/edit-markdown/toolbar';
 import { mediaQueryDown } from '@/shared/config/breakpoints';
 import { collectMarkdownImages } from '@/shared/lib/markdown/collect-markdown-images';
 import { getMarkdownOptions, markdownBodyClass } from '@/shared/lib/markdown/markdown-config';

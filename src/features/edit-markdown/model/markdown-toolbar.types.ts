@@ -9,12 +9,12 @@ import type {
   MarkdownToolbarPresetItemKey,
   MarkdownToolbarSectionKey,
 } from '@/entities/editor-core/model/toolbar-preset';
-import type { ColorStylePopoverLabels } from '@/features/edit-markdown/ui/color-style-popover';
-import type { LinkEmbedPopoverLabels } from '@/features/edit-markdown/ui/link-embed-popover';
+import type { ColorStylePopoverLabels } from '@/features/edit-markdown/formatting';
+import type { LinkEmbedPopoverLabels } from '@/features/edit-markdown/link';
 import type {
   ToolbarTokenPopoverLabels,
   ToolbarTokenPopoverProps,
-} from '@/features/edit-markdown/ui/toolbar-token-popover';
+} from '@/features/edit-markdown/toolbar';
 import type { ClosePopover } from '@/shared/ui/popover/popover';
 
 /**

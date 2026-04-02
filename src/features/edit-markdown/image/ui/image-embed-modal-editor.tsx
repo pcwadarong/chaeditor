@@ -4,11 +4,11 @@ import React from 'react';
 import { css, cx } from 'styled-system/css';
 
 import type { HostImageRenderer } from '@/entities/editor-core';
-import { normalizeEmbedInput } from '@/features/edit-markdown/model/embed-popover-state';
+import { normalizeEmbedInput } from '@/features/edit-markdown/image/model/embed-popover-state';
 import type {
   FilledImageRow,
   ImageInputRow,
-} from '@/features/edit-markdown/model/image-embed-modal-state';
+} from '@/features/edit-markdown/image/model/image-embed-modal-state';
 import { Button } from '@/shared/ui/button/button';
 import { ArrowUpIcon, TrashIcon } from '@/shared/ui/icons/app-icons';
 import { RenderImage } from '@/shared/ui/image/render-image';

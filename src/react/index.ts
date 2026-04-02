@@ -1,4 +1,9 @@
 export { MarkdownToolbar } from '@/features/edit-markdown';
+export { FileEmbedPopover } from '@/features/edit-markdown/file';
+export { TextBackgroundColorPopover, TextColorPopover } from '@/features/edit-markdown/formatting';
+export { ImageEmbedModal } from '@/features/edit-markdown/image';
+export { LinkEmbedPopover } from '@/features/edit-markdown/link';
+export { MathEmbedPopover } from '@/features/edit-markdown/math';
 export type {
   AlignPopoverRenderProps,
   FileEmbedPopoverRenderProps,
@@ -19,12 +24,7 @@ export {
   createDefaultMarkdownToolbarUiRegistry,
   resolveMarkdownToolbarUiRegistry,
 } from '@/features/edit-markdown/model/markdown-toolbar-ui-registry';
-export { FileEmbedPopover } from '@/features/edit-markdown/ui/file-embed-popover';
-export { ImageEmbedModal } from '@/features/edit-markdown/ui/image-embed-modal';
-export { LinkEmbedPopover } from '@/features/edit-markdown/ui/link-embed-popover';
-export { TextBackgroundColorPopover } from '@/features/edit-markdown/ui/text-background-color-popover';
-export { TextColorPopover } from '@/features/edit-markdown/ui/text-color-popover';
-export { VideoEmbedModal } from '@/features/edit-markdown/ui/video-embed-modal';
+export { VideoEmbedModal } from '@/features/edit-markdown/video';
 export { renderRichMarkdown } from '@/shared/lib/markdown/rich-markdown';
 export type {
   PartialRichMarkdownRendererRegistry,

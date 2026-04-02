@@ -4,7 +4,7 @@ import {
   normalizeEmbedInput,
   normalizeEmbedInputList,
   uploadImageEmbedSource,
-} from '@/features/edit-markdown/model/embed-popover-state';
+} from '@/features/edit-markdown/image/model/embed-popover-state';
 
 describe('embed-popover-state', () => {
   afterEach(() => {

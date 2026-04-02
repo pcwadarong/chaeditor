@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
 
-import { LinkEmbedPopover } from '@/features/edit-markdown/ui/link-embed-popover';
+import { LinkEmbedPopover } from '@/features/edit-markdown/link';
 
 type PopoverMockProps = {
   children: React.ReactNode | ((args: { closePopover: () => void }) => React.ReactNode);

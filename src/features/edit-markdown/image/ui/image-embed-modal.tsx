@@ -9,7 +9,7 @@ import {
   normalizeEmbedInput,
   normalizeEmbedInputList,
   uploadImageEmbedSource,
-} from '@/features/edit-markdown/model/embed-popover-state';
+} from '@/features/edit-markdown/image/model/embed-popover-state';
 import {
   ACCEPTED_IMAGE_FILE_TYPES,
   ACCEPTED_IMAGE_FORMAT_LABEL,
@@ -21,9 +21,9 @@ import {
   mergeImageRows,
   reorderRows,
   resolvePreviewImageSrc,
-} from '@/features/edit-markdown/model/image-embed-modal-state';
-import { ImageEmbedModalEditor } from '@/features/edit-markdown/ui/image-embed-modal-editor';
-import { ImageEmbedModalEmptyState } from '@/features/edit-markdown/ui/image-embed-modal-empty-state';
+} from '@/features/edit-markdown/image/model/image-embed-modal-state';
+import { ImageEmbedModalEditor } from '@/features/edit-markdown/image/ui/image-embed-modal-editor';
+import { ImageEmbedModalEmptyState } from '@/features/edit-markdown/image/ui/image-embed-modal-empty-state';
 import { Button } from '@/shared/ui/button/button';
 import { ImageIcon } from '@/shared/ui/icons/app-icons';
 import { Modal } from '@/shared/ui/modal/modal';

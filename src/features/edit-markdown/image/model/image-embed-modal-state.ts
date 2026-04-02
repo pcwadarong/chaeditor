@@ -1,6 +1,6 @@
 import type React from 'react';
 
-import { normalizeEmbedInput } from '@/features/edit-markdown/model/embed-popover-state';
+import { normalizeEmbedInput } from '@/features/edit-markdown/image/model/embed-popover-state';
 import { normalizeImageUrl } from '@/shared/lib/url/normalize-image-url';
 
 export type ImageInputRow = {

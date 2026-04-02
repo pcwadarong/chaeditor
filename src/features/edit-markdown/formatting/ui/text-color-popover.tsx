@@ -5,7 +5,7 @@ import React from 'react';
 import {
   ColorStylePopover,
   type ColorStylePopoverLabels,
-} from '@/features/edit-markdown/ui/color-style-popover';
+} from '@/features/edit-markdown/formatting/ui/color-style-popover';
 import { ColorIcon } from '@/shared/ui/icons/app-icons';
 
 type TextColorPopoverProps = {

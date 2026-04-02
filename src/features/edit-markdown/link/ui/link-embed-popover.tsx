@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { css } from 'styled-system/css';
 
-import { normalizeEmbedInput } from '@/features/edit-markdown/model/embed-popover-state';
+import { normalizeEmbedInput } from '@/features/edit-markdown/image/model/embed-popover-state';
 import { Button } from '@/shared/ui/button/button';
 import { LinkIcon } from '@/shared/ui/icons/app-icons';
 import { Input } from '@/shared/ui/input/input';

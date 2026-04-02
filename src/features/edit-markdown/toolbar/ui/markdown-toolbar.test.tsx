@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
 
-import { MarkdownToolbar } from '@/features/edit-markdown/ui/markdown-toolbar';
+import { MarkdownToolbar } from '@/features/edit-markdown/toolbar';
 import { Textarea } from '@/shared/ui/textarea/textarea';
 
 /**

@@ -2,6 +2,15 @@
 
 import React from 'react';
 
+import { FileEmbedPopover } from '@/features/edit-markdown/file';
+import {
+  AlignPopover,
+  TextBackgroundColorPopover,
+  TextColorPopover,
+} from '@/features/edit-markdown/formatting';
+import { ImageEmbedModal } from '@/features/edit-markdown/image';
+import { LinkEmbedPopover } from '@/features/edit-markdown/link';
+import { MathEmbedPopover } from '@/features/edit-markdown/math';
 import type {
   AlignPopoverRenderProps,
   FileEmbedPopoverRenderProps,
@@ -13,15 +22,8 @@ import type {
   TextColorPopoverRenderProps,
   VideoEmbedModalRenderProps,
 } from '@/features/edit-markdown/model/markdown-toolbar.types';
-import { AlignPopover } from '@/features/edit-markdown/ui/align-popover';
-import { FileEmbedPopover } from '@/features/edit-markdown/ui/file-embed-popover';
-import { ImageEmbedModal } from '@/features/edit-markdown/ui/image-embed-modal';
-import { LinkEmbedPopover } from '@/features/edit-markdown/ui/link-embed-popover';
-import { MathEmbedPopover } from '@/features/edit-markdown/ui/math-embed-popover';
-import { TextBackgroundColorPopover } from '@/features/edit-markdown/ui/text-background-color-popover';
-import { TextColorPopover } from '@/features/edit-markdown/ui/text-color-popover';
-import { ToolbarTokenPopover } from '@/features/edit-markdown/ui/toolbar-token-popover';
-import { VideoEmbedModal } from '@/features/edit-markdown/ui/video-embed-modal';
+import { ToolbarTokenPopover } from '@/features/edit-markdown/toolbar';
+import { VideoEmbedModal } from '@/features/edit-markdown/video';
 
 type ResolvedMarkdownToolbarUiRegistry = {
   renderAlignPopover: (props: AlignPopoverRenderProps) => React.ReactNode;

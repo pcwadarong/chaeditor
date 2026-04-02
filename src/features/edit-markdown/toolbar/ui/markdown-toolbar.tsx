@@ -9,7 +9,7 @@ import type {
   ToolbarSectionItem,
 } from '@/features/edit-markdown/model/markdown-toolbar.types';
 import { useMarkdownToolbar } from '@/features/edit-markdown/model/use-markdown-toolbar';
-import { ToolbarActionButton } from '@/features/edit-markdown/ui/toolbar-action-button';
+import { ToolbarActionButton } from '@/features/edit-markdown/toolbar/ui/toolbar-action-button';
 
 /**
  * Renders the markdown formatting toolbar for a textarea editor.

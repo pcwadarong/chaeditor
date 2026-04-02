@@ -24,7 +24,7 @@ pnpm add chaeditor
 또는 필요한 기능만 선택적으로 설치할 수 있습니다.
 
 ```bash
-pnpm add @chaeditor/core @chaeditor/react @chaeditor/feature-image @chaeditor/feature-video
+pnpm add @chaeditor/core @chaeditor/react @chaeditor/image @chaeditor/video
 ```
 
 현재 저장소를 로컬에서 실행하거나 검증하려면 아래 명령을 사용하세요.

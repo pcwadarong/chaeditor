@@ -52,7 +52,7 @@ describe('markdown toolbar preset', () => {
     ]);
   });
 
-  it('Under the default preset definition, DEFAULT_MARKDOWN_TOOLBAR_PRESET must expose the current feature-group configuration as pure data', () => {
+  it('Under the default preset definition, DEFAULT_MARKDOWN_TOOLBAR_PRESET must expose the current group configuration as pure data', () => {
     expect(DEFAULT_MARKDOWN_TOOLBAR_PRESET).toEqual([
       { itemKeys: ['heading-popover', 'subtext'], key: 'heading-and-subtext' },
       { itemKeys: ['bold', 'italic', 'strike', 'underline'], key: 'text-emphasis' },

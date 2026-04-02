@@ -19,8 +19,8 @@ const IntroPage = () => (
         <article className={cardClass}>
           <h3 className={cardTitleClass}>Composable toolbar</h3>
           <p className={cardBodyClass}>
-            Build compact or feature-rich authoring experiences with presets, registries, and
-            embeddable interaction units.
+            Build compact or rich authoring experiences with presets, registries, and embeddable
+            interaction units.
           </p>
         </article>
         <article className={cardClass}>

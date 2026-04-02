@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import React from 'react';
 
-import { ImageEmbedModal } from '@/features/edit-markdown/ui/image-embed-modal';
+import { ImageEmbedModal } from '@/features/edit-markdown/image';
 
 vi.mock('@/shared/ui/modal/modal', () => ({
   Modal: ({

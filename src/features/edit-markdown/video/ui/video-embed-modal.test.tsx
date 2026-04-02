@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
 
-import { VideoEmbedModal } from '@/features/edit-markdown/ui/video-embed-modal';
+import { VideoEmbedModal } from '@/features/edit-markdown/video';
 
 describe('VideoEmbedModal', () => {
   it('Under a valid video URL, VideoEmbedModal must call onApply with the extracted video id', async () => {

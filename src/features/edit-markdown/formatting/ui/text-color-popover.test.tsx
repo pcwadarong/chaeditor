@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
 
-import { TextColorPopover } from '@/features/edit-markdown/ui/text-color-popover';
+import { TextColorPopover } from '@/features/edit-markdown/formatting';
 
 type PopoverMockProps = {
   children: React.ReactNode | ((args: { closePopover: () => void }) => React.ReactNode);
