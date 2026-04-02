@@ -4,7 +4,14 @@ import { optimizeContentImageFile } from '@/shared/lib/image/optimize-content-im
 import { optimizeThumbnailImageFile } from '@/shared/lib/image/optimize-thumbnail-image-file';
 
 /**
- * Optimizes an editor image, uploads it, and returns the public URL.
+ * Uploads an editor image through the default host HTTP endpoint.
+ *
+ * @param options Image upload options.
+ * @param options.contentType Logical content type that scopes the upload target.
+ * @param options.file Original file selected by the user.
+ * @param options.imageKind Upload intent used to choose the image optimization path.
+ * @returns The final public image URL returned by the host.
+ * @throws When the response is not successful or does not include a public URL.
  */
 export const uploadEditorImage = async ({
   contentType,
@@ -29,7 +36,16 @@ export const uploadEditorImage = async ({
     body: formData,
     method: 'POST',
   });
-  const body = (await response.json()) as { error?: string; message?: string; url?: string };
+  let body: { error?: string; message?: string; url?: string } = {};
+
+  try {
+    body = (await response.json()) as { error?: string; message?: string; url?: string };
+  } catch {
+    body = {
+      error: response.ok ? 'Image response parse failed' : 'Image upload failed',
+      message: response.statusText || undefined,
+    };
+  }
 
   if (!response.ok || !body.url) {
     throw new Error(body.error ?? body.message ?? 'Image upload failed');

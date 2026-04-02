@@ -27,9 +27,18 @@ import type { ClosePopover } from '@/shared/ui/popover/popover';
  */
 export type MarkdownToolbarProps = {
   contentType: EditorContentType;
+  /**
+   * Optional host adapters for uploads and renderer overrides.
+   *
+   * When omitted, upload-oriented helpers should disable the related action instead of
+   * assuming a built-in backend exists.
+   */
   adapters?: MarkdownEditorHostAdapters;
+  /** Applies the next editor value after a toolbar action finishes. */
   onChange: (value: string) => void;
+  /** Active textarea ref used by selection-based toolbar commands. */
   textareaRef: React.RefObject<HTMLTextAreaElement | null>;
+  /** Optional UI registry for labels and built-in popover replacements. */
   uiRegistry?: MarkdownToolbarUiRegistry;
 };
 
@@ -37,15 +46,23 @@ export type MarkdownToolbarProps = {
  * Label overrides for built-in toolbar popovers.
  */
 export type MarkdownToolbarUiLabels = {
+  /** Label overrides for the text background color popover. */
   backgroundColorPopover?: Partial<ColorStylePopoverLabels>;
+  /** Label overrides for the grouped heading token popover. */
   headingPopover?: Partial<ToolbarTokenPopoverLabels>;
+  /** Label overrides for the link embed popover. */
   linkEmbedPopover?: Partial<LinkEmbedPopoverLabels>;
+  /** Label overrides for the text color popover. */
   textColorPopover?: Partial<ColorStylePopoverLabels>;
+  /** Label overrides for the grouped toggle token popover. */
   togglePopover?: Partial<ToolbarTokenPopoverLabels>;
 };
 
 /**
  * Render registry for replacing built-in toolbar popovers.
+ *
+ * Each renderer receives the same contract as the built-in helper so host applications
+ * can replace only the UI shell while keeping the existing toolbar behavior.
  */
 export type MarkdownToolbarPopoverRegistry = {
   alignPopover?: (props: AlignPopoverRenderProps) => React.ReactNode;
@@ -62,48 +79,80 @@ export type MarkdownToolbarPopoverRegistry = {
 
 /**
  * Toolbar UI customization entry point.
+ *
+ * Use this registry to override labels only, replace selected popovers, or do both.
  */
 export type MarkdownToolbarUiRegistry = {
   labels?: MarkdownToolbarUiLabels;
   popovers?: MarkdownToolbarPopoverRegistry;
 };
 
+/**
+ * Props passed to a custom link embed popover renderer.
+ */
 export type LinkEmbedPopoverRenderProps = {
+  /** Optional label overrides merged into the built-in defaults. */
   labels?: Partial<LinkEmbedPopoverLabels>;
+  /** Applies the selected link mode and URL to the active editor selection. */
   onApply: (url: string, mode: LinkMode, closePopover?: ClosePopover) => void;
+  /** Mouse-down hook used to preserve textarea focus before opening the helper. */
   onTriggerMouseDown?: React.MouseEventHandler<HTMLButtonElement>;
+  /** Optional class name for the trigger button wrapper. */
   triggerClassName?: string;
 };
 
+/**
+ * Props passed to a custom align popover renderer.
+ */
 export type AlignPopoverRenderProps = {
+  /** Applies the selected block alignment. */
   onApply: (align: 'center' | 'left' | 'right', closePopover?: ClosePopover) => void;
   onTriggerMouseDown?: React.MouseEventHandler<HTMLButtonElement>;
   triggerClassName?: string;
 };
 
+/**
+ * Props passed to a custom math embed popover renderer.
+ */
 export type MathEmbedPopoverRenderProps = {
+  /** Inserts the provided math formula into the editor. */
   onApply: (formula: string, isBlock: boolean, closePopover?: ClosePopover) => void;
   onTriggerMouseDown?: React.MouseEventHandler<HTMLButtonElement>;
   triggerClassName?: string;
 };
 
+/**
+ * Props passed to a custom color popover renderer.
+ */
 export type TextColorPopoverRenderProps = {
   labels?: Partial<ColorStylePopoverLabels>;
+  /** Applies the selected color token or hex value. */
   onApply: (colorHex: string, closePopover?: ClosePopover) => void;
   onTriggerMouseDown?: React.MouseEventHandler<HTMLButtonElement>;
   triggerClassName?: string;
 };
 
+/**
+ * Props passed to a custom file embed popover renderer.
+ */
 export type FileEmbedPopoverRenderProps = {
+  /** Current editor content type forwarded to the upload adapter. */
   contentType: EditorContentType;
+  /** Inserts the uploaded attachment into the editor. */
   onApply: (attachment: EditorAttachment, closePopover?: ClosePopover) => void;
   onTriggerMouseDown?: React.MouseEventHandler<HTMLButtonElement>;
+  /** Optional upload adapter. When omitted, upload-specific actions should be disabled. */
   onUploadFile?: MarkdownEditorHostAdapters['uploadFile'];
   triggerClassName?: string;
 };
 
+/**
+ * Props passed to a custom image embed modal renderer.
+ */
 export type ImageEmbedModalRenderProps = {
+  /** Current editor content type forwarded to the upload adapter. */
   contentType: EditorContentType;
+  /** Inserts one or more image references into the editor. */
   onApply: (
     payload: {
       items: Array<{
@@ -115,13 +164,20 @@ export type ImageEmbedModalRenderProps = {
     closePopover?: ClosePopover,
   ) => void;
   onTriggerMouseDown?: React.MouseEventHandler<HTMLButtonElement>;
+  /** Optional framework-specific image renderer override for previews. */
   renderImage?: MarkdownEditorHostAdapters['renderImage'];
+  /** Optional upload adapter. When omitted, upload-specific actions should be disabled. */
   onUploadImage?: MarkdownEditorHostAdapters['uploadImage'];
   triggerClassName?: string;
 };
 
+/**
+ * Props passed to a custom video embed modal renderer.
+ */
 export type VideoEmbedModalRenderProps = {
+  /** Current editor content type forwarded to the upload adapter. */
   contentType: EditorContentType;
+  /** Inserts either an uploaded video or a YouTube reference into the editor. */
   onApply: (
     payload: {
       provider: 'upload' | 'youtube';
@@ -131,6 +187,7 @@ export type VideoEmbedModalRenderProps = {
     closePopover?: ClosePopover,
   ) => void;
   onTriggerMouseDown?: React.MouseEventHandler<HTMLButtonElement>;
+  /** Optional upload adapter. When omitted, upload-specific actions should be disabled. */
   onUploadVideo?: MarkdownEditorHostAdapters['uploadVideo'];
   triggerClassName?: string;
 };

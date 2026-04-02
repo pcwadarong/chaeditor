@@ -7,12 +7,12 @@ type UploadEditorFileResponseBody = Partial<EditorAttachment> & {
 };
 
 /**
- * Uploads an attachment selected in the editor and returns its public metadata.
+ * Uploads an attachment through the default host HTTP endpoint.
  *
  * @param options Attachment upload options.
- * @param options.contentType Current editor content type.
- * @param options.file File to upload.
- * @returns Uploaded attachment metadata.
+ * @param options.contentType Logical content type that scopes the upload target.
+ * @param options.file File selected by the user.
+ * @returns Uploaded attachment metadata normalized for editor insertion.
  * @throws When the upload fails or the response payload is invalid.
  */
 export const uploadEditorFile = async ({

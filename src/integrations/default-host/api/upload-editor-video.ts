@@ -35,14 +35,14 @@ const parseUploadResponse = (responseText: string) => {
 };
 
 /**
- * Uploads a video file from the editor and reports progress through XHR.
+ * Uploads a video through the default host HTTP endpoint and reports progress through XHR.
  *
  * @param options Video upload options.
- * @param options.contentType Current editor content type.
- * @param options.file Video file to upload.
- * @param options.onProgress Optional progress callback.
- * @param options.signal Optional abort signal.
- * @returns The uploaded video URL.
+ * @param options.contentType Logical content type that scopes the upload target.
+ * @param options.file Video file selected by the user.
+ * @param options.onProgress Optional upload progress callback that receives a 0-100 percentage.
+ * @param options.signal Optional abort signal forwarded to the underlying XHR request.
+ * @returns The uploaded public video URL.
  * @throws When the upload fails or does not return a URL.
  */
 export const uploadEditorVideo = async ({
