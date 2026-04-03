@@ -16,12 +16,14 @@ import type {
 } from '@/features/edit-markdown/toolbar/ui/toolbar-token-popover';
 import type { VideoEmbedApplyPayload } from '@/features/edit-markdown/video';
 import type { ClosePopover } from '@/shared/ui/popover/popover';
+import type { MarkdownPrimitiveRegistry } from '@/shared/ui/primitive-registry/markdown-primitive-registry';
 
 /**
  * Minimal contract required by the markdown toolbar.
  *
  * @property contentType Current editor content type.
  * @property onChange Callback that applies the next textarea value.
+ * @property primitiveRegistry Optional host primitive overrides applied to the toolbar subtree.
  * @property textareaRef Ref for the active textarea element.
  * @property uiRegistry Optional UI registry for labels and primitive overrides.
  */
@@ -36,6 +38,8 @@ export type MarkdownToolbarProps = {
   adapters?: MarkdownEditorHostAdapters;
   /** Applies the next editor value after a toolbar action finishes. */
   onChange: (value: string) => void;
+  /** Optional primitive registry applied to the toolbar subtree. */
+  primitiveRegistry?: MarkdownPrimitiveRegistry;
   /** Active textarea ref used by selection-based toolbar commands. */
   textareaRef: React.RefObject<HTMLTextAreaElement | null>;
   /** Optional UI registry for labels and built-in popover replacements. */

@@ -2,6 +2,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
 
 import { MarkdownToolbar } from '@/features/edit-markdown/toolbar';
+import { Button } from '@/shared/ui/button';
 import { Textarea } from '@/shared/ui/textarea/textarea';
 
 /**
@@ -316,5 +317,27 @@ describe('MarkdownToolbar', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Add link' }));
 
     expect(await screen.findByText('Custom link panel')).toBeTruthy();
+  });
+
+  it('Under a custom primitive registry, MarkdownToolbar must pass the override to toolbar actions', () => {
+    const textareaRef = React.createRef<HTMLTextAreaElement>();
+    const HostButton = React.forwardRef<HTMLButtonElement, React.ComponentProps<typeof Button>>(
+      (props, ref) => <Button {...props} data-primitive="custom-button" ref={ref} />,
+    );
+    HostButton.displayName = 'HostButton';
+
+    render(
+      <MarkdownToolbar
+        contentType="article"
+        onChange={() => {}}
+        primitiveRegistry={{ Button: HostButton }}
+        textareaRef={textareaRef}
+      />,
+    );
+
+    expect(screen.getByRole('button', { name: 'Bold' })).toHaveAttribute(
+      'data-primitive',
+      'custom-button',
+    );
   });
 });

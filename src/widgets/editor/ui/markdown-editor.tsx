@@ -22,7 +22,11 @@ import { getMarkdownOptions, markdownBodyClass } from '@/shared/lib/markdown/mar
 import { renderRichMarkdown } from '@/shared/lib/markdown/rich-markdown';
 import type { PartialRichMarkdownRendererRegistry } from '@/shared/lib/markdown/rich-markdown-renderers';
 import { EditIcon, EyeIcon } from '@/shared/ui/icons/app-icons';
-import { useMarkdownPrimitives } from '@/shared/ui/primitive-registry/markdown-primitive-registry';
+import {
+  MarkdownPrimitiveProvider,
+  type MarkdownPrimitiveRegistry,
+  useMarkdownPrimitives,
+} from '@/shared/ui/primitive-registry/markdown-primitive-registry';
 
 type MarkdownEditorProps = {
   adapters?: MarkdownEditorHostAdapters;
@@ -32,6 +36,7 @@ type MarkdownEditorProps = {
   onChange: (value: string) => void;
   placeholder?: string;
   previewEmptyText?: string;
+  primitiveRegistry?: MarkdownPrimitiveRegistry;
   renderers?: PartialRichMarkdownRendererRegistry;
   uiRegistry?: MarkdownToolbarUiRegistry;
   value: string;
@@ -50,6 +55,7 @@ export const MarkdownEditor = ({
   onChange,
   placeholder = 'Write markdown content',
   previewEmptyText = 'Nothing to preview yet.',
+  primitiveRegistry,
   renderers,
   uiRegistry,
   value,
@@ -140,7 +146,7 @@ export const MarkdownEditor = ({
       <p className={emptyPreviewClass}>{previewEmptyText}</p>
     );
 
-  return (
+  const editorNode = (
     <section className={cx(rootClass, className)}>
       <div className={toolbarWrapClass}>
         <MarkdownToolbar
@@ -215,6 +221,12 @@ export const MarkdownEditor = ({
         </section>
       </div>
     </section>
+  );
+
+  return primitiveRegistry ? (
+    <MarkdownPrimitiveProvider registry={primitiveRegistry}>{editorNode}</MarkdownPrimitiveProvider>
+  ) : (
+    editorNode
   );
 };
 

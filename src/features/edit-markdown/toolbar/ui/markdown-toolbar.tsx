@@ -10,6 +10,7 @@ import type {
 } from '@/features/edit-markdown/toolbar/contracts/markdown-toolbar.types';
 import { useMarkdownToolbar } from '@/features/edit-markdown/toolbar/shell/use-markdown-toolbar';
 import { ToolbarActionButton } from '@/features/edit-markdown/toolbar/ui/toolbar-action-button';
+import { MarkdownPrimitiveProvider } from '@/shared/ui/primitive-registry/markdown-primitive-registry';
 
 /**
  * Renders the markdown formatting toolbar for a textarea editor.
@@ -18,6 +19,7 @@ export const MarkdownToolbar = ({
   adapters,
   contentType,
   onChange,
+  primitiveRegistry,
   textareaRef,
   uiRegistry,
 }: MarkdownToolbarProps) => {
@@ -30,7 +32,7 @@ export const MarkdownToolbar = ({
     uiRegistry,
   });
 
-  return (
+  const toolbarNode = (
     <div aria-label="Markdown formatting tools" className={toolbarClass} role="toolbar">
       {toolbarSections.map((section, index) => (
         <React.Fragment key={section.key}>
@@ -43,6 +45,14 @@ export const MarkdownToolbar = ({
         </React.Fragment>
       ))}
     </div>
+  );
+
+  return primitiveRegistry ? (
+    <MarkdownPrimitiveProvider registry={primitiveRegistry}>
+      {toolbarNode}
+    </MarkdownPrimitiveProvider>
+  ) : (
+    toolbarNode
   );
 };
 

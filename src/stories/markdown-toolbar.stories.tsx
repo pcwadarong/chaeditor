@@ -7,14 +7,17 @@ import { Textarea } from '@/shared/ui/textarea/textarea';
 import {
   codeBlockClass,
   createStorybookAdapterSet,
+  createStorybookPrimitiveRegistry,
   customAdapterUsageSnippet,
   getStorybookThemeStyle,
   pageClass,
   panelClass,
+  primitiveRegistryUsageSnippet,
   sectionTitleClass,
   splitLayoutClass,
   type StorybookAdapterMode,
   StorybookCompactSummary,
+  type StorybookPrimitiveMode,
   type StorybookThemeMode,
   themeOverrideUsageSnippet,
   toolbarPackageUsageSnippet,
@@ -26,6 +29,7 @@ type ToolbarReferenceProps = {
   contentType: EditorContentType;
   customLabels?: boolean;
   initialValue: string;
+  primitiveMode?: StorybookPrimitiveMode;
   themeMode?: StorybookThemeMode;
 };
 
@@ -38,6 +42,7 @@ type ToolbarStateSummary = {
 const getToolbarStateSummary = (
   adapterMode: StorybookAdapterMode,
   customLabels: boolean,
+  primitiveMode: StorybookPrimitiveMode,
   themeMode: StorybookThemeMode,
 ): ToolbarStateSummary => {
   if (adapterMode === 'none') {
@@ -47,6 +52,11 @@ const getToolbarStateSummary = (
       items: [
         { label: 'Mode', value: 'Host adapters off' },
         { label: 'Labels', value: 'Package-default labels' },
+        {
+          label: 'Primitives',
+          value:
+            primitiveMode === 'custom' ? 'Host button and popover overrides' : 'Package defaults',
+        },
         {
           label: 'Theme',
           value: themeMode === 'host' ? 'Host theme wrapper applied' : 'Package default theme',
@@ -70,6 +80,11 @@ const getToolbarStateSummary = (
         },
         { label: 'Labels', value: 'Heading and link labels overridden' },
         {
+          label: 'Primitives',
+          value:
+            primitiveMode === 'custom' ? 'Host button and popover overrides' : 'Package defaults',
+        },
+        {
           label: 'Theme',
           value: themeMode === 'host' ? 'Host theme wrapper applied' : 'Package default theme',
         },
@@ -88,6 +103,11 @@ const getToolbarStateSummary = (
       { label: 'Mode', value: 'Default mock host adapters enabled' },
       { label: 'Labels', value: 'Package-default labels' },
       {
+        label: 'Primitives',
+        value:
+          primitiveMode === 'custom' ? 'Host button and popover overrides' : 'Package defaults',
+      },
+      {
         label: 'Theme',
         value: themeMode === 'host' ? 'Host theme wrapper applied' : 'Package default theme',
       },
@@ -99,9 +119,10 @@ const getToolbarStateSummary = (
 const ToolbarStatePanel = ({
   adapterMode,
   customLabels = false,
+  primitiveMode = 'default',
   themeMode = 'default',
-}: Pick<ToolbarReferenceProps, 'adapterMode' | 'customLabels' | 'themeMode'>) => {
-  const summary = getToolbarStateSummary(adapterMode, customLabels, themeMode);
+}: Pick<ToolbarReferenceProps, 'adapterMode' | 'customLabels' | 'primitiveMode' | 'themeMode'>) => {
+  const summary = getToolbarStateSummary(adapterMode, customLabels, primitiveMode, themeMode);
 
   return (
     <StorybookCompactSummary
@@ -117,11 +138,16 @@ const ToolbarReference = ({
   contentType,
   customLabels = false,
   initialValue,
+  primitiveMode = 'default',
   themeMode = 'default',
 }: ToolbarReferenceProps) => {
   const textareaRef = React.useRef<HTMLTextAreaElement | null>(null);
   const [value, setValue] = React.useState(initialValue);
   const adapters = React.useMemo(() => createStorybookAdapterSet(adapterMode), [adapterMode]);
+  const primitiveRegistry = React.useMemo(
+    () => createStorybookPrimitiveRegistry(primitiveMode),
+    [primitiveMode],
+  );
   const themeStyle = React.useMemo(() => getStorybookThemeStyle(themeMode), [themeMode]);
 
   React.useEffect(() => {
@@ -133,6 +159,7 @@ const ToolbarReference = ({
       <ToolbarStatePanel
         adapterMode={adapterMode}
         customLabels={customLabels}
+        primitiveMode={primitiveMode}
         themeMode={themeMode}
       />
       <section className={panelClass} style={themeStyle}>
@@ -142,6 +169,7 @@ const ToolbarReference = ({
               adapters={adapters}
               contentType={contentType}
               onChange={setValue}
+              primitiveRegistry={primitiveRegistry}
               textareaRef={textareaRef}
               uiRegistry={
                 customLabels
@@ -200,12 +228,17 @@ const meta = {
       control: 'inline-radio',
       options: ['default', 'host'],
     },
+    primitiveMode: {
+      control: 'inline-radio',
+      options: ['default', 'custom'],
+    },
   },
   args: {
     adapterMode: 'full',
     contentType: 'article',
     customLabels: false,
     initialValue: '',
+    primitiveMode: 'default',
     themeMode: 'default',
   },
   component: ToolbarReference,
@@ -318,3 +351,26 @@ export const HostThemeOverride: Story = {
   },
 };
 HostThemeOverride.name = 'Host theme override';
+
+export const PrimitiveOverrides: Story = {
+  args: {
+    adapterMode: 'full',
+    contentType: 'article',
+    customLabels: false,
+    initialValue: '',
+    primitiveMode: 'custom',
+    themeMode: 'default',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Shows the same toolbar contract inside a host primitive registry that overrides button and popover shells. Use this when testing a design-system swap without rewriting toolbar commands.',
+      },
+      source: {
+        code: primitiveRegistryUsageSnippet,
+      },
+    },
+  },
+};
+PrimitiveOverrides.name = 'Primitive overrides';

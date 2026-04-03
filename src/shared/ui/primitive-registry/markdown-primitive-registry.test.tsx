@@ -14,14 +14,16 @@ const PrimitiveProbe = () => {
 
 describe('MarkdownPrimitiveProvider', () => {
   it('Under a custom primitive registry, MarkdownPrimitiveProvider must expose the overridden primitive to descendants', () => {
-    const CustomButton = React.forwardRef<
+    const renderCustomButton: React.ForwardRefRenderFunction<
       HTMLButtonElement,
       React.ComponentPropsWithoutRef<'button'>
-    >(({ children, ...props }, ref) => (
+    > = ({ children, ...props }, ref) => (
       <button data-primitive="custom-button" ref={ref} type="button" {...props}>
         {children}
       </button>
-    ));
+    );
+
+    const CustomButton = React.forwardRef(renderCustomButton);
     CustomButton.displayName = 'CustomButton';
 
     render(

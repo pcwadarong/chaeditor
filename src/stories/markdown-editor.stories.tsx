@@ -5,14 +5,17 @@ import type { EditorContentType } from '@/entities/editor-core/model/content-typ
 import { MarkdownEditor } from '@/react';
 import {
   createStorybookAdapterSet,
+  createStorybookPrimitiveRegistry,
   customAdapterUsageSnippet,
   editorPackageUsageSnippet,
   getStorybookThemeStyle,
   pageClass,
   panelClass,
+  primitiveRegistryUsageSnippet,
   sampleMarkdown,
   type StorybookAdapterMode,
   StorybookCompactSummary,
+  type StorybookPrimitiveMode,
   type StorybookThemeMode,
   themeOverrideUsageSnippet,
 } from '@/stories/storybook-fixtures';
@@ -24,12 +27,14 @@ type MarkdownEditorReferenceProps = {
   initialValue: string;
   placeholder?: string;
   previewEmptyText?: string;
+  primitiveMode?: StorybookPrimitiveMode;
   themeMode?: StorybookThemeMode;
 };
 
 const getEditorStateSummary = (
   adapterMode: StorybookAdapterMode,
   customLabels: boolean,
+  primitiveMode: StorybookPrimitiveMode,
   themeMode: StorybookThemeMode,
 ) => {
   if (adapterMode === 'none') {
@@ -39,6 +44,11 @@ const getEditorStateSummary = (
       items: [
         { label: 'Mode', value: 'Host adapters off' },
         { label: 'Labels', value: 'Package-default labels' },
+        {
+          label: 'Primitives',
+          value:
+            primitiveMode === 'custom' ? 'Host button and popover overrides' : 'Package defaults',
+        },
         {
           label: 'Theme',
           value: themeMode === 'host' ? 'Host theme wrapper applied' : 'Package default theme',
@@ -59,6 +69,11 @@ const getEditorStateSummary = (
           value: customLabels ? 'Selected toolbar labels overridden' : 'Package-default labels',
         },
         {
+          label: 'Primitives',
+          value:
+            primitiveMode === 'custom' ? 'Host button and popover overrides' : 'Package defaults',
+        },
+        {
           label: 'Theme',
           value: themeMode === 'host' ? 'Host theme wrapper applied' : 'Package default theme',
         },
@@ -77,6 +92,11 @@ const getEditorStateSummary = (
         value: customLabels ? 'Selected toolbar labels overridden' : 'Package-default labels',
       },
       {
+        label: 'Primitives',
+        value:
+          primitiveMode === 'custom' ? 'Host button and popover overrides' : 'Package defaults',
+      },
+      {
         label: 'Theme',
         value: themeMode === 'host' ? 'Host theme wrapper applied' : 'Package default theme',
       },
@@ -92,17 +112,22 @@ const MarkdownEditorReference = ({
   initialValue,
   placeholder,
   previewEmptyText,
+  primitiveMode = 'default',
   themeMode = 'default',
 }: MarkdownEditorReferenceProps) => {
   const [value, setValue] = React.useState(initialValue);
   const adapters = React.useMemo(() => createStorybookAdapterSet(adapterMode), [adapterMode]);
+  const primitiveRegistry = React.useMemo(
+    () => createStorybookPrimitiveRegistry(primitiveMode),
+    [primitiveMode],
+  );
   const themeStyle = React.useMemo(() => getStorybookThemeStyle(themeMode), [themeMode]);
 
   React.useEffect(() => {
     setValue(initialValue);
   }, [initialValue]);
 
-  const summary = getEditorStateSummary(adapterMode, customLabels, themeMode);
+  const summary = getEditorStateSummary(adapterMode, customLabels, primitiveMode, themeMode);
 
   return (
     <main className={pageClass}>
@@ -118,6 +143,7 @@ const MarkdownEditorReference = ({
           onChange={setValue}
           placeholder={placeholder}
           previewEmptyText={previewEmptyText}
+          primitiveRegistry={primitiveRegistry}
           uiRegistry={
             customLabels
               ? {
@@ -157,6 +183,10 @@ const meta = {
       control: 'inline-radio',
       options: ['default', 'host'],
     },
+    primitiveMode: {
+      control: 'inline-radio',
+      options: ['default', 'custom'],
+    },
     initialValue: {
       control: 'object',
     },
@@ -168,6 +198,7 @@ const meta = {
     initialValue: sampleMarkdown,
     placeholder: 'Write markdown content',
     previewEmptyText: 'Nothing to preview yet.',
+    primitiveMode: 'default',
     themeMode: 'default',
   },
   component: MarkdownEditorReference,
@@ -266,6 +297,28 @@ export const HostThemeOverride: Story = {
       },
       source: {
         code: themeOverrideUsageSnippet,
+      },
+    },
+  },
+};
+
+export const PrimitiveOverrides: Story = {
+  args: {
+    adapterMode: 'full',
+    contentType: 'article',
+    customLabels: false,
+    initialValue: sampleMarkdown,
+    primitiveMode: 'custom',
+    themeMode: 'default',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Wraps the editor with a custom primitive registry so host-specific button and popover shells can be swapped in without changing the markdown feature code.',
+      },
+      source: {
+        code: primitiveRegistryUsageSnippet,
       },
     },
   },

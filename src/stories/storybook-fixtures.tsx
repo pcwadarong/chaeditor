@@ -1,9 +1,11 @@
 import type { CSSProperties } from 'react';
 import React from 'react';
-import { css } from 'styled-system/css';
+import { css, cx } from 'styled-system/css';
 
 import { createChaeditorThemeVars } from '@/core';
-import type { MarkdownEditorHostAdapters } from '@/react';
+import type { MarkdownEditorHostAdapters, MarkdownPrimitiveRegistry } from '@/react';
+import { Button, type ButtonProps } from '@/shared/ui/button';
+import { Popover, type PopoverProps } from '@/shared/ui/popover';
 
 const IMAGE_LIBRARY = [
   'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80',
@@ -18,6 +20,7 @@ let uploadFileCallCount = 0;
 let uploadVideoCallCount = 0;
 
 export type StorybookAdapterMode = 'custom' | 'full' | 'none';
+export type StorybookPrimitiveMode = 'custom' | 'default';
 
 type StorybookModeSummary = {
   description: string;
@@ -138,6 +141,33 @@ export const themeOverrideUsageSnippet = [
   ');',
 ].join('\n');
 
+export const primitiveRegistryUsageSnippet = [
+  "import 'chaeditor/styles.css';",
+  '',
+  "import { MarkdownEditor } from 'chaeditor/react';",
+  '',
+  'const HostButton = props => (',
+  "  <button {...props} className={`host-button ${props.className ?? ''}`.trim()} />",
+  ');',
+  '',
+  'const HostPopover = props => (',
+  '  <Popover',
+  '    {...props}',
+  "    panelClassName={`host-popover-panel ${props.panelClassName ?? ''}`.trim()}",
+  "    triggerClassName={`host-popover-trigger ${props.triggerClassName ?? ''}`.trim()}",
+  '  />',
+  ');',
+  '',
+  'const Example = () => (',
+  '  <MarkdownEditor',
+  '    contentType="article"',
+  '    onChange={() => {}}',
+  '    primitiveRegistry={{ Button: HostButton, Popover: HostPopover }}',
+  '    value=""',
+  '  />',
+  ');',
+].join('\n');
+
 export const tailwindThemeUsageSnippet = [
   "import 'chaeditor/styles.css';",
   '',
@@ -254,6 +284,80 @@ export const getStorybookThemeStyle = (mode: StorybookThemeMode): CSSProperties 
   }
 
   return undefined;
+};
+
+const primitiveButtonClass = css({
+  bg: 'primarySubtle',
+  borderRadius: 'xl',
+  borderColor: 'primary',
+  fontWeight: 'semibold',
+});
+
+const primitivePopoverRootClass = css({
+  display: 'inline-flex',
+});
+
+const primitivePopoverTriggerClass = css({
+  bg: 'primarySubtle',
+  borderColor: 'primary',
+  borderRadius: 'xl',
+});
+
+const primitivePopoverPanelClass = css({
+  borderColor: 'primary',
+  shadow: 'lg',
+});
+
+const primitivePopoverLabelClass = css({
+  color: 'primary',
+  fontWeight: 'semibold',
+});
+
+const primitivePopoverValueClass = css({
+  color: 'text',
+  fontWeight: 'medium',
+});
+
+const StorybookHostButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ className, ...props }, ref) => (
+    <Button {...props} className={cx(primitiveButtonClass, className)} ref={ref} />
+  ),
+);
+
+StorybookHostButton.displayName = 'StorybookHostButton';
+
+const StorybookHostPopover = ({
+  panelClassName,
+  rootClassName,
+  triggerClassName,
+  triggerLabelClassName,
+  triggerValueClassName,
+  ...props
+}: PopoverProps) => (
+  <Popover
+    {...props}
+    panelClassName={cx(primitivePopoverPanelClass, panelClassName)}
+    rootClassName={cx(primitivePopoverRootClass, rootClassName)}
+    triggerClassName={cx(primitivePopoverTriggerClass, triggerClassName)}
+    triggerLabelClassName={cx(primitivePopoverLabelClass, triggerLabelClassName)}
+    triggerValueClassName={cx(primitivePopoverValueClass, triggerValueClassName)}
+  />
+);
+
+/**
+ * Resolves a visibly customized primitive registry for Storybook override examples.
+ */
+export const createStorybookPrimitiveRegistry = (
+  mode: StorybookPrimitiveMode,
+): MarkdownPrimitiveRegistry | undefined => {
+  if (mode === 'default') {
+    return undefined;
+  }
+
+  return {
+    Button: StorybookHostButton,
+    Popover: StorybookHostPopover,
+  };
 };
 
 /**
