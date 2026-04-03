@@ -1,5 +1,13 @@
 import { defineConfig } from '@pandacss/dev';
 
+import {
+  CHAEDITOR_THEME_DEFAULTS,
+  CHAEDITOR_THEME_VARIABLES,
+} from './src/entities/editor-core/model/theme-contract';
+
+const withCssVar = (variableName: string, fallbackValue: string) =>
+  `var(${variableName}, ${fallbackValue})`;
+
 export default defineConfig({
   preflight: true,
   jsxFramework: 'react',
@@ -32,16 +40,22 @@ export default defineConfig({
         },
         fonts: {
           sans: {
-            value:
-              "var(--font-pretendard), -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Noto Sans KR', 'Segoe UI', sans-serif",
+            value: withCssVar(
+              CHAEDITOR_THEME_VARIABLES.sansFont,
+              CHAEDITOR_THEME_DEFAULTS.fonts.sans,
+            ),
           },
           sansJa: {
-            value:
-              "var(--font-pretendard-jp), var(--font-pretendard), -apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Yu Gothic', 'Meiryo', sans-serif",
+            value: withCssVar(
+              CHAEDITOR_THEME_VARIABLES.sansJaFont,
+              CHAEDITOR_THEME_DEFAULTS.fonts.sansJa,
+            ),
           },
           mono: {
-            value:
-              "var(--font-d2coding), 'SFMono-Regular', 'JetBrains Mono', Consolas, 'Liberation Mono', monospace",
+            value: withCssVar(
+              CHAEDITOR_THEME_VARIABLES.monoFont,
+              CHAEDITOR_THEME_DEFAULTS.fonts.mono,
+            ),
           },
         },
         shadows: {
@@ -54,8 +68,14 @@ export default defineConfig({
         colors: {
           surface: {
             value: {
-              base: '{colors.white}',
-              _dark: '{colors.zinc.900}',
+              base: withCssVar(
+                CHAEDITOR_THEME_VARIABLES.surface,
+                CHAEDITOR_THEME_DEFAULTS.light.surface,
+              ),
+              _dark: withCssVar(
+                CHAEDITOR_THEME_VARIABLES.surface,
+                CHAEDITOR_THEME_DEFAULTS.dark.surface,
+              ),
             },
           },
           appBackdrop: {
@@ -66,86 +86,164 @@ export default defineConfig({
           },
           surfaceMuted: {
             value: {
-              base: '{colors.zinc.100}',
-              _dark: '{colors.zinc.800}',
+              base: withCssVar(
+                CHAEDITOR_THEME_VARIABLES.surfaceMuted,
+                CHAEDITOR_THEME_DEFAULTS.light.surfaceMuted,
+              ),
+              _dark: withCssVar(
+                CHAEDITOR_THEME_VARIABLES.surfaceMuted,
+                CHAEDITOR_THEME_DEFAULTS.dark.surfaceMuted,
+              ),
             },
           },
           surfaceStrong: {
             value: {
-              base: '{colors.zinc.200}',
-              _dark: '{colors.zinc.700}',
+              base: withCssVar(
+                CHAEDITOR_THEME_VARIABLES.surfaceStrong,
+                CHAEDITOR_THEME_DEFAULTS.light.surfaceStrong,
+              ),
+              _dark: withCssVar(
+                CHAEDITOR_THEME_VARIABLES.surfaceStrong,
+                CHAEDITOR_THEME_DEFAULTS.dark.surfaceStrong,
+              ),
             },
           },
           text: {
             value: {
-              base: '{colors.zinc.900}',
-              _dark: '{colors.zinc.50}',
+              base: withCssVar(CHAEDITOR_THEME_VARIABLES.text, CHAEDITOR_THEME_DEFAULTS.light.text),
+              _dark: withCssVar(CHAEDITOR_THEME_VARIABLES.text, CHAEDITOR_THEME_DEFAULTS.dark.text),
             },
           },
           muted: {
             value: {
-              base: '{colors.zinc.500}',
-              _dark: '{colors.zinc.400}',
+              base: withCssVar(
+                CHAEDITOR_THEME_VARIABLES.muted,
+                CHAEDITOR_THEME_DEFAULTS.light.muted,
+              ),
+              _dark: withCssVar(
+                CHAEDITOR_THEME_VARIABLES.muted,
+                CHAEDITOR_THEME_DEFAULTS.dark.muted,
+              ),
             },
           },
           border: {
             value: {
-              base: '{colors.zinc.300}',
-              _dark: '{colors.zinc.600}',
+              base: withCssVar(
+                CHAEDITOR_THEME_VARIABLES.border,
+                CHAEDITOR_THEME_DEFAULTS.light.border,
+              ),
+              _dark: withCssVar(
+                CHAEDITOR_THEME_VARIABLES.border,
+                CHAEDITOR_THEME_DEFAULTS.dark.border,
+              ),
             },
           },
           borderStrong: {
             value: {
-              base: '{colors.zinc.400}',
-              _dark: '{colors.zinc.500}',
+              base: withCssVar(
+                CHAEDITOR_THEME_VARIABLES.borderStrong,
+                CHAEDITOR_THEME_DEFAULTS.light.borderStrong,
+              ),
+              _dark: withCssVar(
+                CHAEDITOR_THEME_VARIABLES.borderStrong,
+                CHAEDITOR_THEME_DEFAULTS.dark.borderStrong,
+              ),
             },
           },
           primary: {
             value: {
-              base: '{colors.blue.500}',
-              _dark: '{colors.blue.300}',
+              base: withCssVar(
+                CHAEDITOR_THEME_VARIABLES.primary,
+                CHAEDITOR_THEME_DEFAULTS.light.primary,
+              ),
+              _dark: withCssVar(
+                CHAEDITOR_THEME_VARIABLES.primary,
+                CHAEDITOR_THEME_DEFAULTS.dark.primary,
+              ),
             },
           },
           primarySubtle: {
             value: {
-              base: '{colors.blue.50}',
-              _dark: '{colors.blue.900}',
+              base: withCssVar(
+                CHAEDITOR_THEME_VARIABLES.primarySubtle,
+                CHAEDITOR_THEME_DEFAULTS.light.primarySubtle,
+              ),
+              _dark: withCssVar(
+                CHAEDITOR_THEME_VARIABLES.primarySubtle,
+                CHAEDITOR_THEME_DEFAULTS.dark.primarySubtle,
+              ),
             },
           },
           primaryMuted: {
             value: {
-              base: '{colors.blue.100}',
-              _dark: '{colors.blue.800}',
+              base: withCssVar(
+                CHAEDITOR_THEME_VARIABLES.primaryMuted,
+                CHAEDITOR_THEME_DEFAULTS.light.primaryMuted,
+              ),
+              _dark: withCssVar(
+                CHAEDITOR_THEME_VARIABLES.primaryMuted,
+                CHAEDITOR_THEME_DEFAULTS.dark.primaryMuted,
+              ),
             },
           },
           primaryContrast: {
             value: {
-              base: '{colors.white}',
-              _dark: '{colors.zinc.900}',
+              base: withCssVar(
+                CHAEDITOR_THEME_VARIABLES.primaryContrast,
+                CHAEDITOR_THEME_DEFAULTS.light.primaryContrast,
+              ),
+              _dark: withCssVar(
+                CHAEDITOR_THEME_VARIABLES.primaryContrast,
+                CHAEDITOR_THEME_DEFAULTS.dark.primaryContrast,
+              ),
             },
           },
           focusRing: {
             value: {
-              base: '{colors.blue.100}',
-              _dark: '{colors.blue.900}',
+              base: withCssVar(
+                CHAEDITOR_THEME_VARIABLES.focusRing,
+                CHAEDITOR_THEME_DEFAULTS.light.focusRing,
+              ),
+              _dark: withCssVar(
+                CHAEDITOR_THEME_VARIABLES.focusRing,
+                CHAEDITOR_THEME_DEFAULTS.dark.focusRing,
+              ),
             },
           },
           textSubtle: {
             value: {
-              base: '{colors.zinc.600}',
-              _dark: '{colors.zinc.300}',
+              base: withCssVar(
+                CHAEDITOR_THEME_VARIABLES.textSubtle,
+                CHAEDITOR_THEME_DEFAULTS.light.textSubtle,
+              ),
+              _dark: withCssVar(
+                CHAEDITOR_THEME_VARIABLES.textSubtle,
+                CHAEDITOR_THEME_DEFAULTS.dark.textSubtle,
+              ),
             },
           },
           success: {
             value: {
-              base: '{colors.green.500}',
-              _dark: '{colors.green.400}',
+              base: withCssVar(
+                CHAEDITOR_THEME_VARIABLES.success,
+                CHAEDITOR_THEME_DEFAULTS.light.success,
+              ),
+              _dark: withCssVar(
+                CHAEDITOR_THEME_VARIABLES.success,
+                CHAEDITOR_THEME_DEFAULTS.dark.success,
+              ),
             },
           },
           error: {
             value: {
-              base: '{colors.red.500}',
-              _dark: '{colors.red.400}',
+              base: withCssVar(
+                CHAEDITOR_THEME_VARIABLES.error,
+                CHAEDITOR_THEME_DEFAULTS.light.error,
+              ),
+              _dark: withCssVar(
+                CHAEDITOR_THEME_VARIABLES.error,
+                CHAEDITOR_THEME_DEFAULTS.dark.error,
+              ),
             },
           },
         },

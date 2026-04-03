@@ -1,4 +1,6 @@
 export type {
+  ChaeditorThemeDefinition,
+  ChaeditorThemeVariableName,
   EditorAttachment,
   EditorContentType,
   FetchLinkPreviewMeta,
@@ -29,9 +31,12 @@ export type {
 export {
   applyTextareaTransform,
   buildEditorLinkInsertion,
+  CHAEDITOR_THEME_DEFAULTS,
+  CHAEDITOR_THEME_VARIABLES,
   continueMarkdownList,
   createAlignBlockMarkdown,
   createAttachmentEmbedMarkdown,
+  createChaeditorThemeVars,
   createImageEmbedMarkdown,
   createImageEmbedMarkdownGroup,
   createImageGalleryMarkdown,

@@ -73,6 +73,15 @@ export {
   wrapSelection,
 } from '@/entities/editor-core/model/selection-utils';
 export type {
+  ChaeditorThemeDefinition,
+  ChaeditorThemeVariableName,
+} from '@/entities/editor-core/model/theme-contract';
+export {
+  CHAEDITOR_THEME_DEFAULTS,
+  CHAEDITOR_THEME_VARIABLES,
+  createChaeditorThemeVars,
+} from '@/entities/editor-core/model/theme-contract';
+export type {
   MarkdownToolbarPresetItemKey,
   MarkdownToolbarPresetSection,
   MarkdownToolbarResolvedSection,
