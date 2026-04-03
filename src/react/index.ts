@@ -36,6 +36,12 @@ export {
   createRichMarkdownRendererRegistry,
 } from '@/shared/lib/markdown/rich-markdown-renderers';
 export { MarkdownRenderer } from '@/shared/ui/markdown/markdown-renderer';
+export type { MarkdownPrimitiveRegistry } from '@/shared/ui/primitive-registry/markdown-primitive-registry';
+export {
+  createDefaultMarkdownPrimitiveRegistry,
+  MarkdownPrimitiveProvider,
+  useMarkdownPrimitives,
+} from '@/shared/ui/primitive-registry/markdown-primitive-registry';
 export type { MarkdownEditorHostAdapters } from '@/widgets/editor';
 export { MarkdownEditor } from '@/widgets/editor';
 export type { MarkdownEditorProps } from '@/widgets/editor/ui/markdown-editor';

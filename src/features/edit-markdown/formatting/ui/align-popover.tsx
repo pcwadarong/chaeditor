@@ -3,9 +3,9 @@
 import React from 'react';
 import { css } from 'styled-system/css';
 
-import { Button } from '@/shared/ui/button/button';
 import { AlignCenterIcon, AlignLeftIcon, AlignRightIcon } from '@/shared/ui/icons/app-icons';
-import { type ClosePopover, Popover } from '@/shared/ui/popover/popover';
+import type { ClosePopover } from '@/shared/ui/popover/popover';
+import { useMarkdownPrimitives } from '@/shared/ui/primitive-registry/markdown-primitive-registry';
 
 type AlignPopoverProps = {
   onApply: (align: 'center' | 'left' | 'right', closePopover?: ClosePopover) => void;
@@ -41,36 +41,40 @@ export const AlignPopover = ({
   onApply,
   onTriggerMouseDown,
   triggerClassName,
-}: AlignPopoverProps) => (
-  <Popover
-    onTriggerMouseDown={onTriggerMouseDown}
-    panelLabel="Choose alignment"
-    portalPlacement="start"
-    renderInPortal
-    triggerAriaLabel="Alignment"
-    triggerClassName={triggerClassName}
-    triggerContent={<AlignLeftIcon aria-hidden color="text" size="sm" />}
-    triggerTooltip="Alignment"
-  >
-    {({ closePopover }) => (
-      <div className={alignGridClass}>
-        {alignOptions.map(option => (
-          <Button
-            aria-label={option.label}
-            className={alignButtonClass}
-            key={option.key}
-            onClick={() => onApply(option.value, closePopover)}
-            onMouseDown={event => event.preventDefault()}
-            type="button"
-            variant="ghost"
-          >
-            {option.icon}
-          </Button>
-        ))}
-      </div>
-    )}
-  </Popover>
-);
+}: AlignPopoverProps) => {
+  const { Button, Popover: PrimitivePopover } = useMarkdownPrimitives();
+
+  return (
+    <PrimitivePopover
+      onTriggerMouseDown={onTriggerMouseDown}
+      panelLabel="Choose alignment"
+      portalPlacement="start"
+      renderInPortal
+      triggerAriaLabel="Alignment"
+      triggerClassName={triggerClassName}
+      triggerContent={<AlignLeftIcon aria-hidden color="text" size="sm" />}
+      triggerTooltip="Alignment"
+    >
+      {({ closePopover }) => (
+        <div className={alignGridClass}>
+          {alignOptions.map(option => (
+            <Button
+              aria-label={option.label}
+              className={alignButtonClass}
+              key={option.key}
+              onClick={() => onApply(option.value, closePopover)}
+              onMouseDown={event => event.preventDefault()}
+              type="button"
+              variant="ghost"
+            >
+              {option.icon}
+            </Button>
+          ))}
+        </div>
+      )}
+    </PrimitivePopover>
+  );
+};
 
 const alignGridClass = css({
   display: 'inline-grid',

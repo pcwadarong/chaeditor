@@ -24,12 +24,9 @@ import {
 } from '@/features/edit-markdown/image/model/image-embed-modal-state';
 import { ImageEmbedModalEditor } from '@/features/edit-markdown/image/ui/image-embed-modal-editor';
 import { ImageEmbedModalEmptyState } from '@/features/edit-markdown/image/ui/image-embed-modal-empty-state';
-import { Button } from '@/shared/ui/button/button';
 import { ImageIcon } from '@/shared/ui/icons/app-icons';
-import { Modal } from '@/shared/ui/modal/modal';
 import type { ClosePopover } from '@/shared/ui/popover/popover';
-import { Textarea } from '@/shared/ui/textarea/textarea';
-import { Tooltip } from '@/shared/ui/tooltip/tooltip';
+import { useMarkdownPrimitives } from '@/shared/ui/primitive-registry/markdown-primitive-registry';
 
 type ImageEmbedModalProps = {
   contentType: EditorContentType;
@@ -63,6 +60,7 @@ export const ImageEmbedModal = ({
   onTriggerMouseDown,
   triggerClassName,
 }: ImageEmbedModalProps) => {
+  const { Button, Modal, Textarea, Tooltip } = useMarkdownPrimitives();
   const nextRowIdRef = useRef(0);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
   const emptyStateUrlInputRef = useRef<HTMLTextAreaElement | null>(null);

@@ -3,9 +3,8 @@
 import React from 'react';
 import { css, cx } from 'styled-system/css';
 
-import { Button } from '@/shared/ui/button/button';
 import { ImageIcon } from '@/shared/ui/icons/app-icons';
-import { Textarea } from '@/shared/ui/textarea/textarea';
+import { useMarkdownPrimitives } from '@/shared/ui/primitive-registry/markdown-primitive-registry';
 
 type ImageEmbedModalEmptyStateProps = {
   acceptedFileTypes: string;
@@ -47,61 +46,65 @@ export const ImageEmbedModalEmptyState = ({
   pendingUrls,
   urlAddDisabled,
   urlInputRef,
-}: ImageEmbedModalEmptyStateProps) => (
-  <section className={emptyStateLayoutClass}>
-    <label
-      className={cx(emptyStateClass, isDragActive ? emptyStateActiveClass : undefined)}
-      data-image-empty-dropzone
-      onDragLeave={onDropzoneDragLeave}
-      onDragOver={onDropzoneDragOver}
-      onDrop={onDropzoneDrop}
-    >
-      <input
-        accept={acceptedFileTypes}
-        aria-label="Dropzone image upload"
-        className={fileInputClass}
-        disabled={isUploading || !canAddRow || !isImageUploadEnabled}
-        multiple
-        onChange={onFileChange}
-        type="file"
-      />
-      <div className={emptyStateInnerClass}>
-        <ImageIcon aria-hidden color="muted" size="lg" />
-        <div className={emptyStateTitleClass}>Drop images here.</div>
-        <p className={emptyStateDescriptionClass}>Click to browse or drag and drop files.</p>
-      </div>
-    </label>
-    <section className={urlPanelClass}>
-      <label className={fieldLabelClass} htmlFor="markdown-toolbar-image-url-panel">
-        Add web URLs
+}: ImageEmbedModalEmptyStateProps) => {
+  const { Button, Textarea } = useMarkdownPrimitives();
+
+  return (
+    <section className={emptyStateLayoutClass}>
+      <label
+        className={cx(emptyStateClass, isDragActive ? emptyStateActiveClass : undefined)}
+        data-image-empty-dropzone
+        onDragLeave={onDropzoneDragLeave}
+        onDragOver={onDropzoneDragOver}
+        onDrop={onDropzoneDrop}
+      >
+        <input
+          accept={acceptedFileTypes}
+          aria-label="Dropzone image upload"
+          className={fileInputClass}
+          disabled={isUploading || !canAddRow || !isImageUploadEnabled}
+          multiple
+          onChange={onFileChange}
+          type="file"
+        />
+        <div className={emptyStateInnerClass}>
+          <ImageIcon aria-hidden color="muted" size="lg" />
+          <div className={emptyStateTitleClass}>Drop images here.</div>
+          <p className={emptyStateDescriptionClass}>Click to browse or drag and drop files.</p>
+        </div>
       </label>
-      <Textarea
-        autoResize={false}
-        id="markdown-toolbar-image-url-panel"
-        onChange={event => onPendingUrlsChange(event.target.value)}
-        placeholder={`https://example.com/image.png\nhttps://example.com/image-2.png`}
-        ref={urlInputRef}
-        rows={3}
-        value={pendingUrls}
-      />
-      <div className={urlPanelActionRowClass}>
-        <p className={metaTextClass}>
-          {isImageUploadEnabled
-            ? 'Enter one URL per line.'
-            : 'Enter one URL per line. Image upload is currently disabled.'}
-        </p>
-        <Button disabled={urlAddDisabled} onClick={onAddUrls} size="sm" tone="white">
-          Add
-        </Button>
-      </div>
-      {errorMessage ? (
-        <p aria-live="polite" className={metaErrorTextClass} role="alert">
-          {errorMessage}
-        </p>
-      ) : null}
+      <section className={urlPanelClass}>
+        <label className={fieldLabelClass} htmlFor="markdown-toolbar-image-url-panel">
+          Add web URLs
+        </label>
+        <Textarea
+          autoResize={false}
+          id="markdown-toolbar-image-url-panel"
+          onChange={event => onPendingUrlsChange(event.target.value)}
+          placeholder={`https://example.com/image.png\nhttps://example.com/image-2.png`}
+          ref={urlInputRef}
+          rows={3}
+          value={pendingUrls}
+        />
+        <div className={urlPanelActionRowClass}>
+          <p className={metaTextClass}>
+            {isImageUploadEnabled
+              ? 'Enter one URL per line.'
+              : 'Enter one URL per line. Image upload is currently disabled.'}
+          </p>
+          <Button disabled={urlAddDisabled} onClick={onAddUrls} size="sm" tone="white">
+            Add
+          </Button>
+        </div>
+        {errorMessage ? (
+          <p aria-live="polite" className={metaErrorTextClass} role="alert">
+            {errorMessage}
+          </p>
+        ) : null}
+      </section>
     </section>
-  </section>
-);
+  );
+};
 
 const fileInputClass = css({
   position: 'absolute',

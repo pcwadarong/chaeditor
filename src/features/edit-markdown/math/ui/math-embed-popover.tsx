@@ -4,9 +4,8 @@ import React, { useLayoutEffect, useRef, useState } from 'react';
 import { css } from 'styled-system/css';
 
 import type { MathEmbedApplyPayload } from '@/features/edit-markdown/math/model/math-embed';
-import { Button } from '@/shared/ui/button/button';
-import { type ClosePopover, Popover } from '@/shared/ui/popover/popover';
-import { Textarea } from '@/shared/ui/textarea/textarea';
+import type { ClosePopover } from '@/shared/ui/popover/popover';
+import { useMarkdownPrimitives } from '@/shared/ui/primitive-registry/markdown-primitive-registry';
 
 type MathEmbedPopoverProps = {
   onApply: (payload: MathEmbedApplyPayload, closePopover?: ClosePopover) => void;
@@ -102,6 +101,7 @@ export const MathEmbedPopover = ({
   onTriggerMouseDown,
   triggerClassName,
 }: MathEmbedPopoverProps) => {
+  const { Button, Popover: PrimitivePopover, Textarea } = useMarkdownPrimitives();
   const [mathInput, setMathInput] = useState('');
   const [selectionRange, setSelectionRange] = useState<MathTemplate['selection'] | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
@@ -137,7 +137,7 @@ export const MathEmbedPopover = ({
   };
 
   return (
-    <Popover
+    <PrimitivePopover
       onTriggerMouseDown={onTriggerMouseDown}
       panelLabel="Insert math"
       portalPlacement="start"
@@ -178,7 +178,7 @@ export const MathEmbedPopover = ({
           </div>
         </div>
       )}
-    </Popover>
+    </PrimitivePopover>
   );
 };
 

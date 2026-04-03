@@ -3,8 +3,7 @@
 import React from 'react';
 import { css, cx } from 'styled-system/css';
 
-import { Button } from '@/shared/ui/button/button';
-import { Tooltip } from '@/shared/ui/tooltip/tooltip';
+import { useMarkdownPrimitives } from '@/shared/ui/primitive-registry/markdown-primitive-registry';
 
 type ToolbarActionButtonProps = {
   ariaLabel: string;
@@ -21,22 +20,26 @@ export const ToolbarActionButton = ({
   children,
   className,
   onClick,
-}: ToolbarActionButtonProps) => (
-  <Tooltip content={ariaLabel}>
-    <Button
-      aria-label={ariaLabel}
-      className={cx(actionButtonClass, className)}
-      onClick={onClick}
-      onMouseDown={event => event.preventDefault()}
-      size="sm"
-      tone="white"
-      type="button"
-      variant="ghost"
-    >
-      {children}
-    </Button>
-  </Tooltip>
-);
+}: ToolbarActionButtonProps) => {
+  const { Button, Tooltip } = useMarkdownPrimitives();
+
+  return (
+    <Tooltip content={ariaLabel}>
+      <Button
+        aria-label={ariaLabel}
+        className={cx(actionButtonClass, className)}
+        onClick={onClick}
+        onMouseDown={event => event.preventDefault()}
+        size="sm"
+        tone="white"
+        type="button"
+        variant="ghost"
+      >
+        {children}
+      </Button>
+    </Tooltip>
+  );
+};
 
 const actionButtonClass = css({
   minWidth: '9',

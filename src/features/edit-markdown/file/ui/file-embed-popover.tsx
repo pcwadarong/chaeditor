@@ -9,10 +9,9 @@ import {
   type UploadEditorFile,
 } from '@/entities/editor-core';
 import type { FileEmbedApplyPayload } from '@/features/edit-markdown/file/model/file-embed';
-import { Button } from '@/shared/ui/button/button';
 import { FileIcon } from '@/shared/ui/icons/app-icons';
-import { Input } from '@/shared/ui/input/input';
-import { type ClosePopover, Popover } from '@/shared/ui/popover/popover';
+import type { ClosePopover } from '@/shared/ui/popover/popover';
+import { useMarkdownPrimitives } from '@/shared/ui/primitive-registry/markdown-primitive-registry';
 
 type FileEmbedPopoverProps = {
   contentType: EditorContentType;
@@ -32,6 +31,7 @@ export const FileEmbedPopover = ({
   onTriggerMouseDown,
   triggerClassName,
 }: FileEmbedPopoverProps) => {
+  const { Button, Input, Popover: PrimitivePopover } = useMarkdownPrimitives();
   const [attachment, setAttachment] = useState<FileEmbedApplyPayload | null>(null);
   const [attachmentError, setAttachmentError] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -83,7 +83,7 @@ export const FileEmbedPopover = ({
   };
 
   return (
-    <Popover
+    <PrimitivePopover
       onTriggerMouseDown={onTriggerMouseDown}
       panelLabel="Attach file"
       portalPlacement="start"
@@ -140,7 +140,7 @@ export const FileEmbedPopover = ({
           </Button>
         </div>
       )}
-    </Popover>
+    </PrimitivePopover>
   );
 };
 

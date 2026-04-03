@@ -8,10 +8,9 @@ import type {
   LinkEmbedMode,
   LinkEmbedPopoverLabels,
 } from '@/features/edit-markdown/link/model/link-embed';
-import { Button } from '@/shared/ui/button/button';
 import { LinkIcon } from '@/shared/ui/icons/app-icons';
-import { Input } from '@/shared/ui/input/input';
-import { type ClosePopover, Popover } from '@/shared/ui/popover/popover';
+import type { ClosePopover } from '@/shared/ui/popover/popover';
+import { useMarkdownPrimitives } from '@/shared/ui/primitive-registry/markdown-primitive-registry';
 
 type LinkEmbedPopoverProps = {
   labels?: Partial<LinkEmbedPopoverLabels>;
@@ -29,6 +28,7 @@ export const LinkEmbedPopover = ({
   onTriggerMouseDown,
   triggerClassName,
 }: LinkEmbedPopoverProps) => {
+  const { Button, Input, Popover: PrimitivePopover } = useMarkdownPrimitives();
   const [linkInput, setLinkInput] = useState('');
   const resolvedLabels: LinkEmbedPopoverLabels = {
     cardButtonLabel: labels?.cardButtonLabel ?? 'OG Card',
@@ -51,7 +51,7 @@ export const LinkEmbedPopover = ({
   };
 
   return (
-    <Popover
+    <PrimitivePopover
       onTriggerMouseDown={onTriggerMouseDown}
       panelLabel={resolvedLabels.panelLabel}
       portalPlacement="start"
@@ -84,7 +84,7 @@ export const LinkEmbedPopover = ({
           </div>
         </div>
       )}
-    </Popover>
+    </PrimitivePopover>
   );
 };
 

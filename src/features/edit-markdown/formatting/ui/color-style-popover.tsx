@@ -4,8 +4,8 @@ import React from 'react';
 import { css } from 'styled-system/css';
 
 import { markdownColorPresets } from '@/shared/lib/markdown/markdown-color-presets';
-import { Button } from '@/shared/ui/button/button';
-import { type ClosePopover, Popover } from '@/shared/ui/popover/popover';
+import type { ClosePopover } from '@/shared/ui/popover/popover';
+import { useMarkdownPrimitives } from '@/shared/ui/primitive-registry/markdown-primitive-registry';
 
 export type ColorStylePopoverLabels = {
   getOptionAriaLabel?: (label: string) => string;
@@ -33,47 +33,51 @@ export const ColorStylePopover = ({
   onTriggerMouseDown,
   triggerClassName,
   triggerContent,
-}: ColorStylePopoverProps) => (
-  <Popover
-    onTriggerMouseDown={onTriggerMouseDown}
-    panelLabel={labels.panelLabel}
-    portalPlacement="start"
-    renderInPortal
-    triggerAriaLabel={labels.triggerAriaLabel}
-    triggerClassName={triggerClassName}
-    triggerContent={triggerContent}
-    triggerTooltip={labels.triggerTooltip}
-  >
-    {({ closePopover }) => (
-      <div className={colorGridClass}>
-        {markdownColorPresets.map(option => (
-          <Button
-            aria-label={labels.getOptionAriaLabel?.(option.label) ?? `${option.label} color`}
-            className={colorButtonClass}
-            key={option.hex}
-            onClick={() => onApply(option.hex, closePopover)}
-            onMouseDown={event => event.preventDefault()}
-            title={option.hex}
-            type="button"
-            variant="ghost"
-          >
-            <span
-              aria-hidden
-              className={colorSwatchClass}
-              style={
-                previewMode === 'text'
-                  ? { color: option.textColor }
-                  : { backgroundColor: option.softBackgroundColor }
-              }
+}: ColorStylePopoverProps) => {
+  const { Button, Popover: PrimitivePopover } = useMarkdownPrimitives();
+
+  return (
+    <PrimitivePopover
+      onTriggerMouseDown={onTriggerMouseDown}
+      panelLabel={labels.panelLabel}
+      portalPlacement="start"
+      renderInPortal
+      triggerAriaLabel={labels.triggerAriaLabel}
+      triggerClassName={triggerClassName}
+      triggerContent={triggerContent}
+      triggerTooltip={labels.triggerTooltip}
+    >
+      {({ closePopover }) => (
+        <div className={colorGridClass}>
+          {markdownColorPresets.map(option => (
+            <Button
+              aria-label={labels.getOptionAriaLabel?.(option.label) ?? `${option.label} color`}
+              className={colorButtonClass}
+              key={option.hex}
+              onClick={() => onApply(option.hex, closePopover)}
+              onMouseDown={event => event.preventDefault()}
+              title={option.hex}
+              type="button"
+              variant="ghost"
             >
-              A
-            </span>
-          </Button>
-        ))}
-      </div>
-    )}
-  </Popover>
-);
+              <span
+                aria-hidden
+                className={colorSwatchClass}
+                style={
+                  previewMode === 'text'
+                    ? { color: option.textColor }
+                    : { backgroundColor: option.softBackgroundColor }
+                }
+              >
+                A
+              </span>
+            </Button>
+          ))}
+        </div>
+      )}
+    </PrimitivePopover>
+  );
+};
 
 const colorGridClass = css({
   display: 'grid',

@@ -22,7 +22,7 @@ import { getMarkdownOptions, markdownBodyClass } from '@/shared/lib/markdown/mar
 import { renderRichMarkdown } from '@/shared/lib/markdown/rich-markdown';
 import type { PartialRichMarkdownRendererRegistry } from '@/shared/lib/markdown/rich-markdown-renderers';
 import { EditIcon, EyeIcon } from '@/shared/ui/icons/app-icons';
-import { Textarea } from '@/shared/ui/textarea/textarea';
+import { useMarkdownPrimitives } from '@/shared/ui/primitive-registry/markdown-primitive-registry';
 
 type MarkdownEditorProps = {
   adapters?: MarkdownEditorHostAdapters;
@@ -54,6 +54,7 @@ export const MarkdownEditor = ({
   uiRegistry,
   value,
 }: MarkdownEditorProps) => {
+  const { Textarea } = useMarkdownPrimitives();
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const [mobilePane, setMobilePane] = useState<MobilePane>('edit');
   const isMobileLayout = useMobileEditorLayout();

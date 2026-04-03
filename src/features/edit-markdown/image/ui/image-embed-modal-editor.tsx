@@ -9,10 +9,9 @@ import type {
   FilledImageRow,
   ImageInputRow,
 } from '@/features/edit-markdown/image/model/image-embed-modal-state';
-import { Button } from '@/shared/ui/button/button';
 import { ArrowUpIcon, TrashIcon } from '@/shared/ui/icons/app-icons';
 import { RenderImage } from '@/shared/ui/image/render-image';
-import { Input } from '@/shared/ui/input/input';
+import { useMarkdownPrimitives } from '@/shared/ui/primitive-registry/markdown-primitive-registry';
 
 type ImageEmbedModalEditorProps = {
   duplicateRowIds: Set<string>;
@@ -60,181 +59,185 @@ export const ImageEmbedModalEditor = ({
   selectedRow,
   selectedUrlInputRef,
   uploadAccept,
-}: ImageEmbedModalEditorProps) => (
-  <div className={editorLayoutClass}>
-    <div className={bodyClass}>
-      <aside className={sidebarClass}>
-        <div className={sidebarHeaderClass}>
-          <div className={sidebarHeaderInfoClass}>
-            <p className={fieldLabelClass}>Images</p>
-            <p className={metaTextClass}>{filledRows.length} items · max 10</p>
+}: ImageEmbedModalEditorProps) => {
+  const { Button, Input } = useMarkdownPrimitives();
+
+  return (
+    <div className={editorLayoutClass}>
+      <div className={bodyClass}>
+        <aside className={sidebarClass}>
+          <div className={sidebarHeaderClass}>
+            <div className={sidebarHeaderInfoClass}>
+              <p className={fieldLabelClass}>Images</p>
+              <p className={metaTextClass}>{filledRows.length} items · max 10</p>
+            </div>
+            <Button
+              className={mobileListToggleButtonClass}
+              onClick={onToggleMobileList}
+              size="xs"
+              tone="white"
+              variant="ghost"
+            >
+              {isMobileListCollapsed ? 'Show image list' : 'Hide image list'}
+            </Button>
           </div>
-          <Button
-            className={mobileListToggleButtonClass}
-            onClick={onToggleMobileList}
-            size="xs"
-            tone="white"
-            variant="ghost"
+          <div
+            className={cx(
+              rowListClass,
+              isMobileListCollapsed ? mobileRowListCollapsedClass : undefined,
+            )}
+            data-image-list
+            data-scrollable="true"
           >
-            {isMobileListCollapsed ? 'Show image list' : 'Hide image list'}
-          </Button>
-        </div>
-        <div
-          className={cx(
-            rowListClass,
-            isMobileListCollapsed ? mobileRowListCollapsedClass : undefined,
-          )}
-          data-image-list
-          data-scrollable="true"
-        >
-          {rows.map((row, index) => {
-            const hasDuplicateUrl = duplicateRowIds.has(row.id);
-            const isSelected = row.id === selectedRow?.id;
+            {rows.map((row, index) => {
+              const hasDuplicateUrl = duplicateRowIds.has(row.id);
+              const isSelected = row.id === selectedRow?.id;
 
-            return (
-              <div
-                className={cx(
-                  rowListItemClass,
-                  isSelected ? rowListItemSelectedClass : undefined,
-                  hasDuplicateUrl ? rowListItemErrorClass : undefined,
-                )}
-                key={row.id}
-              >
-                <button
-                  aria-pressed={isSelected}
-                  className={rowListSelectButtonClass}
-                  onClick={() => onSelectRow(row.id)}
-                  type="button"
+              return (
+                <div
+                  className={cx(
+                    rowListItemClass,
+                    isSelected ? rowListItemSelectedClass : undefined,
+                    hasDuplicateUrl ? rowListItemErrorClass : undefined,
+                  )}
+                  key={row.id}
                 >
-                  <span className={rowListItemIndexClass}>{index + 1}</span>
-                  <span className={rowListItemTextClass}>
-                    {normalizeEmbedInput(row.alt) ?? normalizeEmbedInput(row.url) ?? 'New image'}
-                  </span>
-                </button>
-                <div className={rowListSortActionClass}>
                   <button
-                    aria-label={`Move image ${index + 1} up`}
-                    className={rowListActionButtonClass}
-                    disabled={index === 0}
-                    onClick={event => {
-                      event.stopPropagation();
-                      onMoveRow(row.id, 'up');
-                    }}
+                    aria-pressed={isSelected}
+                    className={rowListSelectButtonClass}
+                    onClick={() => onSelectRow(row.id)}
                     type="button"
                   >
-                    <ArrowUpIcon aria-hidden color="text" size="sm" />
+                    <span className={rowListItemIndexClass}>{index + 1}</span>
+                    <span className={rowListItemTextClass}>
+                      {normalizeEmbedInput(row.alt) ?? normalizeEmbedInput(row.url) ?? 'New image'}
+                    </span>
                   </button>
-                  <button
-                    aria-label={`Move image ${index + 1} down`}
-                    className={cx(rowListActionButtonClass, rowSortButtonDownClass)}
-                    disabled={index === rows.length - 1}
-                    onClick={event => {
-                      event.stopPropagation();
-                      onMoveRow(row.id, 'down');
-                    }}
-                    type="button"
-                  >
-                    <ArrowUpIcon aria-hidden color="text" size="sm" />
-                  </button>
-                  <button
-                    aria-label={`Delete image ${index + 1}`}
-                    className={rowListActionButtonClass}
-                    onClick={event => {
-                      event.stopPropagation();
-                      onRemoveRow(row.id);
-                    }}
-                    type="button"
-                  >
-                    <TrashIcon aria-hidden color="text" size="sm" />
-                  </button>
+                  <div className={rowListSortActionClass}>
+                    <button
+                      aria-label={`Move image ${index + 1} up`}
+                      className={rowListActionButtonClass}
+                      disabled={index === 0}
+                      onClick={event => {
+                        event.stopPropagation();
+                        onMoveRow(row.id, 'up');
+                      }}
+                      type="button"
+                    >
+                      <ArrowUpIcon aria-hidden color="text" size="sm" />
+                    </button>
+                    <button
+                      aria-label={`Move image ${index + 1} down`}
+                      className={cx(rowListActionButtonClass, rowSortButtonDownClass)}
+                      disabled={index === rows.length - 1}
+                      onClick={event => {
+                        event.stopPropagation();
+                        onMoveRow(row.id, 'down');
+                      }}
+                      type="button"
+                    >
+                      <ArrowUpIcon aria-hidden color="text" size="sm" />
+                    </button>
+                    <button
+                      aria-label={`Delete image ${index + 1}`}
+                      className={rowListActionButtonClass}
+                      onClick={event => {
+                        event.stopPropagation();
+                        onRemoveRow(row.id);
+                      }}
+                      type="button"
+                    >
+                      <TrashIcon aria-hidden color="text" size="sm" />
+                    </button>
+                  </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
-      </aside>
+              );
+            })}
+          </div>
+        </aside>
 
-      <div className={previewFrameClass} data-image-preview-frame data-preview-shape="square">
-        {selectedPreviewUrl ? (
-          <RenderImage
-            alt={normalizeEmbedInput(selectedRow?.alt ?? '') ?? 'Image preview'}
-            className={previewImageClass}
-            data-image-preview-fit="contain"
-            fill
-            renderImage={renderImage}
-            src={selectedPreviewUrl}
-          />
-        ) : (
-          <div className={previewPlaceholderClass}>No preview</div>
-        )}
-      </div>
-
-      <section className={editorFieldsClass}>
-        <div className={rowFieldClass}>
-          <label className={fieldLabelClass} htmlFor="markdown-toolbar-selected-image-url">
-            URL
-          </label>
-          <Input
-            disabled={!selectedRow}
-            id="markdown-toolbar-selected-image-url"
-            onChange={event =>
-              selectedRow ? onUpdateRow(selectedRow.id, { url: event.target.value }) : undefined
-            }
-            placeholder="https://example.com/image.png"
-            ref={selectedUrlInputRef}
-            value={selectedRow?.url ?? ''}
-          />
-        </div>
-
-        <div className={rowFieldClass}>
-          <label className={fieldLabelClass} htmlFor="markdown-toolbar-selected-image-alt">
-            Alt text
-          </label>
-          <Input
-            disabled={!selectedRow}
-            id="markdown-toolbar-selected-image-alt"
-            onChange={event =>
-              selectedRow ? onUpdateRow(selectedRow.id, { alt: event.target.value }) : undefined
-            }
-            placeholder="Describe the image"
-            value={selectedRow?.alt ?? ''}
-          />
-        </div>
-
-        <div className={rowFieldClass}>
-          <span className={fieldLabelClass}>Image upload</span>
-          <label className={uploadButtonWrapClass}>
-            <span aria-live="polite" className={uploadButtonLabelClass} role="status">
-              {isUploading ? 'Uploading...' : 'Replace selected image'}
-            </span>
-            <input
-              accept={uploadAccept}
-              aria-label="Upload selected image"
-              className={fileInputClass}
-              disabled={isUploading || !selectedRow || !isImageUploadEnabled}
-              onChange={onFileChange}
-              type="file"
+        <div className={previewFrameClass} data-image-preview-frame data-preview-shape="square">
+          {selectedPreviewUrl ? (
+            <RenderImage
+              alt={normalizeEmbedInput(selectedRow?.alt ?? '') ?? 'Image preview'}
+              className={previewImageClass}
+              data-image-preview-fit="contain"
+              fill
+              renderImage={renderImage}
+              src={selectedPreviewUrl}
             />
-          </label>
+          ) : (
+            <div className={previewPlaceholderClass}>No preview</div>
+          )}
         </div>
 
-        {!isImageUploadEnabled ? (
-          <p className={metaTextClass}>Image upload is not configured in the host application.</p>
-        ) : null}
-        {selectedRow && duplicateRowIds.has(selectedRow.id) ? (
-          <p className={metaErrorTextClass} role="alert">
-            Duplicate URLs cannot be inserted.
-          </p>
-        ) : null}
-        {errorMessage ? (
-          <p className={metaErrorTextClass} role="alert">
-            {errorMessage}
-          </p>
-        ) : null}
-      </section>
+        <section className={editorFieldsClass}>
+          <div className={rowFieldClass}>
+            <label className={fieldLabelClass} htmlFor="markdown-toolbar-selected-image-url">
+              URL
+            </label>
+            <Input
+              disabled={!selectedRow}
+              id="markdown-toolbar-selected-image-url"
+              onChange={event =>
+                selectedRow ? onUpdateRow(selectedRow.id, { url: event.target.value }) : undefined
+              }
+              placeholder="https://example.com/image.png"
+              ref={selectedUrlInputRef}
+              value={selectedRow?.url ?? ''}
+            />
+          </div>
+
+          <div className={rowFieldClass}>
+            <label className={fieldLabelClass} htmlFor="markdown-toolbar-selected-image-alt">
+              Alt text
+            </label>
+            <Input
+              disabled={!selectedRow}
+              id="markdown-toolbar-selected-image-alt"
+              onChange={event =>
+                selectedRow ? onUpdateRow(selectedRow.id, { alt: event.target.value }) : undefined
+              }
+              placeholder="Describe the image"
+              value={selectedRow?.alt ?? ''}
+            />
+          </div>
+
+          <div className={rowFieldClass}>
+            <span className={fieldLabelClass}>Image upload</span>
+            <label className={uploadButtonWrapClass}>
+              <span aria-live="polite" className={uploadButtonLabelClass} role="status">
+                {isUploading ? 'Uploading...' : 'Replace selected image'}
+              </span>
+              <input
+                accept={uploadAccept}
+                aria-label="Upload selected image"
+                className={fileInputClass}
+                disabled={isUploading || !selectedRow || !isImageUploadEnabled}
+                onChange={onFileChange}
+                type="file"
+              />
+            </label>
+          </div>
+
+          {!isImageUploadEnabled ? (
+            <p className={metaTextClass}>Image upload is not configured in the host application.</p>
+          ) : null}
+          {selectedRow && duplicateRowIds.has(selectedRow.id) ? (
+            <p className={metaErrorTextClass} role="alert">
+              Duplicate URLs cannot be inserted.
+            </p>
+          ) : null}
+          {errorMessage ? (
+            <p className={metaErrorTextClass} role="alert">
+              {errorMessage}
+            </p>
+          ) : null}
+        </section>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 const editorLayoutClass = css({
   display: 'grid',

@@ -4,8 +4,8 @@ import React from 'react';
 import { css } from 'styled-system/css';
 
 import type { ToolbarTokenOption } from '@/features/edit-markdown/toolbar/contracts/markdown-toolbar.types';
-import { Button } from '@/shared/ui/button/button';
-import { type ClosePopover, Popover } from '@/shared/ui/popover/popover';
+import type { ClosePopover } from '@/shared/ui/popover/popover';
+import { useMarkdownPrimitives } from '@/shared/ui/primitive-registry/markdown-primitive-registry';
 
 export type ToolbarTokenPopoverLabels = {
   panelLabel: string;
@@ -30,39 +30,43 @@ export const ToolbarTokenPopover = ({
   options,
   triggerClassName,
   triggerToken,
-}: ToolbarTokenPopoverProps) => (
-  <Popover
-    onTriggerMouseDown={onTriggerMouseDown}
-    panelClassName={panelClass}
-    panelLabel={labels.panelLabel}
-    portalPlacement="start"
-    renderInPortal
-    triggerAriaLabel={labels.triggerAriaLabel}
-    triggerClassName={triggerClassName}
-    triggerContent={<span className={triggerTokenClass}>{triggerToken}</span>}
-    triggerTooltip={labels.triggerTooltip}
-  >
-    {({ closePopover }) => (
-      <div className={optionGridClass}>
-        {options.map(option => (
-          <Button
-            aria-label={option.label}
-            className={optionButtonClass}
-            key={option.key}
-            onClick={() => handleOptionClick(option.onClick, closePopover)}
-            onMouseDown={event => event.preventDefault()}
-            size="sm"
-            tone="white"
-            type="button"
-            variant="ghost"
-          >
-            <span className={optionTokenClass}>{option.token}</span>
-          </Button>
-        ))}
-      </div>
-    )}
-  </Popover>
-);
+}: ToolbarTokenPopoverProps) => {
+  const { Button, Popover: PrimitivePopover } = useMarkdownPrimitives();
+
+  return (
+    <PrimitivePopover
+      onTriggerMouseDown={onTriggerMouseDown}
+      panelClassName={panelClass}
+      panelLabel={labels.panelLabel}
+      portalPlacement="start"
+      renderInPortal
+      triggerAriaLabel={labels.triggerAriaLabel}
+      triggerClassName={triggerClassName}
+      triggerContent={<span className={triggerTokenClass}>{triggerToken}</span>}
+      triggerTooltip={labels.triggerTooltip}
+    >
+      {({ closePopover }) => (
+        <div className={optionGridClass}>
+          {options.map(option => (
+            <Button
+              aria-label={option.label}
+              className={optionButtonClass}
+              key={option.key}
+              onClick={() => handleOptionClick(option.onClick, closePopover)}
+              onMouseDown={event => event.preventDefault()}
+              size="sm"
+              tone="white"
+              type="button"
+              variant="ghost"
+            >
+              <span className={optionTokenClass}>{option.token}</span>
+            </Button>
+          ))}
+        </div>
+      )}
+    </PrimitivePopover>
+  );
+};
 
 /**
  * Applies the selected toolbar command and closes the popover.

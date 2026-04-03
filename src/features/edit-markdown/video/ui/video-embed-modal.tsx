@@ -11,12 +11,9 @@ import {
 } from '@/entities/editor-core/model/editor-video-policy';
 import type { VideoEmbedApplyPayload } from '@/features/edit-markdown/video';
 import { extractVideoEmbedReference } from '@/features/edit-markdown/video';
-import { Button } from '@/shared/ui/button/button';
 import { YoutubeIcon } from '@/shared/ui/icons/app-icons';
-import { Input } from '@/shared/ui/input/input';
-import { Modal } from '@/shared/ui/modal/modal';
 import type { ClosePopover } from '@/shared/ui/popover/popover';
-import { Tooltip } from '@/shared/ui/tooltip/tooltip';
+import { useMarkdownPrimitives } from '@/shared/ui/primitive-registry/markdown-primitive-registry';
 
 type VideoEmbedModalProps = {
   contentType: EditorContentType;
@@ -42,6 +39,7 @@ export const VideoEmbedModal = ({
   onTriggerMouseDown,
   triggerClassName,
 }: VideoEmbedModalProps) => {
+  const { Button, Input, Modal, Tooltip } = useMarkdownPrimitives();
   const triggerRef = useRef<HTMLButtonElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const uploadAbortControllerRef = useRef<AbortController | null>(null);
