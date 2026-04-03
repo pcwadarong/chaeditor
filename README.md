@@ -18,13 +18,80 @@
 ## Getting Started
 
 ```bash
-pnpm add chaeditor
+pnpm add react react-dom chaeditor
 ```
 
-또는 필요한 기능만 선택적으로 설치할 수 있습니다.
+스타일 토큰과 기본 컴포넌트 스타일은 패키지 CSS를 함께 불러와야 합니다.
 
-```bash
-pnpm add @chaeditor/core @chaeditor/react @chaeditor/image @chaeditor/video
+```tsx
+import 'chaeditor/styles.css';
+```
+
+가장 단순한 시작점은 `chaeditor/react`에서 editor surface를 가져오는 방식입니다.
+
+```tsx
+import 'chaeditor/styles.css';
+
+import { MarkdownEditor } from 'chaeditor/react';
+
+const Example = () => {
+  const [value, setValue] = useState('# Hello chaeditor');
+
+  return <MarkdownEditor contentType="article" onChange={setValue} value={value} />;
+};
+```
+
+툴바와 렌더러를 따로 조합할 수도 있습니다.
+
+```tsx
+import 'chaeditor/styles.css';
+
+import { MarkdownRenderer, MarkdownToolbar } from 'chaeditor/react';
+
+const Example = () => {
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const [value, setValue] = useState('');
+
+  return (
+    <>
+      <MarkdownToolbar contentType="article" onChange={setValue} textareaRef={textareaRef} />
+      <textarea ref={textareaRef} value={value} onChange={event => setValue(event.target.value)} />
+      <MarkdownRenderer markdown={value} />
+    </>
+  );
+};
+```
+
+업로드 기본 구현이 필요하면 optional subpath에서 가져와 연결할 수 있습니다.
+
+```tsx
+import 'chaeditor/styles.css';
+
+import { uploadEditorFile, uploadEditorImage, uploadEditorVideo } from 'chaeditor/default-host';
+import { MarkdownEditor } from 'chaeditor/react';
+
+const Example = () => (
+  <MarkdownEditor
+    adapters={{
+      uploadFile: uploadEditorFile,
+      uploadImage: uploadEditorImage,
+      uploadVideo: uploadEditorVideo,
+    }}
+    contentType="article"
+    onChange={() => {}}
+    value=""
+  />
+);
+```
+
+순수 유틸과 타입만 필요하면 `chaeditor/core`를 사용할 수 있습니다.
+
+```ts
+import {
+  createImageGalleryMarkdown,
+  createMathEmbedMarkdown,
+  parseRichMarkdownSegments,
+} from 'chaeditor/core';
 ```
 
 현재 저장소를 로컬에서 실행하거나 검증하려면 아래 명령을 사용하세요.
@@ -32,7 +99,8 @@ pnpm add @chaeditor/core @chaeditor/react @chaeditor/image @chaeditor/video
 ```bash
 pnpm install
 pnpm lint
-pnpm typecheck
+pnpm check-types
+pnpm build
 pnpm test
 ```
 

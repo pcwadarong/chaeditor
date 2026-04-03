@@ -15,7 +15,102 @@ let uploadImageCallCount = 0;
 let uploadFileCallCount = 0;
 let uploadVideoCallCount = 0;
 
-export type StorybookAdapterMode = 'full' | 'none';
+export type StorybookAdapterMode = 'custom' | 'full' | 'none';
+
+type StorybookModeSummary = {
+  description: string;
+  items: Array<{ label: string; value: string }>;
+  title: string;
+};
+
+type StorybookCompactSummaryProps = {
+  description: string;
+  items: Array<{ label: string; value: string }>;
+  title: string;
+};
+
+export const editorPackageUsageSnippet = [
+  "import 'chaeditor/styles.css';",
+  '',
+  "import { MarkdownEditor } from 'chaeditor/react';",
+  '',
+  "import { uploadEditorFile, uploadEditorImage, uploadEditorVideo } from 'chaeditor/default-host';",
+  '',
+  'const Example = () => {',
+  "  const [value, setValue] = useState('# Hello chaeditor');",
+  '',
+  '  return (',
+  '    <MarkdownEditor',
+  '      adapters={{',
+  '        uploadFile: uploadEditorFile,',
+  '        uploadImage: uploadEditorImage,',
+  '        uploadVideo: uploadEditorVideo,',
+  '      }}',
+  '      contentType="article"',
+  '      onChange={setValue}',
+  '      value={value}',
+  '    />',
+  '  );',
+  '};',
+].join('\n');
+
+export const toolbarPackageUsageSnippet = [
+  "import 'chaeditor/styles.css';",
+  '',
+  "import { MarkdownToolbar } from 'chaeditor/react';",
+  '',
+  'const Example = () => {',
+  '  const textareaRef = useRef<HTMLTextAreaElement | null>(null);',
+  "  const [value, setValue] = useState('');",
+  '',
+  '  return (',
+  '    <>',
+  '      <MarkdownToolbar',
+  '        contentType="article"',
+  '        onChange={setValue}',
+  '        textareaRef={textareaRef}',
+  '      />',
+  '      <textarea ref={textareaRef} value={value} onChange={event => setValue(event.target.value)} />',
+  '    </>',
+  '  );',
+  '};',
+].join('\n');
+
+export const rendererPackageUsageSnippet = [
+  "import 'chaeditor/styles.css';",
+  '',
+  "import { MarkdownRenderer } from 'chaeditor/react';",
+  '',
+  'const Example = async () => {',
+  "  return <MarkdownRenderer markdown={'# Hello chaeditor'} />;",
+  '};',
+].join('\n');
+
+export const customAdapterUsageSnippet = [
+  "import 'chaeditor/styles.css';",
+  '',
+  "import { MarkdownEditor } from 'chaeditor/react';",
+  '',
+  'const adapters = {',
+  '  fetchLinkPreviewMeta: async url => ({',
+  "    title: 'Custom host preview',",
+  "    description: 'Injected by the host app',",
+  '    url,',
+  '  }),',
+  '  renderImage: ({ alt, className, src }) => (',
+  "    <img alt={alt} className={className} src={typeof src === 'string' ? src : src.src} />",
+  '  ),',
+  '};',
+  '',
+  'const Example = () => (',
+  '  <MarkdownEditor',
+  '    adapters={adapters}',
+  '    contentType="article"',
+  '    onChange={() => {}}',
+  '    value=""',
+  '  />',
+  ');',
+].join('\n');
 
 /**
  * Sleeps for the given number of milliseconds.
@@ -120,6 +215,61 @@ export const createStorybookAdapters = (): MarkdownEditorHostAdapters => ({
 });
 
 /**
+ * Creates a visibly customized adapter set for Storybook override examples.
+ */
+export const createCustomStorybookAdapters = (): MarkdownEditorHostAdapters => {
+  const baseAdapters = createStorybookAdapters();
+
+  return {
+    ...baseAdapters,
+    fetchLinkPreviewMeta: async url => {
+      await wait(90);
+
+      return {
+        description: 'Custom host adapter variant used by Storybook to demonstrate overrides.',
+        favicon: 'https://www.google.com/s2/favicons?domain=example.com&sz=64',
+        image: IMAGE_LIBRARY[2],
+        siteName: 'Custom host',
+        title: 'Injected preview metadata',
+        url,
+      };
+    },
+    imageViewerLabels: {
+      ...baseAdapters.imageViewerLabels,
+      openAriaLabel: 'Open branded image viewer',
+      selectForFrameLabel: 'Use in cover frame',
+    },
+    renderImage: ({ alt, className, fill = false, src }) => (
+      <span
+        className={className}
+        style={{
+          display: 'block',
+          position: fill ? 'absolute' : 'relative',
+          inset: fill ? 0 : undefined,
+          padding: 6,
+          borderRadius: 16,
+          background:
+            'linear-gradient(135deg, rgba(30,64,175,0.18), rgba(14,116,144,0.18), rgba(20,184,166,0.18))',
+        }}
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          alt={alt}
+          src={typeof src === 'string' ? src : src.src}
+          style={{
+            display: 'block',
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            borderRadius: 12,
+          }}
+        />
+      </span>
+    ),
+  };
+};
+
+/**
  * Resolves the Storybook host adapter set for the requested reference mode.
  */
 export const createStorybookAdapterSet = (
@@ -129,8 +279,103 @@ export const createStorybookAdapterSet = (
     return undefined;
   }
 
-  return createStorybookAdapters();
+  return mode === 'custom' ? createCustomStorybookAdapters() : createStorybookAdapters();
 };
+
+/**
+ * Returns a concise summary of how the current Storybook adapter mode changes the surface.
+ */
+export const getStorybookModeSummary = (mode: StorybookAdapterMode): StorybookModeSummary => {
+  if (mode === 'none') {
+    return {
+      description:
+        'This state keeps the package surface local to the editor shell. Upload adapters, link-preview metadata, and host image overrides are intentionally absent.',
+      items: [
+        { label: 'Uploads', value: 'Disabled unless the host injects adapters.' },
+        { label: 'Link previews', value: 'Fallback to plain links.' },
+        { label: 'Images', value: 'Use the package default renderer.' },
+        { label: 'Labels', value: 'Use the built-in package labels.' },
+      ],
+      title: 'Core-only shell',
+    };
+  }
+
+  if (mode === 'custom') {
+    return {
+      description:
+        'This state shows a host that overrides image rendering, link preview metadata, and viewer labels while keeping the same editor contracts.',
+      items: [
+        { label: 'Uploads', value: 'Mock adapters with branded output.' },
+        { label: 'Link previews', value: 'Custom metadata payload from the host.' },
+        { label: 'Images', value: 'Host renderImage override with branded framing.' },
+        { label: 'Labels', value: 'Custom viewer labels and story-level toolbar labels.' },
+      ],
+      title: 'Custom host adapters',
+    };
+  }
+
+  return {
+    description:
+      'This state uses the default in-memory Storybook adapters so every authoring flow can be exercised without a real backend.',
+    items: [
+      { label: 'Uploads', value: 'Mock image, file, and video uploads enabled.' },
+      { label: 'Link previews', value: 'Mock metadata cards enabled.' },
+      { label: 'Images', value: 'Host renderImage mock enabled.' },
+      { label: 'Labels', value: 'Built-in package labels.' },
+    ],
+    title: 'Host-enabled mock adapters',
+  };
+};
+
+type StorybookModePanelProps = {
+  mode: StorybookAdapterMode;
+};
+
+/**
+ * Renders a visible state summary for Storybook reference stories.
+ */
+export const StorybookModePanel = ({ mode }: StorybookModePanelProps) => {
+  const summary = getStorybookModeSummary(mode);
+
+  return (
+    <section className={modePanelClass}>
+      <div className={modeHeaderClass}>
+        <span className={modeBadgeClass}>{summary.title}</span>
+        <p className={modeDescriptionClass}>{summary.description}</p>
+      </div>
+      <dl className={modeGridClass}>
+        {summary.items.map(item => (
+          <div className={modeItemClass} key={item.label}>
+            <dt className={modeItemLabelClass}>{item.label}</dt>
+            <dd className={modeItemValueClass}>{item.value}</dd>
+          </div>
+        ))}
+      </dl>
+    </section>
+  );
+};
+
+/**
+ * Renders a compact summary block for Storybook reference variants.
+ */
+export const StorybookCompactSummary = ({
+  description,
+  items,
+  title,
+}: StorybookCompactSummaryProps) => (
+  <section className={compactSummaryClass}>
+    <p className={compactSummaryTitleClass}>{title}</p>
+    <p className={compactSummaryDescriptionClass}>{description}</p>
+    <dl className={compactSummaryMetaClass}>
+      {items.map(item => (
+        <div className={compactSummaryMetaItemClass} key={item.label}>
+          <dt className={compactSummaryMetaLabelClass}>{item.label}</dt>
+          <dd className={compactSummaryMetaValueClass}>{item.value}</dd>
+        </div>
+      ))}
+    </dl>
+  </section>
+);
 
 export const sampleMarkdown = [
   '# chaeditor Reference',
@@ -219,5 +464,120 @@ export const codeBlockClass = css({
   fontFamily: 'mono',
   fontSize: 'sm',
   lineHeight: 'relaxed',
+  color: 'text',
+});
+
+const modePanelClass = css({
+  display: 'grid',
+  gap: '4',
+  p: '4',
+  borderRadius: 'xl',
+  borderWidth: '1px',
+  borderStyle: 'solid',
+  borderColor: 'border',
+  bg: 'surfaceMuted',
+});
+
+const modeHeaderClass = css({
+  display: 'grid',
+  gap: '2',
+});
+
+const modeBadgeClass = css({
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  width: '[fit-content]',
+  px: '3',
+  py: '1',
+  borderRadius: 'full',
+  bg: 'primarySubtle',
+  color: 'primary',
+  fontSize: 'xs',
+  fontWeight: 'semibold',
+  letterSpacing: 'wide',
+  textTransform: 'uppercase',
+});
+
+const modeDescriptionClass = css({
+  fontSize: 'sm',
+  color: 'textSubtle',
+  lineHeight: 'relaxed',
+});
+
+const modeGridClass = css({
+  display: 'grid',
+  gap: '3',
+  gridTemplateColumns: {
+    base: '1fr',
+    lg: 'repeat(2, minmax(0, 1fr))',
+  },
+});
+
+const modeItemClass = css({
+  display: 'grid',
+  gap: '1',
+  p: '3',
+  borderRadius: 'lg',
+  bg: 'surface',
+  borderWidth: '1px',
+  borderStyle: 'solid',
+  borderColor: 'border',
+});
+
+const modeItemLabelClass = css({
+  fontSize: 'xs',
+  fontWeight: 'semibold',
+  color: 'textSubtle',
+  letterSpacing: 'wide',
+  textTransform: 'uppercase',
+});
+
+const modeItemValueClass = css({
+  fontSize: 'sm',
+  color: 'text',
+  lineHeight: 'relaxed',
+});
+
+const compactSummaryClass = css({
+  display: 'grid',
+  gap: '2',
+});
+
+const compactSummaryTitleClass = css({
+  fontSize: 'sm',
+  fontWeight: 'semibold',
+  color: 'text',
+});
+
+const compactSummaryDescriptionClass = css({
+  fontSize: 'sm',
+  color: 'textSubtle',
+  lineHeight: 'relaxed',
+});
+
+const compactSummaryMetaClass = css({
+  display: 'flex',
+  flexWrap: 'wrap',
+  columnGap: '6',
+  rowGap: '2',
+});
+
+const compactSummaryMetaItemClass = css({
+  display: 'inline-flex',
+  alignItems: 'baseline',
+  gap: '3',
+});
+
+const compactSummaryMetaLabelClass = css({
+  fontSize: 'xs',
+  fontWeight: 'semibold',
+  color: 'primary',
+  letterSpacing: 'wide',
+  textTransform: 'uppercase',
+});
+
+const compactSummaryMetaValueClass = css({
+  fontSize: 'sm',
   color: 'text',
 });
