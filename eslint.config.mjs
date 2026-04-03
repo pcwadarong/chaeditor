@@ -93,6 +93,7 @@ const eslintConfig = [
       'import/no-duplicates': 'error',
       'import/first': 'error',
       'import/newline-after-import': 'error',
+      '@next/next/no-html-link-for-pages': 'off',
     },
   },
   {

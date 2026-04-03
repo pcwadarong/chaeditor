@@ -94,7 +94,7 @@ export default defineConfig({
       js: format === 'cjs' ? '.cjs' : '.mjs',
     };
   },
-  sourcemap: true,
+  sourcemap: false,
   splitting: false,
   tsconfig: './tsconfig.build.json',
   treeshake: true,

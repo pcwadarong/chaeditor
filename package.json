@@ -2,6 +2,14 @@
   "name": "chaeditor",
   "description": "Composable markdown editor toolkit for React applications.",
   "license": "MIT",
+  "homepage": "https://github.com/pcwadarong/chaeditor#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pcwadarong/chaeditor.git"
+  },
+  "bugs": {
+    "url": "https://github.com/pcwadarong/chaeditor/issues"
+  },
   "keywords": [
     "editor",
     "markdown",
@@ -44,14 +52,14 @@
     "README.md"
   ],
   "scripts": {
-    "build": "pnpm run clean && tsup",
+    "build": "pnpm run prepare && pnpm run clean && tsup",
     "clean": "rm -rf dist",
     "commit": "cz",
     "format": "prettier --check .",
     "format:write": "prettier --write .",
     "lint": "eslint .",
     "postinstall": "husky",
-    "prepack": "pnpm run prepare && pnpm run build",
+    "prepack": "pnpm run build",
     "prepare": "panda codegen && panda cssgen --outfile styled-system/styles.css",
     "test": "vitest run",
     "test:watch": "vitest",
