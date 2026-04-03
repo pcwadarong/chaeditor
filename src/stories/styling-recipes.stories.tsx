@@ -3,13 +3,17 @@ import { css } from 'styled-system/css';
 
 import {
   codeBlockClass,
+  emotionPrimitiveUsageSnippet,
   emotionThemeUsageSnippet,
   pageClass,
   primitiveRegistryUsageSnippet,
   StorybookCompactSummary,
   StorybookPrimitiveRegistryShowcase,
+  styledComponentsPrimitiveUsageSnippet,
   styledComponentsThemeUsageSnippet,
+  tailwindPrimitiveUsageSnippet,
   tailwindThemeUsageSnippet,
+  vanillaExtractPrimitiveUsageSnippet,
   vanillaExtractThemeUsageSnippet,
 } from '@/stories/storybook-fixtures';
 
@@ -40,7 +44,11 @@ const StylingRecipesPage = () => (
             tokens already exist in the host layer and the editor should inherit them without
             introducing another runtime.
           </p>
+          <p className={recipeSubheadingClass}>
+            Add primitive overrides when shell replacement is needed
+          </p>
           <pre className={codeBlockClass}>{tailwindThemeUsageSnippet}</pre>
+          <pre className={codeBlockClass}>{tailwindPrimitiveUsageSnippet}</pre>
         </article>
 
         <article className={recipeCardClass}>
@@ -55,7 +63,11 @@ const StylingRecipesPage = () => (
             Emotion wrapper or Global style. The editor keeps its package logic while the host
             decides where the CSS variables live.
           </p>
+          <p className={recipeSubheadingClass}>
+            Layer primitiveRegistry on top when inputs and overlays need host shells
+          </p>
           <pre className={codeBlockClass}>{emotionThemeUsageSnippet}</pre>
+          <pre className={codeBlockClass}>{emotionPrimitiveUsageSnippet}</pre>
         </article>
 
         <article className={recipeCardClass}>
@@ -70,7 +82,11 @@ const StylingRecipesPage = () => (
             This keeps theme ownership in the host design system and avoids package-level runtime
             branching.
           </p>
+          <p className={recipeSubheadingClass}>
+            Promote the same wrapper approach to primitiveRegistry overrides
+          </p>
           <pre className={codeBlockClass}>{styledComponentsThemeUsageSnippet}</pre>
+          <pre className={codeBlockClass}>{styledComponentsPrimitiveUsageSnippet}</pre>
         </article>
 
         <article className={recipeCardClass}>
@@ -85,7 +101,11 @@ const StylingRecipesPage = () => (
             keeps the package runtime-agnostic while fitting teams that already prefer static CSS
             extraction and typed token authoring.
           </p>
+          <p className={recipeSubheadingClass}>
+            Use the generated classes again for primitive-level wrappers
+          </p>
           <pre className={codeBlockClass}>{vanillaExtractThemeUsageSnippet}</pre>
+          <pre className={codeBlockClass}>{vanillaExtractPrimitiveUsageSnippet}</pre>
         </article>
       </div>
 
@@ -196,6 +216,12 @@ const inlineCodeClass = css({
   fontSize: 'sm',
   px: '1.5',
   py: '0.5',
+});
+
+const recipeSubheadingClass = css({
+  color: 'primary',
+  fontSize: 'sm',
+  fontWeight: 'semibold',
 });
 
 const showcaseClass = css({

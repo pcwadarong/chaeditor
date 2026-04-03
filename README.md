@@ -160,6 +160,46 @@ const Example = () => (
 );
 ```
 
+입력창이나 overlay shell도 Tailwind utility 기반으로 맞추고 싶다면 `primitiveRegistry`를 같은 wrapper 안에서 함께 사용하면 됩니다.
+
+```tsx
+import 'chaeditor/styles.css';
+
+import { Button, Input, MarkdownEditor, Modal, Popover, Textarea, Tooltip } from 'chaeditor/react';
+
+const HostButton = props => (
+  <Button
+    {...props}
+    className={`rounded-xl border border-teal-700 bg-teal-50 font-semibold text-teal-900 ${props.className ?? ''}`.trim()}
+  />
+);
+
+const HostInput = props => (
+  <Input
+    {...props}
+    className={`rounded-xl border border-teal-700 bg-cyan-50 ${props.className ?? ''}`.trim()}
+  />
+);
+
+const Example = () => (
+  <div className="[--chaeditor-color-primary:#0f766e] [--chaeditor-color-surface:#f8fafc] [--chaeditor-color-text:#0f172a]">
+    <MarkdownEditor
+      contentType="article"
+      onChange={() => {}}
+      primitiveRegistry={{
+        Button: HostButton,
+        Input: HostInput,
+        Textarea,
+        Popover,
+        Modal,
+        Tooltip,
+      }}
+      value=""
+    />
+  </div>
+);
+```
+
 ### Emotion
 
 Emotion을 쓰는 앱이라면 `createChaeditorThemeVars()` 결과를 그대로 wrapper style object에 합칠 수 있습니다.
@@ -183,6 +223,48 @@ const editorTheme = css({
 const Example = () => (
   <div css={editorTheme}>
     <MarkdownEditor contentType="article" onChange={() => {}} value="" />
+  </div>
+);
+```
+
+primitive shell도 Emotion으로 맞추려면 wrapper class를 생성해서 `primitiveRegistry`에 연결하면 됩니다.
+
+```tsx
+import 'chaeditor/styles.css';
+
+import { css } from '@emotion/react';
+import { Button, Input, MarkdownEditor, Modal, Popover, Textarea, Tooltip } from 'chaeditor/react';
+import { createChaeditorThemeVars } from 'chaeditor/core';
+
+const themeScope = css({
+  ...createChaeditorThemeVars({
+    primary: '#0f766e',
+    surface: '#f8fafc',
+    text: '#0f172a',
+  }),
+});
+
+const hostButton = css({ borderColor: '#0f766e', borderRadius: 20, background: '#ccfbf1' });
+const hostInput = css({ borderColor: '#0f766e', borderRadius: 20, background: '#ecfeff' });
+
+const HostButton = props => <Button {...props} className={hostButton} />;
+const HostInput = props => <Input {...props} className={hostInput} />;
+
+const Example = () => (
+  <div css={themeScope}>
+    <MarkdownEditor
+      contentType="article"
+      onChange={() => {}}
+      primitiveRegistry={{
+        Button: HostButton,
+        Input: HostInput,
+        Textarea,
+        Popover,
+        Modal,
+        Tooltip,
+      }}
+      value=""
+    />
   </div>
 );
 ```
@@ -214,6 +296,53 @@ const Example = () => (
 );
 ```
 
+같은 방식으로 host primitive도 styled wrapper로 승격해서 `primitiveRegistry`에 연결할 수 있습니다.
+
+```tsx
+import 'chaeditor/styles.css';
+
+import styled from 'styled-components';
+import { Button, Input, MarkdownEditor, Modal, Popover, Textarea, Tooltip } from 'chaeditor/react';
+import { createChaeditorThemeVars } from 'chaeditor/core';
+
+const EditorThemeScope = styled.div(
+  createChaeditorThemeVars({
+    primary: '#0f766e',
+    surface: '#f8fafc',
+    text: '#0f172a',
+  }),
+);
+
+const HostButton = styled(Button)`
+  border-color: #0f766e;
+  border-radius: 20px;
+  background: #ccfbf1;
+`;
+const HostInput = styled(Input)`
+  border-color: #0f766e;
+  border-radius: 20px;
+  background: #ecfeff;
+`;
+
+const Example = () => (
+  <EditorThemeScope>
+    <MarkdownEditor
+      contentType="article"
+      onChange={() => {}}
+      primitiveRegistry={{
+        Button: HostButton,
+        Input: HostInput,
+        Textarea,
+        Popover,
+        Modal,
+        Tooltip,
+      }}
+      value=""
+    />
+  </EditorThemeScope>
+);
+```
+
 요점은 동일합니다.
 
 ### vanilla-extract
@@ -239,6 +368,48 @@ const editorThemeScope = style({
 const Example = () => (
   <div className={editorThemeScope}>
     <MarkdownEditor contentType="article" onChange={() => {}} value="" />
+  </div>
+);
+```
+
+typed class를 그대로 primitive wrapper에도 재사용하면 static extraction 기반 design system과도 무리 없이 연결됩니다.
+
+```tsx
+import 'chaeditor/styles.css';
+
+import { style } from '@vanilla-extract/css';
+import { Button, Input, MarkdownEditor, Modal, Popover, Textarea, Tooltip } from 'chaeditor/react';
+import { createChaeditorThemeVars } from 'chaeditor/core';
+
+const themeScope = style({
+  vars: createChaeditorThemeVars({
+    primary: '#0f766e',
+    surface: '#f8fafc',
+    text: '#0f172a',
+  }),
+});
+
+const hostButton = style({ borderColor: '#0f766e', borderRadius: 20, background: '#ccfbf1' });
+const hostInput = style({ borderColor: '#0f766e', borderRadius: 20, background: '#ecfeff' });
+
+const HostButton = props => <Button {...props} className={hostButton} />;
+const HostInput = props => <Input {...props} className={hostInput} />;
+
+const Example = () => (
+  <div className={themeScope}>
+    <MarkdownEditor
+      contentType="article"
+      onChange={() => {}}
+      primitiveRegistry={{
+        Button: HostButton,
+        Input: HostInput,
+        Textarea,
+        Popover,
+        Modal,
+        Tooltip,
+      }}
+      value=""
+    />
   </div>
 );
 ```
