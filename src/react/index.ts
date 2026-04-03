@@ -36,7 +36,16 @@ export {
   createRichMarkdownRendererRegistry,
 } from '@/shared/lib/markdown/rich-markdown-renderers';
 export { MarkdownRenderer } from '@/shared/ui/markdown/markdown-renderer';
-export type { MarkdownPrimitiveRegistry } from '@/shared/ui/primitive-registry/markdown-primitive-registry';
+export type {
+  MarkdownButtonPrimitive,
+  MarkdownInputPrimitive,
+  MarkdownModalPrimitive,
+  MarkdownPopoverPrimitive,
+  MarkdownPrimitiveRegistry,
+  MarkdownTextareaPrimitive,
+  MarkdownTooltipPrimitive,
+  ResolvedMarkdownPrimitiveRegistry,
+} from '@/shared/ui/primitive-registry/markdown-primitive-contract';
 export {
   createDefaultMarkdownPrimitiveRegistry,
   MarkdownPrimitiveProvider,

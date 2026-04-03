@@ -84,6 +84,7 @@ export default defineConfig({
     core: 'src/core/index.ts',
     react: 'src/react/index.ts',
     'default-host': 'src/default-host/index.ts',
+    'panda-primitives': 'src/panda-primitives/index.ts',
   },
   esbuildPlugins: [aliasPlugin, svgRawPlugin],
   external: ['react', 'react-dom'],

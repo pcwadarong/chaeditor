@@ -42,6 +42,11 @@
       "import": "./dist/default-host.mjs",
       "require": "./dist/default-host.cjs"
     },
+    "./panda-primitives": {
+      "types": "./dist/panda-primitives.d.ts",
+      "import": "./dist/panda-primitives.mjs",
+      "require": "./dist/panda-primitives.cjs"
+    },
     "./styles.css": "./styled-system/styles.css",
     "./package.json": "./package.json"
   },

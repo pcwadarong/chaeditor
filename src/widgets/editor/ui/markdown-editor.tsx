@@ -22,9 +22,9 @@ import { getMarkdownOptions, markdownBodyClass } from '@/shared/lib/markdown/mar
 import { renderRichMarkdown } from '@/shared/lib/markdown/rich-markdown';
 import type { PartialRichMarkdownRendererRegistry } from '@/shared/lib/markdown/rich-markdown-renderers';
 import { EditIcon, EyeIcon } from '@/shared/ui/icons/app-icons';
+import type { MarkdownPrimitiveRegistry } from '@/shared/ui/primitive-registry/markdown-primitive-contract';
 import {
   MarkdownPrimitiveProvider,
-  type MarkdownPrimitiveRegistry,
   useMarkdownPrimitives,
 } from '@/shared/ui/primitive-registry/markdown-primitive-registry';
 

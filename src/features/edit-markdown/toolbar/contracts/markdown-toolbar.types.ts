@@ -16,7 +16,7 @@ import type {
 } from '@/features/edit-markdown/toolbar/ui/toolbar-token-popover';
 import type { VideoEmbedApplyPayload } from '@/features/edit-markdown/video';
 import type { ClosePopover } from '@/shared/ui/popover/popover';
-import type { MarkdownPrimitiveRegistry } from '@/shared/ui/primitive-registry/markdown-primitive-registry';
+import type { MarkdownPrimitiveRegistry } from '@/shared/ui/primitive-registry/markdown-primitive-contract';
 
 /**
  * Minimal contract required by the markdown toolbar.

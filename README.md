@@ -84,6 +84,12 @@ const Example = () => (
 );
 ```
 
+현재 패키지에 번들된 Panda 기반 primitive shell을 그대로 재사용하거나 감싸고 싶다면 `chaeditor/panda-primitives` subpath를 사용할 수 있습니다.
+
+```tsx
+import { Button, createPandaMarkdownPrimitiveRegistry } from 'chaeditor/panda-primitives';
+```
+
 순수 유틸과 타입만 필요하면 `chaeditor/core`를 사용할 수 있습니다.
 
 ```ts
