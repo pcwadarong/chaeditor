@@ -1,0 +1,102 @@
+import 'chaeditor/styles.css';
+
+import styled from 'styled-components';
+
+import { createChaeditorThemeVars } from 'chaeditor/core';
+import {
+  Button,
+  Input,
+  MarkdownEditor,
+  Modal,
+  Popover,
+  Textarea,
+  Tooltip,
+} from 'chaeditor/react';
+
+const EditorThemeScope = styled.div(
+  createChaeditorThemeVars({
+    primary: '#0f766e',
+    primarySubtle: '#ccfbf1',
+    surface: '#f8fafc',
+    surfaceMuted: '#ecfeff',
+    text: '#0f172a',
+    textSubtle: '#475569',
+    sansFont: 'var(--app-font-sans), system-ui, sans-serif',
+    monoFont: "var(--font-d2coding), 'D2Coding', monospace",
+  }),
+);
+
+const HostButton = styled(Button)`
+  background: #ccfbf1;
+  border-color: #0f766e;
+  border-radius: 20px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.12);
+  color: #0f172a;
+  font-weight: 600;
+`;
+
+const HostInput = styled(Input)`
+  background: #ecfeff;
+  border-color: #0f766e;
+  border-radius: 20px;
+  color: #0f172a;
+`;
+
+const HostTextarea = styled(Textarea)`
+  background: #ecfeff;
+  border-color: #0f766e;
+  border-radius: 24px;
+  color: #0f172a;
+`;
+
+const HostPopoverPanel = styled.div`
+  background: #fff;
+  border: 1px solid #0f766e;
+  border-radius: 24px;
+  box-shadow: 0 24px 48px rgba(15, 23, 42, 0.18);
+`;
+
+const HostModalFrameClass = 'host-modal-frame';
+const HostModalBackdropClass = 'host-modal-backdrop';
+const HostTooltipClass = 'host-tooltip';
+
+const HostPopover = props => (
+  <Popover
+    {...props}
+    panelClassName={`${HostPopoverPanel.styledComponentId} ${props.panelClassName ?? ''}`.trim()}
+    triggerClassName={`${HostButton.styledComponentId} ${props.triggerClassName ?? ''}`.trim()}
+  />
+);
+
+const HostModal = props => (
+  <Modal
+    {...props}
+    backdropClassName={`${HostModalBackdropClass} ${props.backdropClassName ?? ''}`.trim()}
+    frameClassName={`${HostModalFrameClass} ${props.frameClassName ?? ''}`.trim()}
+  />
+);
+
+const HostTooltip = props => (
+  <Tooltip
+    {...props}
+    contentClassName={`${HostTooltipClass} ${props.contentClassName ?? ''}`.trim()}
+  />
+);
+
+export const StyledComponentsHostEditorPreset = () => (
+  <EditorThemeScope>
+    <MarkdownEditor
+      contentType="article"
+      onChange={() => {}}
+      primitiveRegistry={{
+        Button: HostButton,
+        Input: HostInput,
+        Modal: HostModal,
+        Popover: HostPopover,
+        Textarea: HostTextarea,
+        Tooltip: HostTooltip,
+      }}
+      value=""
+    />
+  </EditorThemeScope>
+);

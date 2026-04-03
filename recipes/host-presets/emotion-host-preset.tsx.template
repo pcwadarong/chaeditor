@@ -1,0 +1,109 @@
+import 'chaeditor/styles.css';
+
+import { css } from '@emotion/react';
+
+import { createChaeditorThemeVars } from 'chaeditor/core';
+import {
+  Button,
+  Input,
+  MarkdownEditor,
+  Modal,
+  Popover,
+  Textarea,
+  Tooltip,
+} from 'chaeditor/react';
+
+const themeScope = css({
+  ...createChaeditorThemeVars({
+    primary: '#0f766e',
+    primarySubtle: '#ccfbf1',
+    surface: '#f8fafc',
+    surfaceMuted: '#ecfeff',
+    text: '#0f172a',
+    textSubtle: '#475569',
+    sansFont: 'var(--app-font-sans), system-ui, sans-serif',
+    monoFont: "var(--font-d2coding), 'D2Coding', monospace",
+  }),
+});
+
+const hostButton = css({
+  background: '#ccfbf1',
+  borderColor: '#0f766e',
+  borderRadius: 20,
+  boxShadow: '0 1px 3px rgba(15, 23, 42, 0.12)',
+  color: '#0f172a',
+  fontWeight: 600,
+});
+
+const hostField = css({
+  background: '#ecfeff',
+  borderColor: '#0f766e',
+  borderRadius: 20,
+  color: '#0f172a',
+});
+
+const hostPopoverPanel = css({
+  background: '#fff',
+  borderColor: '#0f766e',
+  borderRadius: 24,
+  boxShadow: '0 24px 48px rgba(15, 23, 42, 0.18)',
+});
+
+const hostModalFrame = css({
+  background: '#fff',
+  borderColor: '#0f766e',
+  borderRadius: 28,
+  boxShadow: '0 24px 48px rgba(15, 23, 42, 0.24)',
+});
+
+const hostModalBackdrop = css({
+  background: 'rgba(15, 23, 42, 0.55)',
+});
+
+const hostTooltip = css({
+  background: '#0f766e',
+  borderColor: '#0f766e',
+  color: '#fff',
+});
+
+const HostButton = props => <Button {...props} className={hostButton} />;
+
+const HostInput = props => <Input {...props} className={hostField} />;
+
+const HostTextarea = props => <Textarea {...props} className={hostField} />;
+
+const HostPopover = props => (
+  <Popover
+    {...props}
+    panelClassName={hostPopoverPanel}
+    triggerClassName={hostButton}
+  />
+);
+
+const HostModal = props => (
+  <Modal
+    {...props}
+    backdropClassName={hostModalBackdrop}
+    frameClassName={hostModalFrame}
+  />
+);
+
+const HostTooltip = props => <Tooltip {...props} contentClassName={hostTooltip} />;
+
+export const EmotionHostEditorPreset = () => (
+  <div css={themeScope}>
+    <MarkdownEditor
+      contentType="article"
+      onChange={() => {}}
+      primitiveRegistry={{
+        Button: HostButton,
+        Input: HostInput,
+        Modal: HostModal,
+        Popover: HostPopover,
+        Textarea: HostTextarea,
+        Tooltip: HostTooltip,
+      }}
+      value=""
+    />
+  </div>
+);

@@ -135,6 +135,8 @@ const Example = () => (
 
 스타일 라이브러리 호환의 핵심은 `chaeditor`가 런타임별 adapter를 직접 들고 있는 것이 아니라, host app이 같은 CSS variable contract를 어떤 방식으로 주입하느냐에 있습니다.
 
+바로 가져다 시작할 수 있는 런타임별 host wrapper preset 초안은 [recipes/host-presets](/home/chaen/programming/chaeditor/recipes/host-presets/README.md)에 따로 정리되어 있습니다.
+
 ### Tailwind CSS
 
 Tailwind를 쓰는 앱이라면 wrapper에 arbitrary property utility를 붙여 editor scope를 만들 수 있습니다.

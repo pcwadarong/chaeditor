@@ -1,0 +1,116 @@
+import 'chaeditor/styles.css';
+
+import {
+  Button,
+  Input,
+  MarkdownEditor,
+  Modal,
+  Popover,
+  Textarea,
+  Tooltip,
+} from 'chaeditor/react';
+
+const HostButton = props => (
+  <Button
+    {...props}
+    className={[
+      'rounded-xl border border-teal-700 bg-teal-50 font-semibold text-teal-950 shadow-sm',
+      props.className ?? '',
+    ]
+      .join(' ')
+      .trim()}
+  />
+);
+
+const HostInput = props => (
+  <Input
+    {...props}
+    className={[
+      'rounded-xl border border-teal-700 bg-cyan-50 text-slate-950 placeholder:text-slate-500',
+      props.className ?? '',
+    ]
+      .join(' ')
+      .trim()}
+  />
+);
+
+const HostTextarea = props => (
+  <Textarea
+    {...props}
+    className={[
+      'rounded-2xl border border-teal-700 bg-cyan-50 text-slate-950 placeholder:text-slate-500',
+      props.className ?? '',
+    ]
+      .join(' ')
+      .trim()}
+  />
+);
+
+const HostPopover = props => (
+  <Popover
+    {...props}
+    panelClassName={['rounded-2xl border border-teal-700 bg-white shadow-xl', props.panelClassName ?? '']
+      .join(' ')
+      .trim()}
+    triggerClassName={[
+      'rounded-xl border border-teal-700 bg-teal-50 text-teal-950',
+      props.triggerClassName ?? '',
+    ]
+      .join(' ')
+      .trim()}
+  />
+);
+
+const HostModal = props => (
+  <Modal
+    {...props}
+    backdropClassName={['bg-slate-950/55', props.backdropClassName ?? ''].join(' ').trim()}
+    frameClassName={[
+      'rounded-[28px] border border-teal-700 bg-white shadow-2xl',
+      props.frameClassName ?? '',
+    ]
+      .join(' ')
+      .trim()}
+  />
+);
+
+const HostTooltip = props => (
+  <Tooltip
+    {...props}
+    contentClassName={[
+      'rounded-lg border border-teal-700 bg-teal-700 text-white shadow-lg',
+      props.contentClassName ?? '',
+    ]
+      .join(' ')
+      .trim()}
+  />
+);
+
+export const TailwindHostEditorPreset = () => (
+  <div
+    className={[
+      '[--chaeditor-color-primary:#0f766e]',
+      '[--chaeditor-color-primary-subtle:#ccfbf1]',
+      '[--chaeditor-color-surface:#f8fafc]',
+      '[--chaeditor-color-surface-muted:#ecfeff]',
+      '[--chaeditor-color-text:#0f172a]',
+      '[--chaeditor-color-text-subtle:#475569]',
+      '[--chaeditor-font-sans:var(--app-font-sans),system-ui,sans-serif]',
+      '[--chaeditor-font-mono:var(--font-d2coding),D2Coding,monospace]',
+    ].join(' ')}
+  >
+    <MarkdownEditor
+      contentType="article"
+      onChange={() => {}}
+      primitiveRegistry={{
+        Button: HostButton,
+        Input: HostInput,
+        Modal: HostModal,
+        Popover: HostPopover,
+        Textarea: HostTextarea,
+        Tooltip: HostTooltip,
+      }}
+      value=""
+    />
+  </div>
+);
