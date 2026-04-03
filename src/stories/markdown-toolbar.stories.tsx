@@ -8,12 +8,15 @@ import {
   codeBlockClass,
   createStorybookAdapterSet,
   customAdapterUsageSnippet,
+  getStorybookThemeStyle,
   pageClass,
   panelClass,
   sectionTitleClass,
   splitLayoutClass,
   type StorybookAdapterMode,
   StorybookCompactSummary,
+  type StorybookThemeMode,
+  themeOverrideUsageSnippet,
   toolbarPackageUsageSnippet,
   valuePanelClass,
 } from '@/stories/storybook-fixtures';
@@ -23,6 +26,7 @@ type ToolbarReferenceProps = {
   contentType: EditorContentType;
   customLabels?: boolean;
   initialValue: string;
+  themeMode?: StorybookThemeMode;
 };
 
 type ToolbarStateSummary = {
@@ -34,6 +38,7 @@ type ToolbarStateSummary = {
 const getToolbarStateSummary = (
   adapterMode: StorybookAdapterMode,
   customLabels: boolean,
+  themeMode: StorybookThemeMode,
 ): ToolbarStateSummary => {
   if (adapterMode === 'none') {
     return {
@@ -42,6 +47,10 @@ const getToolbarStateSummary = (
       items: [
         { label: 'Mode', value: 'Host adapters off' },
         { label: 'Labels', value: 'Package-default labels' },
+        {
+          label: 'Theme',
+          value: themeMode === 'host' ? 'Host theme wrapper applied' : 'Package default theme',
+        },
       ],
       title: 'Core-only toolbar shell',
     };
@@ -60,6 +69,10 @@ const getToolbarStateSummary = (
               : 'Default mock host adapters enabled',
         },
         { label: 'Labels', value: 'Heading and link labels overridden' },
+        {
+          label: 'Theme',
+          value: themeMode === 'host' ? 'Host theme wrapper applied' : 'Package default theme',
+        },
       ],
       title:
         adapterMode === 'custom'
@@ -74,6 +87,10 @@ const getToolbarStateSummary = (
     items: [
       { label: 'Mode', value: 'Default mock host adapters enabled' },
       { label: 'Labels', value: 'Package-default labels' },
+      {
+        label: 'Theme',
+        value: themeMode === 'host' ? 'Host theme wrapper applied' : 'Package default theme',
+      },
     ],
     title: 'Default integrated toolbar',
   };
@@ -82,8 +99,9 @@ const getToolbarStateSummary = (
 const ToolbarStatePanel = ({
   adapterMode,
   customLabels = false,
-}: Pick<ToolbarReferenceProps, 'adapterMode' | 'customLabels'>) => {
-  const summary = getToolbarStateSummary(adapterMode, customLabels);
+  themeMode = 'default',
+}: Pick<ToolbarReferenceProps, 'adapterMode' | 'customLabels' | 'themeMode'>) => {
+  const summary = getToolbarStateSummary(adapterMode, customLabels, themeMode);
 
   return (
     <StorybookCompactSummary
@@ -99,10 +117,12 @@ const ToolbarReference = ({
   contentType,
   customLabels = false,
   initialValue,
+  themeMode = 'default',
 }: ToolbarReferenceProps) => {
   const textareaRef = React.useRef<HTMLTextAreaElement | null>(null);
   const [value, setValue] = React.useState(initialValue);
   const adapters = React.useMemo(() => createStorybookAdapterSet(adapterMode), [adapterMode]);
+  const themeStyle = React.useMemo(() => getStorybookThemeStyle(themeMode), [themeMode]);
 
   React.useEffect(() => {
     setValue(initialValue);
@@ -110,8 +130,12 @@ const ToolbarReference = ({
 
   return (
     <main className={pageClass}>
-      <ToolbarStatePanel adapterMode={adapterMode} customLabels={customLabels} />
-      <section className={panelClass}>
+      <ToolbarStatePanel
+        adapterMode={adapterMode}
+        customLabels={customLabels}
+        themeMode={themeMode}
+      />
+      <section className={panelClass} style={themeStyle}>
         <div className={splitLayoutClass}>
           <div className={panelClass}>
             <MarkdownToolbar
@@ -172,12 +196,17 @@ const meta = {
     initialValue: {
       control: 'text',
     },
+    themeMode: {
+      control: 'inline-radio',
+      options: ['default', 'host'],
+    },
   },
   args: {
     adapterMode: 'full',
     contentType: 'article',
     customLabels: false,
     initialValue: '',
+    themeMode: 'default',
   },
   component: ToolbarReference,
   parameters: {
@@ -267,3 +296,25 @@ export const CustomHostIntegration: Story = {
   },
 };
 CustomHostIntegration.name = 'Custom host integration';
+
+export const HostThemeOverride: Story = {
+  args: {
+    adapterMode: 'full',
+    contentType: 'article',
+    customLabels: false,
+    initialValue: '',
+    themeMode: 'host',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Applies the same toolbar shell and default Storybook host adapters inside a scoped host theme wrapper. Use this when the question is visual alignment with a product design system rather than command behavior.',
+      },
+      source: {
+        code: themeOverrideUsageSnippet,
+      },
+    },
+  },
+};
+HostThemeOverride.name = 'Host theme override';

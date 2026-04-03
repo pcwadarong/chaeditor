@@ -2,18 +2,21 @@
 
 import React, { type ReactNode, type RefObject, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { css } from 'styled-system/css';
+import { css, cx } from 'styled-system/css';
 
 import { useDialogFocusManagement } from '@/shared/lib/react/use-dialog-focus-management';
 import { overlayBackdropColor } from '@/shared/ui/styles/primitive-theme';
 import { XButton } from '@/shared/ui/x-button/x-button';
 
-type ModalProps = {
+export type ModalProps = {
   ariaDescribedBy?: string;
   ariaLabel?: string;
   ariaLabelledBy?: string;
+  backdropClassName?: string;
   children: ReactNode;
   closeAriaLabel: string;
+  closeButtonClassName?: string;
+  frameClassName?: string;
   initialFocusRef?: RefObject<HTMLElement | null>;
   isOpen: boolean;
   onClose: () => void;
@@ -26,8 +29,11 @@ export const Modal = ({
   ariaDescribedBy,
   ariaLabel,
   ariaLabelledBy,
+  backdropClassName,
   children,
   closeAriaLabel,
+  closeButtonClassName,
+  frameClassName,
   initialFocusRef,
   isOpen,
   onClose,
@@ -64,7 +70,7 @@ export const Modal = ({
       onClick={event => {
         if (event.target === event.currentTarget) onClose();
       }}
-      className={backdropClass}
+      className={cx(backdropClass, backdropClassName)}
     >
       <div
         aria-describedby={ariaDescribedBy}
@@ -74,9 +80,13 @@ export const Modal = ({
         ref={frameRef}
         role="dialog"
         tabIndex={-1}
-        className={frameBaseClass}
+        className={cx(frameBaseClass, frameClassName)}
       >
-        <XButton ariaLabel={closeAriaLabel} className={closeButtonClass} onClick={onClose} />
+        <XButton
+          ariaLabel={closeAriaLabel}
+          className={cx(closeButtonClass, closeButtonClassName)}
+          onClick={onClose}
+        />
         {children}
       </div>
     </div>,

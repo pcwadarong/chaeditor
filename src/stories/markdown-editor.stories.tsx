@@ -7,11 +7,14 @@ import {
   createStorybookAdapterSet,
   customAdapterUsageSnippet,
   editorPackageUsageSnippet,
+  getStorybookThemeStyle,
   pageClass,
   panelClass,
   sampleMarkdown,
   type StorybookAdapterMode,
   StorybookCompactSummary,
+  type StorybookThemeMode,
+  themeOverrideUsageSnippet,
 } from '@/stories/storybook-fixtures';
 
 type MarkdownEditorReferenceProps = {
@@ -21,9 +24,14 @@ type MarkdownEditorReferenceProps = {
   initialValue: string;
   placeholder?: string;
   previewEmptyText?: string;
+  themeMode?: StorybookThemeMode;
 };
 
-const getEditorStateSummary = (adapterMode: StorybookAdapterMode, customLabels: boolean) => {
+const getEditorStateSummary = (
+  adapterMode: StorybookAdapterMode,
+  customLabels: boolean,
+  themeMode: StorybookThemeMode,
+) => {
   if (adapterMode === 'none') {
     return {
       description:
@@ -31,6 +39,10 @@ const getEditorStateSummary = (adapterMode: StorybookAdapterMode, customLabels: 
       items: [
         { label: 'Mode', value: 'Host adapters off' },
         { label: 'Labels', value: 'Package-default labels' },
+        {
+          label: 'Theme',
+          value: themeMode === 'host' ? 'Host theme wrapper applied' : 'Package default theme',
+        },
       ],
       title: 'Core-only editor shell',
     };
@@ -46,6 +58,10 @@ const getEditorStateSummary = (adapterMode: StorybookAdapterMode, customLabels: 
           label: 'Labels',
           value: customLabels ? 'Selected toolbar labels overridden' : 'Package-default labels',
         },
+        {
+          label: 'Theme',
+          value: themeMode === 'host' ? 'Host theme wrapper applied' : 'Package default theme',
+        },
       ],
       title: customLabels ? 'Custom host integration + custom labels' : 'Custom host integration',
     };
@@ -60,6 +76,10 @@ const getEditorStateSummary = (adapterMode: StorybookAdapterMode, customLabels: 
         label: 'Labels',
         value: customLabels ? 'Selected toolbar labels overridden' : 'Package-default labels',
       },
+      {
+        label: 'Theme',
+        value: themeMode === 'host' ? 'Host theme wrapper applied' : 'Package default theme',
+      },
     ],
     title: customLabels ? 'Default integration + custom labels' : 'Default integrated editor',
   };
@@ -72,15 +92,17 @@ const MarkdownEditorReference = ({
   initialValue,
   placeholder,
   previewEmptyText,
+  themeMode = 'default',
 }: MarkdownEditorReferenceProps) => {
   const [value, setValue] = React.useState(initialValue);
   const adapters = React.useMemo(() => createStorybookAdapterSet(adapterMode), [adapterMode]);
+  const themeStyle = React.useMemo(() => getStorybookThemeStyle(themeMode), [themeMode]);
 
   React.useEffect(() => {
     setValue(initialValue);
   }, [initialValue]);
 
-  const summary = getEditorStateSummary(adapterMode, customLabels);
+  const summary = getEditorStateSummary(adapterMode, customLabels, themeMode);
 
   return (
     <main className={pageClass}>
@@ -89,7 +111,7 @@ const MarkdownEditorReference = ({
         items={summary.items}
         title={summary.title}
       />
-      <section className={panelClass}>
+      <section className={panelClass} style={themeStyle}>
         <MarkdownEditor
           adapters={adapters}
           contentType={contentType}
@@ -131,6 +153,10 @@ const meta = {
       control: 'inline-radio',
       options: ['article', 'project', 'resume'],
     },
+    themeMode: {
+      control: 'inline-radio',
+      options: ['default', 'host'],
+    },
     initialValue: {
       control: 'object',
     },
@@ -142,6 +168,7 @@ const meta = {
     initialValue: sampleMarkdown,
     placeholder: 'Write markdown content',
     previewEmptyText: 'Nothing to preview yet.',
+    themeMode: 'default',
   },
   component: MarkdownEditorReference,
   parameters: {
@@ -218,6 +245,27 @@ export const CustomHostIntegration: Story = {
       },
       source: {
         code: customAdapterUsageSnippet,
+      },
+    },
+  },
+};
+
+export const HostThemeOverride: Story = {
+  args: {
+    adapterMode: 'full',
+    contentType: 'article',
+    customLabels: false,
+    initialValue: sampleMarkdown,
+    themeMode: 'host',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Applies the same editor shell and mock host adapters inside a scoped host theme wrapper. Use this story when the remaining question is visual integration with the product design system, not editor behavior.',
+      },
+      source: {
+        code: themeOverrideUsageSnippet,
       },
     },
   },

@@ -1,1 +1,1 @@
-export { Modal } from '@/shared/ui/modal/modal';
+export { Modal, type ModalProps } from '@/shared/ui/modal/modal';

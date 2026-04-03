@@ -117,4 +117,27 @@ describe('Modal', () => {
     expect(isDefaultAllowed).toBe(false);
     expect(onClose).toHaveBeenCalledTimes(1);
   });
+
+  it('Under slot className overrides, Modal must merge them into the backdrop frame and close button', async () => {
+    render(
+      <Modal
+        backdropClassName="modal-backdrop-override"
+        closeAriaLabel="Close"
+        closeButtonClassName="modal-close-override"
+        frameClassName="modal-frame-override"
+        isOpen
+        onClose={vi.fn()}
+      >
+        <div>Content</div>
+      </Modal>,
+    );
+
+    const dialog = await screen.findByRole('dialog');
+    const closeButton = screen.getByRole('button', { name: 'Close' });
+    const backdrop = dialog.parentElement;
+
+    expect(backdrop?.className).toContain('modal-backdrop-override');
+    expect(dialog.className).toContain('modal-frame-override');
+    expect(closeButton.className).toContain('modal-close-override');
+  });
 });
