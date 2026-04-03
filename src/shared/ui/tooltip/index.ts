@@ -1,1 +1,1 @@
-export { Tooltip } from '@/shared/ui/tooltip/tooltip';
+export { Tooltip, type TooltipProps } from '@/shared/ui/tooltip/tooltip';

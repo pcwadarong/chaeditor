@@ -5,7 +5,7 @@ import { cva, cx } from 'styled-system/css';
 
 import { disabledFieldStyles, focusVisibleRingStyles } from '@/shared/ui/styles/primitive-theme';
 
-type TextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
+export type TextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
   autoResize?: boolean;
 };
 

@@ -15,7 +15,7 @@ type TooltipTriggerProps = {
   'aria-describedby'?: string;
 };
 
-type TooltipProps = {
+export type TooltipProps = {
   children: React.ReactElement<TooltipTriggerProps>;
   content: string;
   className?: string;

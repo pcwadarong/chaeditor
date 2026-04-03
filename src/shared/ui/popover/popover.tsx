@@ -25,7 +25,7 @@ type PopoverRenderArgs = {
   closePopover: ClosePopover;
 };
 
-type PopoverProps = {
+export type PopoverProps = {
   children: ReactNode | ((args: PopoverRenderArgs) => ReactNode);
   isOpen?: boolean;
   label?: string;
@@ -35,12 +35,15 @@ type PopoverProps = {
   panelLabel: string;
   portalPlacement?: 'end' | 'start';
   renderInPortal?: boolean;
+  rootClassName?: string;
   triggerAriaLabel?: string;
   triggerClassName?: string;
   triggerContent?: ReactNode;
+  triggerLabelClassName?: string;
   triggerSize?: ButtonSize;
   triggerTone?: ButtonTone;
   triggerTooltip?: string;
+  triggerValueClassName?: string;
   triggerVariant?: ButtonVariant;
   value?: string;
 };
@@ -58,12 +61,15 @@ export const Popover = ({
   panelLabel,
   portalPlacement = 'end',
   renderInPortal = false,
+  rootClassName,
   triggerAriaLabel,
   triggerClassName,
   triggerContent,
+  triggerLabelClassName,
   triggerSize = 'sm',
   triggerTone = 'white',
   triggerTooltip,
+  triggerValueClassName,
   triggerVariant = 'ghost',
   value,
 }: PopoverProps) => {
@@ -196,8 +202,8 @@ export const Popover = ({
         triggerContent
       ) : (
         <>
-          <span className={triggerLabelClass}>{label}</span>
-          <span className={triggerValueClass} id={valueId}>
+          <span className={cx(triggerLabelClass, triggerLabelClassName)}>{label}</span>
+          <span className={cx(triggerValueClass, triggerValueClassName)} id={valueId}>
             {value}
           </span>
         </>
@@ -220,7 +226,7 @@ export const Popover = ({
   ) : null;
 
   return (
-    <div className={rootClass} ref={rootRef}>
+    <div className={cx(rootClass, rootClassName)} ref={rootRef}>
       <span className={srOnlyClass} id={panelLabelId}>
         {panelLabel}
       </span>

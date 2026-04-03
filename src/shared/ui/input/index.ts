@@ -1,1 +1,1 @@
-export { Input } from '@/shared/ui/input/input';
+export { Input, type InputProps } from '@/shared/ui/input/input';

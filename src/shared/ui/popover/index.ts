@@ -1,1 +1,1 @@
-export { type ClosePopover, Popover } from '@/shared/ui/popover/popover';
+export { type ClosePopover, Popover, type PopoverProps } from '@/shared/ui/popover/popover';

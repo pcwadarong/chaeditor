@@ -86,4 +86,27 @@ describe('Button', () => {
 
     expect(screen.getByRole('button', { name: 'Merged' }).className).toContain('custom-class');
   });
+
+  it('Under slot className overrides, Button must merge them into the label and visual slots', () => {
+    render(
+      <Button
+        labelClassName="button-label-override"
+        leadingVisual={<svg aria-hidden data-testid="leading-icon" viewBox="0 0 16 16" />}
+        leadingVisualClassName="button-leading-override"
+        tone="primary"
+        trailingVisual={<svg aria-hidden data-testid="trailing-icon" viewBox="0 0 16 16" />}
+        trailingVisualClassName="button-trailing-override"
+      >
+        Save
+      </Button>,
+    );
+
+    expect(screen.getByText('Save').className).toContain('button-label-override');
+    expect(screen.getByTestId('leading-icon').parentElement?.className).toContain(
+      'button-leading-override',
+    );
+    expect(screen.getByTestId('trailing-icon').parentElement?.className).toContain(
+      'button-trailing-override',
+    );
+  });
 });

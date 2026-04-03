@@ -1,5 +1,6 @@
 export {
   Button,
+  type ButtonProps,
   buttonRecipe,
   type ButtonSize,
   type ButtonTone,

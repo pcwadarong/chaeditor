@@ -14,11 +14,14 @@ export type ButtonSize = 'xs' | 'sm' | 'md';
 
 type ButtonRecipeProps = RecipeVariantProps<typeof buttonRecipe>;
 
-type ButtonProps = Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'color'> &
+export type ButtonProps = Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'color'> &
   ButtonRecipeProps & {
     asChild?: boolean;
+    labelClassName?: string;
     leadingVisual?: React.ReactNode;
+    leadingVisualClassName?: string;
     trailingVisual?: React.ReactNode;
+    trailingVisualClassName?: string;
   };
 
 type ButtonAsChildProps = {
@@ -192,10 +195,13 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       children,
       className,
       fullWidth,
+      labelClassName,
       leadingVisual,
+      leadingVisualClassName,
       size,
       tone,
       trailingVisual,
+      trailingVisualClassName,
       type = 'button',
       variant,
       ...props
@@ -208,13 +214,13 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     const renderContent = (labelContent: React.ReactNode) => (
       <>
         {leadingVisual && (
-          <span aria-hidden className={styles.visual}>
+          <span aria-hidden className={cx(styles.visual, leadingVisualClassName)}>
             {leadingVisual}
           </span>
         )}
-        <span className={styles.label}>{labelContent}</span>
+        <span className={cx(styles.label, labelClassName)}>{labelContent}</span>
         {trailingVisual && (
-          <span aria-hidden className={styles.visual}>
+          <span aria-hidden className={cx(styles.visual, trailingVisualClassName)}>
             {trailingVisual}
           </span>
         )}

@@ -145,4 +145,25 @@ describe('Popover', () => {
     expect(onOpenChange).toHaveBeenCalledWith(false);
     expect(screen.getByRole('dialog', { name: 'Action menu' })).toBeTruthy();
   });
+
+  it('Under slot className overrides, Popover must merge them into the root trigger label and value slots', () => {
+    render(
+      <Popover
+        label="Theme"
+        panelLabel="Choose theme"
+        rootClassName="popover-root-override"
+        triggerLabelClassName="popover-label-override"
+        triggerValueClassName="popover-value-override"
+        value="System"
+      >
+        {() => <button type="button">System</button>}
+      </Popover>,
+    );
+
+    expect(screen.getByText('Theme').className).toContain('popover-label-override');
+    expect(screen.getByText('System').className).toContain('popover-value-override');
+    expect(screen.getByRole('button', { name: 'Choose theme' }).parentElement?.className).toContain(
+      'popover-root-override',
+    );
+  });
 });

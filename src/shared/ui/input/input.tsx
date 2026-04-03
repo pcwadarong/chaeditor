@@ -3,7 +3,7 @@ import { cva, cx } from 'styled-system/css';
 
 import { disabledFieldStyles, focusVisibleRingStyles } from '@/shared/ui/styles/primitive-theme';
 
-type InputProps = React.InputHTMLAttributes<HTMLInputElement>;
+export type InputProps = React.InputHTMLAttributes<HTMLInputElement>;
 
 /**
  * Shared single-line input component.
