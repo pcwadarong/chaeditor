@@ -1,6 +1,7 @@
 import React from 'react';
 import { css } from 'styled-system/css';
 
+import { createChaeditorThemeVars } from '@/core';
 import type { MarkdownEditorHostAdapters } from '@/react';
 
 const IMAGE_LIBRARY = [
@@ -111,6 +112,47 @@ export const customAdapterUsageSnippet = [
   '  />',
   ');',
 ].join('\n');
+
+export const themeOverrideUsageSnippet = [
+  "import 'chaeditor/styles.css';",
+  '',
+  "import { createChaeditorThemeVars } from 'chaeditor/core';",
+  "import { MarkdownEditor } from 'chaeditor/react';",
+  '',
+  'const themeVars = createChaeditorThemeVars({',
+  "  primary: '#0f766e',",
+  "  primarySubtle: '#ccfbf1',",
+  "  surface: '#f8fafc',",
+  "  surfaceMuted: '#ecfeff',",
+  "  text: '#0f172a',",
+  "  textSubtle: '#475569',",
+  "  sansFont: 'var(--app-font-sans), system-ui, sans-serif',",
+  '  monoFont: "var(--font-d2coding), \'D2Coding\', monospace",',
+  '});',
+  '',
+  'const Example = () => (',
+  '  <div style={themeVars}>',
+  '    <MarkdownEditor contentType="article" onChange={() => {}} value="" />',
+  '  </div>',
+  ');',
+].join('\n');
+
+export const storybookHostThemeVars = createChaeditorThemeVars({
+  border: '#bfd4ea',
+  borderStrong: '#8db2d3',
+  focusRing: '#bfdbfe',
+  muted: '#4b5563',
+  primary: '#0f766e',
+  primaryContrast: '#ffffff',
+  primaryMuted: '#ccfbf1',
+  primarySubtle: '#f0fdfa',
+  sansFont: 'var(--app-font-sans), system-ui, sans-serif',
+  surface: '#f8fafc',
+  surfaceMuted: '#eff6ff',
+  surfaceStrong: '#dbeafe',
+  text: '#0f172a',
+  textSubtle: '#475569',
+});
 
 /**
  * Sleeps for the given number of milliseconds.

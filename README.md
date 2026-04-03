@@ -94,6 +94,43 @@ import {
 } from 'chaeditor/core';
 ```
 
+## Theme Overrides
+
+기본 스타일은 `chaeditor/styles.css`만으로 바로 사용할 수 있습니다.  
+브랜드 색상이나 폰트를 맞춰야 한다면, host app이 CSS 변수만 override하면 됩니다.
+
+```tsx
+import 'chaeditor/styles.css';
+
+import { createChaeditorThemeVars } from 'chaeditor/core';
+import { MarkdownEditor } from 'chaeditor/react';
+
+const themeVars = createChaeditorThemeVars({
+  primary: '#0f766e',
+  primarySubtle: '#ccfbf1',
+  surface: '#f8fafc',
+  surfaceMuted: '#eff6ff',
+  text: '#0f172a',
+  textSubtle: '#475569',
+  sansFont: 'var(--app-font-sans), system-ui, sans-serif',
+  monoFont: "var(--font-d2coding), 'D2Coding', monospace",
+});
+
+const Example = () => (
+  <div style={themeVars}>
+    <MarkdownEditor contentType="article" onChange={() => {}} value="" />
+  </div>
+);
+```
+
+일반 UI 폰트는 host app이 책임지는 것이 기본 방향입니다.
+
+- `sansFont`: 제품 전체에서 쓰는 기본 sans font를 연결
+- `sansJaFont`: 일본어/다국어 fallback이 필요할 때만 override
+- `monoFont`: 필요하면 직접 넣고, 아무 값도 주지 않으면 D2Coding fallback chain이 기본으로 동작
+
+즉 패키지는 기본 theme를 제공하되, host가 원하면 자기 primary/surface/text/font 체계를 그대로 editor scope에 입힐 수 있습니다.
+
 현재 저장소를 로컬에서 실행하거나 검증하려면 아래 명령을 사용하세요.
 
 ```bash
