@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react';
 import React from 'react';
 import { css } from 'styled-system/css';
 
@@ -137,6 +138,94 @@ export const themeOverrideUsageSnippet = [
   ');',
 ].join('\n');
 
+export const tailwindThemeUsageSnippet = [
+  "import 'chaeditor/styles.css';",
+  '',
+  "import { MarkdownEditor } from 'chaeditor/react';",
+  '',
+  'const Example = () => (',
+  '  <div',
+  '    className=[',
+  "      '[--chaeditor-color-primary:#0f766e]',",
+  "      '[--chaeditor-color-primary-subtle:#ccfbf1]',",
+  "      '[--chaeditor-color-surface:#f8fafc]',",
+  "      '[--chaeditor-color-text:#0f172a]',",
+  "      '[--chaeditor-font-sans:var(--app-font-sans),system-ui,sans-serif]',",
+  "      '[--chaeditor-font-mono:var(--font-d2coding),D2Coding,monospace]',",
+  "    ].join(' ')",
+  '  >',
+  '    <MarkdownEditor contentType="article" onChange={() => {}} value="" />',
+  '  </div>',
+  ');',
+].join('\n');
+
+export const emotionThemeUsageSnippet = [
+  "import 'chaeditor/styles.css';",
+  '',
+  "import { css } from '@emotion/react';",
+  "import { createChaeditorThemeVars } from 'chaeditor/core';",
+  "import { MarkdownEditor } from 'chaeditor/react';",
+  '',
+  'const editorTheme = css({',
+  '  ...createChaeditorThemeVars({',
+  "    primary: '#0f766e',",
+  "    surface: '#f8fafc',",
+  "    text: '#0f172a',",
+  "    sansFont: 'var(--app-font-sans), system-ui, sans-serif',",
+  '  }),',
+  '});',
+  '',
+  'const Example = () => (',
+  '  <div css={editorTheme}>',
+  '    <MarkdownEditor contentType="article" onChange={() => {}} value="" />',
+  '  </div>',
+  ');',
+].join('\n');
+
+export const styledComponentsThemeUsageSnippet = [
+  "import 'chaeditor/styles.css';",
+  '',
+  "import styled from 'styled-components';",
+  "import { createChaeditorThemeVars } from 'chaeditor/core';",
+  "import { MarkdownEditor } from 'chaeditor/react';",
+  '',
+  'const EditorThemeScope = styled.div(createChaeditorThemeVars({',
+  "  primary: '#0f766e',",
+  "  surface: '#f8fafc',",
+  "  text: '#0f172a',",
+  "  sansFont: 'var(--app-font-sans), system-ui, sans-serif',",
+  '}));',
+  '',
+  'const Example = () => (',
+  '  <EditorThemeScope>',
+  '    <MarkdownEditor contentType="article" onChange={() => {}} value="" />',
+  '  </EditorThemeScope>',
+  ');',
+].join('\n');
+
+export const vanillaExtractThemeUsageSnippet = [
+  "import 'chaeditor/styles.css';",
+  '',
+  "import { createChaeditorThemeVars } from 'chaeditor/core';",
+  "import { MarkdownEditor } from 'chaeditor/react';",
+  "import { style } from '@vanilla-extract/css';",
+  '',
+  'const editorThemeScope = style({',
+  '  vars: createChaeditorThemeVars({',
+  "    primary: '#0f766e',",
+  "    surface: '#f8fafc',",
+  "    text: '#0f172a',",
+  "    sansFont: 'var(--app-font-sans), system-ui, sans-serif',",
+  '  }),',
+  '});',
+  '',
+  'const Example = () => (',
+  '  <div className={editorThemeScope}>',
+  '    <MarkdownEditor contentType="article" onChange={() => {}} value="" />',
+  '  </div>',
+  ');',
+].join('\n');
+
 export const storybookHostThemeVars = createChaeditorThemeVars({
   border: '#bfd4ea',
   borderStrong: '#8db2d3',
@@ -153,6 +242,19 @@ export const storybookHostThemeVars = createChaeditorThemeVars({
   text: '#0f172a',
   textSubtle: '#475569',
 });
+
+export type StorybookThemeMode = 'default' | 'host';
+
+/**
+ * Resolves the Storybook host theme scope for visual override examples.
+ */
+export const getStorybookThemeStyle = (mode: StorybookThemeMode): CSSProperties | undefined => {
+  if (mode === 'host') {
+    return storybookHostThemeVars as CSSProperties;
+  }
+
+  return undefined;
+};
 
 /**
  * Sleeps for the given number of milliseconds.

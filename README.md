@@ -131,6 +131,124 @@ const Example = () => (
 
 즉 패키지는 기본 theme를 제공하되, host가 원하면 자기 primary/surface/text/font 체계를 그대로 editor scope에 입힐 수 있습니다.
 
+## Styling Runtime Recipes
+
+스타일 라이브러리 호환의 핵심은 `chaeditor`가 런타임별 adapter를 직접 들고 있는 것이 아니라, host app이 같은 CSS variable contract를 어떤 방식으로 주입하느냐에 있습니다.
+
+### Tailwind CSS
+
+Tailwind를 쓰는 앱이라면 wrapper에 arbitrary property utility를 붙여 editor scope를 만들 수 있습니다.
+
+```tsx
+import 'chaeditor/styles.css';
+
+import { MarkdownEditor } from 'chaeditor/react';
+
+const Example = () => (
+  <div
+    className={[
+      '[--chaeditor-color-primary:#0f766e]',
+      '[--chaeditor-color-primary-subtle:#ccfbf1]',
+      '[--chaeditor-color-surface:#f8fafc]',
+      '[--chaeditor-color-text:#0f172a]',
+      '[--chaeditor-font-sans:var(--app-font-sans),system-ui,sans-serif]',
+      '[--chaeditor-font-mono:var(--font-d2coding),D2Coding,monospace]',
+    ].join(' ')}
+  >
+    <MarkdownEditor contentType="article" onChange={() => {}} value="" />
+  </div>
+);
+```
+
+### Emotion
+
+Emotion을 쓰는 앱이라면 `createChaeditorThemeVars()` 결과를 그대로 wrapper style object에 합칠 수 있습니다.
+
+```tsx
+import 'chaeditor/styles.css';
+
+import { css } from '@emotion/react';
+import { createChaeditorThemeVars } from 'chaeditor/core';
+import { MarkdownEditor } from 'chaeditor/react';
+
+const editorTheme = css({
+  ...createChaeditorThemeVars({
+    primary: '#0f766e',
+    surface: '#f8fafc',
+    text: '#0f172a',
+    sansFont: 'var(--app-font-sans), system-ui, sans-serif',
+  }),
+});
+
+const Example = () => (
+  <div css={editorTheme}>
+    <MarkdownEditor contentType="article" onChange={() => {}} value="" />
+  </div>
+);
+```
+
+### styled-components
+
+styled-components를 쓰는 앱이라면 scoped wrapper component에 같은 contract를 적용하면 됩니다.
+
+```tsx
+import 'chaeditor/styles.css';
+
+import styled from 'styled-components';
+import { createChaeditorThemeVars } from 'chaeditor/core';
+import { MarkdownEditor } from 'chaeditor/react';
+
+const EditorThemeScope = styled.div(
+  createChaeditorThemeVars({
+    primary: '#0f766e',
+    surface: '#f8fafc',
+    text: '#0f172a',
+    sansFont: 'var(--app-font-sans), system-ui, sans-serif',
+  }),
+);
+
+const Example = () => (
+  <EditorThemeScope>
+    <MarkdownEditor contentType="article" onChange={() => {}} value="" />
+  </EditorThemeScope>
+);
+```
+
+요점은 동일합니다.
+
+### vanilla-extract
+
+vanilla-extract를 쓰는 앱이라면 typed scope class에 editor theme variable map을 그대로 넣을 수 있습니다.
+
+```tsx
+import 'chaeditor/styles.css';
+
+import { createChaeditorThemeVars } from 'chaeditor/core';
+import { MarkdownEditor } from 'chaeditor/react';
+import { style } from '@vanilla-extract/css';
+
+const editorThemeScope = style({
+  vars: createChaeditorThemeVars({
+    primary: '#0f766e',
+    surface: '#f8fafc',
+    text: '#0f172a',
+    sansFont: 'var(--app-font-sans), system-ui, sans-serif',
+  }),
+});
+
+const Example = () => (
+  <div className={editorThemeScope}>
+    <MarkdownEditor contentType="article" onChange={() => {}} value="" />
+  </div>
+);
+```
+
+요점은 동일합니다.
+
+- package는 semantic CSS variable contract를 공개한다
+- host는 Tailwind, Emotion, styled-components, vanilla-extract, plain CSS 중 원하는 runtime으로 값을 주입한다
+- editor 로직과 toolbar/renderer contract는 바뀌지 않는다
+
 현재 저장소를 로컬에서 실행하거나 검증하려면 아래 명령을 사용하세요.
 
 ```bash
