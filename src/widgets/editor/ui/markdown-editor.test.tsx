@@ -127,6 +127,47 @@ describe('MarkdownEditor', () => {
     });
   });
 
+  it('Under an empty value and a custom preview message, MarkdownEditor must render the provided empty preview text', async () => {
+    installMatchMediaMock(true);
+
+    render(
+      <MarkdownEditor
+        contentType="article"
+        onChange={() => {}}
+        previewEmptyText="Preview is empty."
+        value=""
+      />,
+    );
+
+    fireEvent.click(screen.getByRole('tab', { name: 'Preview' }));
+
+    await waitFor(() => {
+      expect(screen.getByText('Preview is empty.')).toBeVisible();
+    });
+  });
+
+  it('Under a host toolbar UI registry, MarkdownEditor must pass the custom toolbar labels to nested triggers', () => {
+    installMatchMediaMock(false);
+
+    render(
+      <MarkdownEditor
+        contentType="article"
+        onChange={() => {}}
+        uiRegistry={{
+          labels: {
+            linkEmbedPopover: {
+              triggerAriaLabel: 'Add product link',
+              triggerTooltip: 'Add product link',
+            },
+          },
+        }}
+        value=""
+      />,
+    );
+
+    expect(screen.getByRole('button', { name: 'Add product link' })).toBeInTheDocument();
+  });
+
   it('Under a custom primitive registry, MarkdownEditor must pass the override to nested toolbar actions', () => {
     installMatchMediaMock(false);
 

@@ -1,8 +1,10 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
+import { cx } from 'styled-system/css';
 
 import { MarkdownToolbar } from '@/features/edit-markdown/toolbar';
 import { Button } from '@/shared/ui/button';
+import { Popover } from '@/shared/ui/popover';
 import { Textarea } from '@/shared/ui/textarea/textarea';
 
 import '@testing-library/jest-dom/vitest';
@@ -341,5 +343,24 @@ describe('MarkdownToolbar', () => {
       'data-primitive',
       'custom-button',
     );
+  });
+
+  it('Under a custom primitive registry, MarkdownToolbar must pass the popover override to grouped triggers', () => {
+    const textareaRef = React.createRef<HTMLTextAreaElement>();
+    const HostPopover = ({ triggerClassName, ...props }: React.ComponentProps<typeof Popover>) => (
+      <Popover {...props} triggerClassName={cx('custom-popover-trigger', triggerClassName)} />
+    );
+
+    render(
+      <MarkdownToolbar
+        contentType="article"
+        onChange={() => {}}
+        primitiveRegistry={{ Popover: HostPopover }}
+        textareaRef={textareaRef}
+      />,
+    );
+
+    expect(screen.getByRole('button', { name: 'Heading' })).toHaveClass('custom-popover-trigger');
+    expect(screen.getByRole('button', { name: 'Toggle' })).toHaveClass('custom-popover-trigger');
   });
 });
