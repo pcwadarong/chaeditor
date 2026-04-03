@@ -113,13 +113,9 @@ export const renderRichMarkdown = ({
     return (
       <details className={toggleClass} key={key}>
         <summary className={summaryClassName}>
-          <ChevronRightIcon
-            aria-hidden
-            className={toggleChevronClass}
-            color="muted"
-            data-toggle-chevron="true"
-            size="sm"
-          />
+          <span className={toggleChevronWrapClass} data-toggle-chevron="true">
+            <ChevronRightIcon aria-hidden className={toggleChevronClass} color="text" size={18} />
+          </span>
           <span>{segment.title}</span>
         </summary>
         <div className={toggleContentClass}>
@@ -161,11 +157,11 @@ const toggleSummaryBaseClass = css({
   cursor: 'pointer',
   display: 'inline-flex',
   alignItems: 'center',
-  gap: '2',
+  gap: '3',
   width: 'full',
   listStyle: 'none',
   px: '0',
-  py: '1',
+  py: '1.5',
   fontWeight: 'semibold',
   lineHeight: 'snug',
   _marker: {
@@ -192,6 +188,20 @@ const toggleListSummaryClass = cx(
 
 const toggleChevronClass = css({
   flex: 'none',
+  opacity: 1,
+  transformOrigin: 'center',
+  transition: 'transform',
+});
+
+const toggleChevronWrapClass = css({
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  flex: 'none',
+  width: '5',
+  height: '5',
+  color: 'text',
+  transformOrigin: 'center',
   transition: 'transform',
 });
 

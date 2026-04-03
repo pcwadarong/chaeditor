@@ -144,12 +144,11 @@ export const MarkdownGallery = ({ galleryId, items }: MarkdownGalleryProps) => {
             </figure>
           ))}
         </div>
-        {scopedViewerItems.length > 1 ? (
+        {scopedViewerItems.length > 1 && activeIndex > 0 ? (
           <>
             <button
               aria-label="Previous image"
               className={cx(galleryNavButtonClass, galleryPrevButtonClass)}
-              disabled={activeIndex === 0}
               onClick={() => {
                 const container = containerRef.current;
                 if (!container) return;
@@ -165,10 +164,13 @@ export const MarkdownGallery = ({ galleryId, items }: MarkdownGalleryProps) => {
                 size={28}
               />
             </button>
+          </>
+        ) : null}
+        {scopedViewerItems.length > 1 && activeIndex < scopedViewerItems.length - 1 ? (
+          <>
             <button
               aria-label="Next image"
               className={cx(galleryNavButtonClass, galleryNextButtonClass)}
-              disabled={activeIndex === scopedViewerItems.length - 1}
               onClick={() => {
                 const container = containerRef.current;
                 if (!container) return;
@@ -247,8 +249,8 @@ const gallerySlideClass = css({
   width: 'full',
   aspectRatio: '[4 / 5]',
   minHeight: {
-    base: '72',
-    md: '96',
+    base: '48',
+    md: '64',
   },
   borderRadius: 'lg',
   backgroundColor: 'surfaceMuted',
@@ -270,8 +272,8 @@ const galleryNavButtonClass = css({
   display: 'inline-flex',
   alignItems: 'center',
   justifyContent: 'center',
-  minWidth: '12',
-  minHeight: '12',
+  minWidth: '8',
+  minHeight: '8',
   borderRadius: 'full',
   color: 'text',
   backgroundColor: 'surface',
@@ -286,10 +288,6 @@ const galleryNavButtonClass = css({
   _focusVisible: {
     outline: '[2px solid var(--colors-focus-ring)]',
     outlineOffset: '[2px]',
-  },
-  _disabled: {
-    cursor: 'not-allowed',
-    opacity: 0.36,
   },
 });
 
