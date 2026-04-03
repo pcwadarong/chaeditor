@@ -34,7 +34,7 @@ const getRendererStateSummary = (
   if (adapterMode === 'none') {
     return {
       description:
-        'This state renders markdown with the package defaults only. Host-driven link previews and image overrides are turned off.',
+        'Use this state when you want to review the package renderer on its own, without any host-provided link preview metadata or image overrides.',
       items: [
         { label: 'Mode', value: 'Host adapters off' },
         {
@@ -49,7 +49,7 @@ const getRendererStateSummary = (
   if (adapterMode === 'custom') {
     return {
       description:
-        'This state demonstrates host-driven preview metadata and image rendering, with optional renderer overrides layered on top of the same markdown pipeline.',
+        'Use this state when you need to compare the package renderer against a branded product integration that changes host metadata, image rendering, or both.',
       items: [
         { label: 'Mode', value: 'Custom host adapters enabled' },
         {
@@ -65,7 +65,7 @@ const getRendererStateSummary = (
 
   return {
     description:
-      'This is the baseline renderer reference with the default mock host adapters and the package-default segment renderers.',
+      'Use this baseline state to review the full renderer contract with default host enrichment and the package-default segment renderers.',
     items: [
       { label: 'Mode', value: 'Default mock host adapters enabled' },
       {
@@ -157,7 +157,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'Markdown rendering reference for custom blocks, media embeds, Mermaid diagrams, math, and host-driven link previews. The renderer stories use mock adapters instead of the optional default-host HTTP adapters so the preview stays fully local.',
+          'Markdown rendering reference for custom blocks, media embeds, Mermaid diagrams, math, and host-driven link previews. Use these stories to compare the package-default renderer, a renderer-only review surface, and product-style overrides without leaving the same markdown fixture.',
       },
       source: {
         code: rendererPackageUsageSnippet,
@@ -178,7 +178,7 @@ FeatureShowcase.parameters = {
   docs: {
     description: {
       story:
-        'Renders the full sample markdown with the default mock host adapters, including link preview metadata, attachments, math, Mermaid diagrams, galleries, and video blocks.',
+        'Use this story to review the full reading experience of a content-heavy article. It exercises the default renderer contract across links, attachments, math, Mermaid, gallery, and video blocks.',
     },
   },
 };
@@ -194,7 +194,7 @@ export const MinimalMarkdown: Story = {
     docs: {
       description: {
         story:
-          'Removes host adapters and uses a smaller markdown sample so the package renderer can be reviewed without any host-provided enrichment.',
+          'Use this story when you want to judge the package renderer without any host enrichment. It keeps the markdown sample intentionally small so spacing, typography, and fallback rendering are easy to inspect.',
       },
     },
   },
@@ -223,7 +223,7 @@ export const CustomRendererOverride: Story = {
     docs: {
       description: {
         story:
-          'Keeps host adapters but replaces the video segment renderer to show how products can override one renderer without forking the full markdown pipeline.',
+          'Use this story when you want to replace one visual block, such as video, without forking the full markdown pipeline. It keeps the rest of the renderer unchanged so the override surface is easy to isolate.',
       },
       source: {
         code: [
@@ -253,7 +253,7 @@ export const CustomHostAdapters: Story = {
     docs: {
       description: {
         story:
-          'Uses the custom adapter variant so the docs page shows host-provided link preview metadata and branded image rendering alongside the same markdown content.',
+          'Use this story to compare the same markdown content under a branded host integration. It is the clearest reference for host-provided preview metadata and custom image rendering.',
       },
       source: {
         code: customAdapterUsageSnippet,

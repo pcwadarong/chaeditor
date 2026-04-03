@@ -32,7 +32,7 @@ const getEmbedWorkflowSummary = (adapterMode: StorybookAdapterMode) => {
   if (adapterMode === 'none') {
     return {
       description:
-        'The helper surfaces stay visible, but upload-backed image, file, and video actions no longer have host implementations behind them.',
+        'Use this state when you want to inspect the package-owned helper UI without any host upload or preview integration behind it.',
       items: [
         { label: 'Mode', value: 'Host adapters off' },
         { label: 'Outputs', value: 'Only package-side payload UI is available' },
@@ -44,7 +44,7 @@ const getEmbedWorkflowSummary = (adapterMode: StorybookAdapterMode) => {
   if (adapterMode === 'custom') {
     return {
       description:
-        'The same helper flows now run through branded host overrides, which makes the emitted payload log easier to compare against product-specific integrations.',
+        'Use this state to compare the same helper flows against a branded host integration and review how the resulting payload log changes in a product-specific setup.',
       items: [
         { label: 'Mode', value: 'Custom host adapters enabled' },
         { label: 'Outputs', value: 'Branded upload and preview behavior' },
@@ -55,7 +55,7 @@ const getEmbedWorkflowSummary = (adapterMode: StorybookAdapterMode) => {
 
   return {
     description:
-      'This is the baseline helper reference with default mock host adapters, so image, file, and video flows can emit realistic payloads without a backend.',
+      'Use this baseline state to exercise the helper flows with realistic mock payloads before introducing any product-specific host customization.',
     items: [
       { label: 'Mode', value: 'Default mock host adapters enabled' },
       { label: 'Outputs', value: 'Default mock payloads and preview behavior' },
@@ -148,7 +148,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'Standalone embed and formatting helper reference for image, file, video, link, and color workflows. Each flow is wired to mock host adapters so the story demonstrates integration contracts without depending on a live backend.',
+          'Standalone embed and formatting helper reference for image, file, video, link, and color workflows. Use these stories to compare the package helper UI on its own, with the default mock host wiring, and with a branded host integration while keeping the same payload contract in view.',
       },
       source: {
         code: customAdapterUsageSnippet,
@@ -169,7 +169,7 @@ Default.parameters = {
   docs: {
     description: {
       story:
-        'Shows the helper surfaces with the default mock host adapters enabled. Image, file, and video helpers can all produce realistic payloads without a backend.',
+        'Use this story as the baseline integration reference. It shows the helpers in the state that most closely matches a connected product, while still staying fully local to Storybook.',
     },
   },
 };
@@ -182,7 +182,7 @@ export const CoreOnly: Story = {
     docs: {
       description: {
         story:
-          'Shows the same helper entrypoints without host adapters. The package UI remains visible, but upload-backed actions no longer have a host implementation behind them.',
+          'Use this story when you want to review the package helper UI in isolation. The same entrypoints stay visible, but upload-backed actions no longer have any host implementation behind them.',
       },
     },
   },
@@ -196,7 +196,7 @@ export const CustomHostAdapters: Story = {
     docs: {
       description: {
         story:
-          'Shows a custom host integration that changes image rendering and preview metadata while keeping the same helper payload contracts visible in the event log.',
+          'Use this story to compare the helper flows under a branded host integration. The event log makes it easy to see that the helper contract stays the same even when the host behavior changes.',
       },
     },
   },
