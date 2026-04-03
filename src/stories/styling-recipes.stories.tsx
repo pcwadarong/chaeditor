@@ -5,7 +5,9 @@ import {
   codeBlockClass,
   emotionThemeUsageSnippet,
   pageClass,
+  primitiveRegistryUsageSnippet,
   StorybookCompactSummary,
+  StorybookPrimitiveRegistryShowcase,
   styledComponentsThemeUsageSnippet,
   tailwindThemeUsageSnippet,
   vanillaExtractThemeUsageSnippet,
@@ -86,6 +88,24 @@ const StylingRecipesPage = () => (
           <pre className={codeBlockClass}>{vanillaExtractThemeUsageSnippet}</pre>
         </article>
       </div>
+
+      <article className={recipeCardClass}>
+        <div className={recipeHeaderClass}>
+          <p className={recipeEyebrowClass}>Primitive registry</p>
+          <h2 className={recipeTitleClass}>
+            Best when the host needs to replace actual input and overlay shells
+          </h2>
+        </div>
+        <p className={recipeDescriptionClass}>
+          Theme variables change colors and fonts, but a primitive registry lets the host swap the
+          actual button, input, textarea, popover, modal, and tooltip shells. Use this when the
+          design system needs more than token-level overrides.
+        </p>
+        <pre className={codeBlockClass}>{primitiveRegistryUsageSnippet}</pre>
+        <div className={showcaseClass}>
+          <StorybookPrimitiveRegistryShowcase />
+        </div>
+      </article>
     </section>
   </main>
 );
@@ -96,7 +116,7 @@ const meta = {
     docs: {
       description: {
         component:
-          'Host-side styling recipes for Tailwind CSS, Emotion, styled-components, and vanilla-extract. These examples keep the package on one semantic CSS variable contract while letting the host app choose the runtime that injects the values.',
+          'Host-side styling recipes for Tailwind CSS, Emotion, styled-components, vanilla-extract, and primitive shell overrides. These examples keep the package on one semantic CSS variable contract while letting the host app choose either token injection or primitive replacement.',
       },
       source: {
         code: tailwindThemeUsageSnippet,
@@ -176,4 +196,13 @@ const inlineCodeClass = css({
   fontSize: 'sm',
   px: '1.5',
   py: '0.5',
+});
+
+const showcaseClass = css({
+  p: '4',
+  borderRadius: 'xl',
+  bg: 'surface',
+  borderWidth: '1px',
+  borderStyle: 'solid',
+  borderColor: 'border',
 });

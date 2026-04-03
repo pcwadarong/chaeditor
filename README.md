@@ -249,6 +249,77 @@ const Example = () => (
 - host는 Tailwind, Emotion, styled-components, vanilla-extract, plain CSS 중 원하는 runtime으로 값을 주입한다
 - editor 로직과 toolbar/renderer contract는 바뀌지 않는다
 
+## Primitive Overrides
+
+색상, 폰트, spacing 같은 수준은 theme variable override로 충분하지만, 실제 입력창이나 overlay shell 자체를 교체해야 하는 경우도 있습니다.  
+그럴 때는 `primitiveRegistry`를 사용해 host app의 `Button`, `Input`, `Textarea`, `Popover`, `Modal`, `Tooltip`을 editor surface에 주입할 수 있습니다.
+
+```tsx
+import 'chaeditor/styles.css';
+
+import { MarkdownEditor } from 'chaeditor/react';
+
+const HostButton = props => (
+  <button {...props} className={`host-button ${props.className ?? ''}`.trim()} />
+);
+
+const HostInput = props => (
+  <input {...props} className={`host-input ${props.className ?? ''}`.trim()} />
+);
+
+const HostTextarea = props => (
+  <textarea {...props} className={`host-textarea ${props.className ?? ''}`.trim()} />
+);
+
+const HostPopover = props => (
+  <Popover
+    {...props}
+    panelClassName={`host-popover-panel ${props.panelClassName ?? ''}`.trim()}
+    triggerClassName={`host-popover-trigger ${props.triggerClassName ?? ''}`.trim()}
+  />
+);
+
+const HostModal = props => (
+  <Modal
+    {...props}
+    backdropClassName={`host-modal-backdrop ${props.backdropClassName ?? ''}`.trim()}
+    closeButtonClassName={`host-modal-close ${props.closeButtonClassName ?? ''}`.trim()}
+    frameClassName={`host-modal-frame ${props.frameClassName ?? ''}`.trim()}
+  />
+);
+
+const HostTooltip = props => (
+  <Tooltip
+    {...props}
+    contentClassName={`host-tooltip ${props.contentClassName ?? ''}`.trim()}
+    portalClassName={`host-tooltip-portal ${props.portalClassName ?? ''}`.trim()}
+  />
+);
+
+const Example = () => (
+  <MarkdownEditor
+    contentType="article"
+    onChange={() => {}}
+    primitiveRegistry={{
+      Button: HostButton,
+      Input: HostInput,
+      Modal: HostModal,
+      Popover: HostPopover,
+      Textarea: HostTextarea,
+      Tooltip: HostTooltip,
+    }}
+    value=""
+  />
+);
+```
+
+정리하면 역할은 이렇게 나뉩니다.
+
+- `createChaeditorThemeVars()`: package가 제공하는 기본 primitive는 유지한 채 색상, 폰트, radius 같은 semantic token만 host에 맞춤
+- `primitiveRegistry`: host design system의 실제 input, popover, modal, tooltip shell을 editor에 연결
+
+보통은 theme override부터 시작하고, 제품 셸과 interaction contract까지 통일해야 할 때만 `primitiveRegistry`로 넘어가는 흐름이 가장 자연스럽습니다.
+
 현재 저장소를 로컬에서 실행하거나 검증하려면 아래 명령을 사용하세요.
 
 ```bash
