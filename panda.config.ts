@@ -198,6 +198,18 @@ export default defineConfig({
               ),
             },
           },
+          primaryHover: {
+            value: {
+              base: withCssVar(
+                CHAEDITOR_THEME_VARIABLES.primaryHover,
+                CHAEDITOR_THEME_DEFAULTS.light.primaryHover,
+              ),
+              _dark: withCssVar(
+                CHAEDITOR_THEME_VARIABLES.primaryHover,
+                CHAEDITOR_THEME_DEFAULTS.dark.primaryHover,
+              ),
+            },
+          },
           focusRing: {
             value: {
               base: withCssVar(
@@ -207,6 +219,18 @@ export default defineConfig({
               _dark: withCssVar(
                 CHAEDITOR_THEME_VARIABLES.focusRing,
                 CHAEDITOR_THEME_DEFAULTS.dark.focusRing,
+              ),
+            },
+          },
+          overlayBackdrop: {
+            value: {
+              base: withCssVar(
+                CHAEDITOR_THEME_VARIABLES.overlayBackdrop,
+                CHAEDITOR_THEME_DEFAULTS.light.overlayBackdrop,
+              ),
+              _dark: withCssVar(
+                CHAEDITOR_THEME_VARIABLES.overlayBackdrop,
+                CHAEDITOR_THEME_DEFAULTS.dark.overlayBackdrop,
               ),
             },
           },

@@ -1,6 +1,8 @@
 import React from 'react';
 import { cva, cx } from 'styled-system/css';
 
+import { disabledFieldStyles, focusVisibleRingStyles } from '@/shared/ui/styles/primitive-theme';
+
 type InputProps = React.InputHTMLAttributes<HTMLInputElement>;
 
 /**
@@ -37,13 +39,9 @@ const inputRecipe = cva({
       borderColor: 'borderStrong',
     },
     _focusVisible: {
-      outline: '[2px solid var(--colors-focus-ring)]',
-      outlineOffset: '[2px]',
+      ...focusVisibleRingStyles,
       borderColor: 'primary',
     },
-    _disabled: {
-      cursor: 'not-allowed',
-      opacity: 0.56,
-    },
+    _disabled: disabledFieldStyles,
   },
 });

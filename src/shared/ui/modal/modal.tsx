@@ -5,6 +5,7 @@ import { createPortal } from 'react-dom';
 import { css } from 'styled-system/css';
 
 import { useDialogFocusManagement } from '@/shared/lib/react/use-dialog-focus-management';
+import { overlayBackdropColor } from '@/shared/ui/styles/primitive-theme';
 import { XButton } from '@/shared/ui/x-button/x-button';
 
 type ModalProps = {
@@ -87,7 +88,7 @@ const backdropClass = css({
   position: 'fixed',
   inset: '0',
   zIndex: '1200',
-  backgroundColor: '[rgb(15 23 42 / 0.86)]',
+  backgroundColor: overlayBackdropColor,
   p: '4',
   display: 'grid',
   placeItems: 'center',

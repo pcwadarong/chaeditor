@@ -2,6 +2,12 @@ import React, { forwardRef } from 'react';
 import { cx, sva } from 'styled-system/css';
 import type { RecipeVariantProps } from 'styled-system/types/recipe';
 
+import {
+  disabledButtonStyles,
+  focusVisibleRingStyles,
+  primaryHoverBackground,
+} from '@/shared/ui/styles/primitive-theme';
+
 export type ButtonTone = 'white' | 'primary' | 'black';
 export type ButtonVariant = 'solid' | 'ghost' | 'underline';
 export type ButtonSize = 'xs' | 'sm' | 'md';
@@ -38,21 +44,14 @@ export const buttonRecipe = sva({
       gap: '2',
       userSelect: 'none',
       cursor: 'pointer',
-      transition: 'common',
+      transition: 'colors',
       letterSpacing: '[-0.01em]',
       _focusVisible: {
-        outline: '[2px solid var(--colors-focus-ring)]',
-        outlineOffset: '[2px]',
+        ...focusVisibleRingStyles,
       },
-      _disabled: {
-        cursor: 'not-allowed',
-        opacity: 0.48,
-        pointerEvents: 'none', // Prevent pointer interaction on disabled content.
-      },
+      _disabled: disabledButtonStyles,
       '&[aria-disabled="true"]': {
-        cursor: 'not-allowed',
-        opacity: 0.48,
-        pointerEvents: 'none',
+        ...disabledButtonStyles,
       },
     },
     label: {
@@ -146,7 +145,7 @@ export const buttonRecipe = sva({
           background: 'primary',
           color: 'primaryContrast',
           borderColor: 'transparent',
-          _hover: { background: 'blue.600' },
+          _hover: { background: primaryHoverBackground },
         },
       },
     },

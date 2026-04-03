@@ -3,6 +3,8 @@
 import React, { useLayoutEffect, useRef } from 'react';
 import { cva, cx } from 'styled-system/css';
 
+import { disabledFieldStyles, focusVisibleRingStyles } from '@/shared/ui/styles/primitive-theme';
+
 type TextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
   autoResize?: boolean;
 };
@@ -87,17 +89,12 @@ const textareaRecipe = cva({
       borderColor: 'borderStrong',
     },
     _focusVisible: {
-      outline: '[2px solid var(--colors-focus-ring)]',
-      outlineOffset: '[2px]',
+      ...focusVisibleRingStyles,
       borderColor: 'primary',
     },
-    _disabled: {
-      cursor: 'not-allowed',
-      opacity: 0.56,
-    },
+    _disabled: disabledFieldStyles,
     '&[aria-disabled="true"]': {
-      cursor: 'not-allowed',
-      opacity: 0.56,
+      ...disabledFieldStyles,
     },
   },
   variants: {

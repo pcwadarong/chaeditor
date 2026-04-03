@@ -4,8 +4,10 @@ export const CHAEDITOR_THEME_VARIABLES = {
   focusRing: '--chaeditor-color-focus-ring',
   monoFont: '--chaeditor-font-mono',
   muted: '--chaeditor-color-muted',
+  overlayBackdrop: '--chaeditor-color-overlay-backdrop',
   primary: '--chaeditor-color-primary',
   primaryContrast: '--chaeditor-color-primary-contrast',
+  primaryHover: '--chaeditor-color-primary-hover',
   primaryMuted: '--chaeditor-color-primary-muted',
   primarySubtle: '--chaeditor-color-primary-subtle',
   sansFont: '--chaeditor-font-sans',
@@ -29,8 +31,10 @@ export type ChaeditorThemeDefinition = Partial<{
   focusRing: string;
   monoFont: string;
   muted: string;
+  overlayBackdrop: string;
   primary: string;
   primaryContrast: string;
+  primaryHover: string;
   primaryMuted: string;
   primarySubtle: string;
   sansFont: string;
@@ -50,8 +54,10 @@ export const CHAEDITOR_THEME_DEFAULTS = {
     error: '#f87171',
     focusRing: '#1e3a8a',
     muted: '#a1a1aa',
+    overlayBackdrop: 'rgb(9 9 11 / 0.82)',
     primary: '#93c5fd',
     primaryContrast: '#18181b',
+    primaryHover: '#bfdbfe',
     primaryMuted: '#1e40af',
     primarySubtle: '#1e3a8a',
     success: '#4ade80',
@@ -73,8 +79,10 @@ export const CHAEDITOR_THEME_DEFAULTS = {
     error: '#ef4444',
     focusRing: '#dbeafe',
     muted: '#71717a',
+    overlayBackdrop: 'rgb(15 23 42 / 0.86)',
     primary: '#3b82f6',
     primaryContrast: '#ffffff',
+    primaryHover: '#2563eb',
     primaryMuted: '#dbeafe',
     primarySubtle: '#eff6ff',
     success: '#22c55e',
@@ -99,10 +107,14 @@ export const createChaeditorThemeVars = (theme: ChaeditorThemeDefinition) => {
   if (theme.focusRing) vars[CHAEDITOR_THEME_VARIABLES.focusRing] = theme.focusRing;
   if (theme.monoFont) vars[CHAEDITOR_THEME_VARIABLES.monoFont] = theme.monoFont;
   if (theme.muted) vars[CHAEDITOR_THEME_VARIABLES.muted] = theme.muted;
+  if (theme.overlayBackdrop) {
+    vars[CHAEDITOR_THEME_VARIABLES.overlayBackdrop] = theme.overlayBackdrop;
+  }
   if (theme.primary) vars[CHAEDITOR_THEME_VARIABLES.primary] = theme.primary;
   if (theme.primaryContrast) {
     vars[CHAEDITOR_THEME_VARIABLES.primaryContrast] = theme.primaryContrast;
   }
+  if (theme.primaryHover) vars[CHAEDITOR_THEME_VARIABLES.primaryHover] = theme.primaryHover;
   if (theme.primaryMuted) vars[CHAEDITOR_THEME_VARIABLES.primaryMuted] = theme.primaryMuted;
   if (theme.primarySubtle) vars[CHAEDITOR_THEME_VARIABLES.primarySubtle] = theme.primarySubtle;
   if (theme.sansFont) vars[CHAEDITOR_THEME_VARIABLES.sansFont] = theme.sansFont;

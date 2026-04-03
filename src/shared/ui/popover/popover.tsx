@@ -15,6 +15,7 @@ import { css, cx } from 'styled-system/css';
 import { useDialogFocusManagement } from '@/shared/lib/react/use-dialog-focus-management';
 import type { ButtonSize, ButtonTone, ButtonVariant } from '@/shared/ui/button/button';
 import { Button } from '@/shared/ui/button/button';
+import { focusVisibleRingStyles } from '@/shared/ui/styles/primitive-theme';
 import { srOnlyClass } from '@/shared/ui/styles/sr-only-style';
 import { Tooltip } from '@/shared/ui/tooltip/tooltip';
 
@@ -243,6 +244,7 @@ const triggerButtonClass = css({
     color: 'primary',
   },
   _focusVisible: {
+    ...focusVisibleRingStyles,
     color: 'primary',
   },
 });
