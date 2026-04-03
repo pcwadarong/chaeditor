@@ -5,6 +5,8 @@ import { MarkdownToolbar } from '@/features/edit-markdown/toolbar';
 import { Button } from '@/shared/ui/button';
 import { Textarea } from '@/shared/ui/textarea/textarea';
 
+import '@testing-library/jest-dom/vitest';
+
 /**
  * Combines the toolbar and textarea to verify real edit interactions.
  */
