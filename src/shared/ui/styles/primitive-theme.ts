@@ -38,9 +38,7 @@ export const disabledButtonStyles = {
 export const primaryHoverBackground =
   `[var(${CHAEDITOR_THEME_VARIABLES.primaryHover},var(--colors-primary))]` as const;
 
-/**
- * Shared modal backdrop color. Hosts can override the overlay tone without
- * replacing the modal implementation.
- */
 export const overlayBackdropColor =
   `[var(${CHAEDITOR_THEME_VARIABLES.overlayBackdrop},${CHAEDITOR_THEME_DEFAULTS.light.overlayBackdrop})]` as const;
+
+export const overlayBackdropStyleValue = `var(${CHAEDITOR_THEME_VARIABLES.overlayBackdrop},${CHAEDITOR_THEME_DEFAULTS.light.overlayBackdrop})`;

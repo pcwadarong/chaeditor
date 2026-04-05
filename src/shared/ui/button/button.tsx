@@ -2,27 +2,22 @@ import React, { forwardRef } from 'react';
 import { cx, sva } from 'styled-system/css';
 import type { RecipeVariantProps } from 'styled-system/types/recipe';
 
+import type {
+  ButtonProps,
+  ButtonSize,
+  ButtonTone,
+  ButtonVariant,
+} from '@/shared/ui/primitive-registry/markdown-primitive-props';
 import {
   disabledButtonStyles,
   focusVisibleRingStyles,
   primaryHoverBackground,
 } from '@/shared/ui/styles/primitive-theme';
 
-export type ButtonTone = 'white' | 'primary' | 'black';
-export type ButtonVariant = 'solid' | 'ghost' | 'underline';
-export type ButtonSize = 'xs' | 'sm' | 'md';
+export type { ButtonProps, ButtonSize, ButtonTone, ButtonVariant };
 
 type ButtonRecipeProps = RecipeVariantProps<typeof buttonRecipe>;
-
-export type ButtonProps = Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'color'> &
-  ButtonRecipeProps & {
-    asChild?: boolean;
-    labelClassName?: string;
-    leadingVisual?: React.ReactNode;
-    leadingVisualClassName?: string;
-    trailingVisual?: React.ReactNode;
-    trailingVisualClassName?: string;
-  };
+type ButtonResolvedProps = ButtonProps & ButtonRecipeProps;
 
 type ButtonAsChildProps = {
   'aria-disabled'?: React.AriaAttributes['aria-disabled'];
@@ -188,7 +183,7 @@ export const buttonRecipe = sva({
   },
 });
 
-export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+export const Button = forwardRef<HTMLButtonElement, ButtonResolvedProps>(
   (
     {
       asChild = false,

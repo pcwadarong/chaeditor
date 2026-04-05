@@ -11,20 +11,12 @@ import React, {
 import { createPortal } from 'react-dom';
 import { css, cx } from 'styled-system/css';
 
-type TooltipTriggerProps = {
-  'aria-describedby'?: string;
-};
+import type {
+  TooltipProps,
+  TooltipTriggerProps,
+} from '@/shared/ui/primitive-registry/markdown-primitive-props';
 
-export type TooltipProps = {
-  children: React.ReactElement<TooltipTriggerProps>;
-  content: string;
-  className?: string;
-  contentClassName?: string;
-  forceOpen?: boolean;
-  openOnFocus?: boolean;
-  portalClassName?: string;
-  preferredPlacement?: 'auto' | 'bottom' | 'top';
-};
+export type { TooltipProps, TooltipTriggerProps };
 
 /**
  * Lightweight tooltip that shows helper text on hover or focus.
@@ -144,15 +136,15 @@ const tooltipClass = css({
   px: '2',
   py: '1',
   borderRadius: 'md',
-  backgroundColor: 'surfaceStrong',
-  color: 'text',
+  backgroundColor: '[rgba(15,23,42,0.92)]',
+  color: 'white',
   borderWidth: '1px',
   borderStyle: 'solid',
-  borderColor: 'border',
+  borderColor: '[rgba(255,255,255,0.08)]',
   fontSize: 'xs',
   lineHeight: 'tight',
   whiteSpace: 'nowrap',
-  boxShadow: 'floating',
+  boxShadow: '[0_12px_28px_rgba(15,23,42,0.28)]',
 });
 
 const tooltipPortalClass = css({

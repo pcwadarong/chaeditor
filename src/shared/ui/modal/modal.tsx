@@ -1,26 +1,18 @@
 'use client';
 
-import React, { type ReactNode, type RefObject, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { css, cx } from 'styled-system/css';
 
 import { useDialogFocusManagement } from '@/shared/lib/react/use-dialog-focus-management';
-import { overlayBackdropColor } from '@/shared/ui/styles/primitive-theme';
+import type { ModalProps } from '@/shared/ui/primitive-registry/markdown-primitive-props';
+import {
+  overlayBackdropColor,
+  overlayBackdropStyleValue,
+} from '@/shared/ui/styles/primitive-theme';
 import { XButton } from '@/shared/ui/x-button/x-button';
 
-export type ModalProps = {
-  ariaDescribedBy?: string;
-  ariaLabel?: string;
-  ariaLabelledBy?: string;
-  backdropClassName?: string;
-  children: ReactNode;
-  closeAriaLabel: string;
-  closeButtonClassName?: string;
-  frameClassName?: string;
-  initialFocusRef?: RefObject<HTMLElement | null>;
-  isOpen: boolean;
-  onClose: () => void;
-};
+export type { ModalProps };
 
 /**
  * Renders a shared portal-based modal shell.
@@ -71,6 +63,7 @@ export const Modal = ({
         if (event.target === event.currentTarget) onClose();
       }}
       className={cx(backdropClass, backdropClassName)}
+      style={{ background: overlayBackdropStyleValue }}
     >
       <div
         aria-describedby={ariaDescribedBy}

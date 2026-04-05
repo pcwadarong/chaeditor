@@ -3,11 +3,10 @@
 import React, { useLayoutEffect, useRef } from 'react';
 import { cva, cx } from 'styled-system/css';
 
+import type { TextareaProps } from '@/shared/ui/primitive-registry/markdown-primitive-props';
 import { disabledFieldStyles, focusVisibleRingStyles } from '@/shared/ui/styles/primitive-theme';
 
-export type TextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
-  autoResize?: boolean;
-};
+export type { TextareaProps };
 
 /**
  * Recalculates the textarea height from the current content.

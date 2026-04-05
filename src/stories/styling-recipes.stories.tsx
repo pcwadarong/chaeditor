@@ -1,14 +1,15 @@
+import { Description, Stories, Title } from '@storybook/addon-docs/blocks';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { css } from 'styled-system/css';
 
 import {
-  codeBlockClass,
   emotionPrimitiveUsageSnippet,
   emotionThemeUsageSnippet,
   pageClass,
   primitiveRegistryUsageSnippet,
-  StorybookCompactSummary,
+  StorybookCodeBlock,
   StorybookPrimitiveRegistryShowcase,
+  StorybookRuntimePrimitiveRegistryShowcase,
   styledComponentsPrimitiveUsageSnippet,
   styledComponentsThemeUsageSnippet,
   tailwindPrimitiveUsageSnippet,
@@ -17,111 +18,87 @@ import {
   vanillaExtractThemeUsageSnippet,
 } from '@/stories/storybook-fixtures';
 
-const StylingRecipesPage = () => (
+type RuntimeRecipePageProps = {
+  description: string;
+  eyebrow: string;
+  primitiveSnippet: string;
+  runtime: 'emotion' | 'styled-components' | 'tailwind' | 'vanilla-extract';
+  subheading: string;
+  themeSnippet: string;
+  title: string;
+};
+
+type PrimitiveRegistryPageProps = {
+  description: string;
+  eyebrow: string;
+  snippetLabel?: string;
+  title: string;
+};
+
+const StylingRecipesOverviewPage = () => (
   <main className={pageClass}>
     <section className={sectionClass}>
-      <StorybookCompactSummary
-        description="Use these recipes when the package theme contract needs to inherit the host product styling system instead of staying on the package defaults."
-        items={[
-          { label: 'Tailwind', value: 'Scope variables with arbitrary utility classes' },
-          { label: 'Emotion', value: 'Wrap the editor with a CSS object or Global style' },
-          { label: 'styled-components', value: 'Attach variables through a styled wrapper' },
-          { label: 'vanilla-extract', value: 'Generate a typed scope class for editor variables' },
-        ]}
-        title="Host-side styling recipes"
-      />
-
-      <div className={recipeGridClass}>
-        <article className={recipeCardClass}>
-          <div className={recipeHeaderClass}>
-            <p className={recipeEyebrowClass}>Tailwind CSS</p>
-            <h2 className={recipeTitleClass}>
-              Best when your app already uses utility-first theming
-            </h2>
-          </div>
-          <p className={recipeDescriptionClass}>
-            Scope the editor theme with arbitrary property utilities. This works well when brand
-            tokens already exist in the host layer and the editor should inherit them without
-            introducing another runtime.
-          </p>
-          <p className={recipeSubheadingClass}>
-            Add primitive overrides when shell replacement is needed
-          </p>
-          <pre className={codeBlockClass}>{tailwindThemeUsageSnippet}</pre>
-          <pre className={codeBlockClass}>{tailwindPrimitiveUsageSnippet}</pre>
-        </article>
-
-        <article className={recipeCardClass}>
-          <div className={recipeHeaderClass}>
-            <p className={recipeEyebrowClass}>Emotion</p>
-            <h2 className={recipeTitleClass}>
-              Best when the host already uses component-scoped CSS objects
-            </h2>
-          </div>
-          <p className={recipeDescriptionClass}>
-            Reuse <code className={inlineCodeClass}>createChaeditorThemeVars()</code> directly in an
-            Emotion wrapper or Global style. The editor keeps its package logic while the host
-            decides where the CSS variables live.
-          </p>
-          <p className={recipeSubheadingClass}>
-            Layer primitiveRegistry on top when inputs and overlays need host shells
-          </p>
-          <pre className={codeBlockClass}>{emotionThemeUsageSnippet}</pre>
-          <pre className={codeBlockClass}>{emotionPrimitiveUsageSnippet}</pre>
-        </article>
-
-        <article className={recipeCardClass}>
-          <div className={recipeHeaderClass}>
-            <p className={recipeEyebrowClass}>styled-components</p>
-            <h2 className={recipeTitleClass}>
-              Best when the host theme is already expressed as wrappers
-            </h2>
-          </div>
-          <p className={recipeDescriptionClass}>
-            Use a styled wrapper as the editor scope and feed the semantic CSS variable map into it.
-            This keeps theme ownership in the host design system and avoids package-level runtime
-            branching.
-          </p>
-          <p className={recipeSubheadingClass}>
-            Promote the same wrapper approach to primitiveRegistry overrides
-          </p>
-          <pre className={codeBlockClass}>{styledComponentsThemeUsageSnippet}</pre>
-          <pre className={codeBlockClass}>{styledComponentsPrimitiveUsageSnippet}</pre>
-        </article>
-
-        <article className={recipeCardClass}>
-          <div className={recipeHeaderClass}>
-            <p className={recipeEyebrowClass}>vanilla-extract</p>
-            <h2 className={recipeTitleClass}>
-              Best when your design system already emits typed theme scopes
-            </h2>
-          </div>
-          <p className={recipeDescriptionClass}>
-            Use a generated scope class to assign the same editor CSS variables in one place. This
-            keeps the package runtime-agnostic while fitting teams that already prefer static CSS
-            extraction and typed token authoring.
-          </p>
-          <p className={recipeSubheadingClass}>
-            Use the generated classes again for primitive-level wrappers
-          </p>
-          <pre className={codeBlockClass}>{vanillaExtractThemeUsageSnippet}</pre>
-          <pre className={codeBlockClass}>{vanillaExtractPrimitiveUsageSnippet}</pre>
-        </article>
+      <div className={overviewHeaderClass}>
+        <h1 className={overviewTitleClass}>Host-side styling recipes</h1>
+        <p className={recipeDescriptionClass}>
+          The package ships with Panda-based default primitives and theme tokens. Use the recipes
+          below only when the host app wants to override variables or replace primitive shells.
+        </p>
+        <ul className={overviewLibraryListClass}>
+          <li>Tailwind</li>
+          <li>Emotion</li>
+          <li>styled-components</li>
+          <li>vanilla-extract</li>
+          <li>Primitive shell replacement</li>
+        </ul>
       </div>
+    </section>
+  </main>
+);
 
+const RuntimeRecipePage = ({
+  description,
+  eyebrow,
+  primitiveSnippet,
+  runtime,
+  subheading,
+  themeSnippet,
+  title,
+}: RuntimeRecipePageProps) => (
+  <main className={pageClass}>
+    <section className={sectionClass}>
       <article className={recipeCardClass}>
         <div className={recipeHeaderClass}>
-          <p className={recipeEyebrowClass}>Primitive registry</p>
-          <h2 className={recipeTitleClass}>
-            Best when the host needs to replace actual input and overlay shells
-          </h2>
+          <p className={recipeEyebrowClass}>{eyebrow}</p>
+          <h2 className={recipeTitleClass}>{title}</h2>
         </div>
-        <p className={recipeDescriptionClass}>
-          Theme variables change colors and fonts, but a primitive registry lets the host swap the
-          actual button, input, textarea, popover, modal, and tooltip shells. Use this when the
-          design system needs more than token-level overrides.
-        </p>
-        <pre className={codeBlockClass}>{primitiveRegistryUsageSnippet}</pre>
+        <p className={recipeDescriptionClass}>{description}</p>
+        <p className={recipeSubheadingClass}>{subheading}</p>
+        <StorybookCodeBlock code={themeSnippet} label="Theme scope" />
+        <StorybookCodeBlock code={primitiveSnippet} label="Primitive registry" />
+        <div className={runtimePreviewClass}>
+          <StorybookRuntimePrimitiveRegistryShowcase runtime={runtime} />
+        </div>
+      </article>
+    </section>
+  </main>
+);
+
+const PrimitiveRegistryPage = ({
+  description,
+  eyebrow,
+  snippetLabel = 'Primitive registry',
+  title,
+}: PrimitiveRegistryPageProps) => (
+  <main className={pageClass}>
+    <section className={sectionClass}>
+      <article className={recipeCardClass}>
+        <div className={recipeHeaderClass}>
+          <p className={recipeEyebrowClass}>{eyebrow}</p>
+          <h2 className={recipeTitleClass}>{title}</h2>
+        </div>
+        <p className={recipeDescriptionClass}>{description}</p>
+        <StorybookCodeBlock code={primitiveRegistryUsageSnippet} label={snippetLabel} />
         <div className={showcaseClass}>
           <StorybookPrimitiveRegistryShowcase />
         </div>
@@ -130,14 +107,70 @@ const StylingRecipesPage = () => (
   </main>
 );
 
+const StylingRecipesDocsSummary = () => (
+  <section className={docsSummaryClass}>
+    <table className={docsSummaryTableClass}>
+      <thead>
+        <tr>
+          <th>Recipe</th>
+          <th>Theme variables</th>
+          <th>Primitive shells</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Panda CSS</td>
+          <td>Default package runtime</td>
+          <td>Default package shells</td>
+        </tr>
+        <tr>
+          <td>Tailwind</td>
+          <td>Override</td>
+          <td>Optional</td>
+        </tr>
+        <tr>
+          <td>Emotion</td>
+          <td>Override</td>
+          <td>Optional</td>
+        </tr>
+        <tr>
+          <td>styled-components</td>
+          <td>Override</td>
+          <td>Optional</td>
+        </tr>
+        <tr>
+          <td>vanilla-extract</td>
+          <td>Override</td>
+          <td>Optional</td>
+        </tr>
+        <tr>
+          <td>Primitive shell replacement</td>
+          <td>Keep current values</td>
+          <td>Replace</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+);
+
+const StylingRecipesDocsPage = () => (
+  <>
+    <Title />
+    <Description />
+    <StylingRecipesDocsSummary />
+    <Stories />
+  </>
+);
+
 const meta = {
-  component: StylingRecipesPage,
+  component: StylingRecipesOverviewPage,
   parameters: {
     docs: {
       description: {
         component:
-          'Host-side styling recipes for Tailwind CSS, Emotion, styled-components, vanilla-extract, and primitive shell overrides. These examples keep the package on one semantic CSS variable contract while letting the host app choose either token injection or primitive replacement.',
+          'The package uses Panda CSS by default. These docs only cover host-side overrides for Tailwind CSS, Emotion, styled-components, vanilla-extract, and primitive shell replacement.',
       },
+      page: StylingRecipesDocsPage,
       source: {
         code: tailwindThemeUsageSnippet,
       },
@@ -146,20 +179,129 @@ const meta = {
   },
   tags: ['autodocs'],
   title: 'Introduction/Styling Recipes',
-} satisfies Meta<typeof StylingRecipesPage>;
+} satisfies Meta<typeof StylingRecipesOverviewPage>;
 
 export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Overview: Story = {};
-Overview.parameters = {
-  docs: {
-    description: {
-      story:
-        'Use this page when the package theme contract is already settled and the remaining question is how to scope those CSS variables inside the host styling runtime.',
+export const Tailwind: Story = {
+  args: {
+    description:
+      'Provides a Tailwind theme scope example and an optional primitive registry example.',
+    eyebrow: 'Tailwind CSS',
+    primitiveSnippet: tailwindPrimitiveUsageSnippet,
+    runtime: 'tailwind',
+    subheading: 'Optional primitive overrides',
+    themeSnippet: tailwindThemeUsageSnippet,
+    title: 'Tailwind CSS',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Shows the Tailwind wrapper pattern for theme variables and primitive overrides.',
+      },
+      source: {
+        code: tailwindPrimitiveUsageSnippet,
+      },
     },
   },
+  render: args => <RuntimeRecipePage {...(args as RuntimeRecipePageProps)} />,
+};
+
+export const Emotion: Story = {
+  args: {
+    description: 'Provides an Emotion wrapper example for theme variables and primitive overrides.',
+    eyebrow: 'Emotion',
+    primitiveSnippet: emotionPrimitiveUsageSnippet,
+    runtime: 'emotion',
+    subheading: 'Optional primitive overrides',
+    themeSnippet: emotionThemeUsageSnippet,
+    title: 'Emotion',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Shows the Emotion wrapper pattern for theme variables and primitive overrides.',
+      },
+      source: {
+        code: emotionPrimitiveUsageSnippet,
+      },
+    },
+  },
+  render: args => <RuntimeRecipePage {...(args as RuntimeRecipePageProps)} />,
+};
+
+export const StyledComponents: Story = {
+  args: {
+    description:
+      'Provides a styled-components wrapper example for theme variables and primitive overrides.',
+    eyebrow: 'styled-components',
+    primitiveSnippet: styledComponentsPrimitiveUsageSnippet,
+    runtime: 'styled-components',
+    subheading: 'Optional primitive overrides',
+    themeSnippet: styledComponentsThemeUsageSnippet,
+    title: 'styled-components',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Shows the styled-components wrapper pattern for theme variables and primitive overrides.',
+      },
+      source: {
+        code: styledComponentsPrimitiveUsageSnippet,
+      },
+    },
+  },
+  render: args => <RuntimeRecipePage {...(args as RuntimeRecipePageProps)} />,
+};
+
+export const VanillaExtract: Story = {
+  args: {
+    description:
+      'Provides a vanilla-extract scope example for theme variables and primitive overrides.',
+    eyebrow: 'vanilla-extract',
+    primitiveSnippet: vanillaExtractPrimitiveUsageSnippet,
+    runtime: 'vanilla-extract',
+    subheading: 'Optional primitive overrides',
+    themeSnippet: vanillaExtractThemeUsageSnippet,
+    title: 'vanilla-extract',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Shows the vanilla-extract scope pattern for theme variables and primitive overrides.',
+      },
+      source: {
+        code: vanillaExtractPrimitiveUsageSnippet,
+      },
+    },
+  },
+  render: args => <RuntimeRecipePage {...(args as RuntimeRecipePageProps)} />,
+};
+
+export const PrimitiveRegistry: Story = {
+  args: {
+    description:
+      'Swaps the actual button, input, textarea, popover, modal, and tooltip shells without changing editor logic. This sits on top of the default Panda implementation instead of replacing the theme runtime itself.',
+    eyebrow: 'Primitive shell replacement',
+    snippetLabel: 'Shell override',
+    title: 'Primitive shell replacement',
+  },
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Shows how to replace the built-in Panda-backed button, input, popover, modal, and tooltip shells while keeping the editor feature logic unchanged.',
+      },
+      source: {
+        code: primitiveRegistryUsageSnippet,
+      },
+    },
+  },
+  render: args => <PrimitiveRegistryPage {...(args as PrimitiveRegistryPageProps)} />,
 };
 
 const sectionClass = css({
@@ -169,19 +311,32 @@ const sectionClass = css({
   maxWidth: '6xl',
 });
 
-const recipeGridClass = css({
+const overviewHeaderClass = css({
   display: 'grid',
-  gap: '5',
+  gap: '3',
+});
+
+const overviewTitleClass = css({
+  fontSize: '2xl',
+  fontWeight: 'semibold',
+  lineHeight: 'tight',
+  color: 'text',
+});
+
+const overviewLibraryListClass = css({
+  display: 'grid',
+  gap: '2',
+  listStyle: 'disc',
+  paddingInlineStart: '5',
+  fontSize: 'sm',
+  color: 'textSubtle',
+  lineHeight: 'relaxed',
 });
 
 const recipeCardClass = css({
-  bg: 'surfaceMuted',
-  border: '[1px solid var(--colors-border)]',
-  borderRadius: '2xl',
   display: 'grid',
   gap: '4',
-  p: '6',
-  shadow: 'sm',
+  paddingBlock: '1',
 });
 
 const recipeHeaderClass = css({
@@ -208,16 +363,6 @@ const recipeDescriptionClass = css({
   lineHeight: 'relaxed',
 });
 
-const inlineCodeClass = css({
-  bg: 'surface',
-  borderRadius: 'md',
-  color: 'text',
-  fontFamily: 'mono',
-  fontSize: 'sm',
-  px: '1.5',
-  py: '0.5',
-});
-
 const recipeSubheadingClass = css({
   color: 'primary',
   fontSize: 'sm',
@@ -225,10 +370,45 @@ const recipeSubheadingClass = css({
 });
 
 const showcaseClass = css({
-  p: '4',
-  borderRadius: 'xl',
-  bg: 'surface',
-  borderWidth: '1px',
-  borderStyle: 'solid',
-  borderColor: 'border',
+  paddingBlockStart: '1',
+});
+
+const runtimePreviewClass = css({
+  paddingBlockStart: '1',
+});
+
+const docsSummaryClass = css({
+  marginBlock: '6',
+});
+
+const docsSummaryTableClass = css({
+  borderCollapse: 'collapse',
+  width: 'full',
+  '& th': {
+    borderBottom: '[1px solid var(--colors-border)]',
+    color: 'text',
+    fontSize: 'xs',
+    fontWeight: 'semibold',
+    letterSpacing: 'wide',
+    paddingBlock: '3',
+    paddingInline: '3',
+    textAlign: 'left',
+    textTransform: 'uppercase',
+  },
+  '& td': {
+    borderBottom: '[1px solid var(--colors-border)]',
+    color: 'textSubtle',
+    fontSize: 'sm',
+    lineHeight: 'relaxed',
+    paddingBlock: '3',
+    paddingInline: '3',
+    verticalAlign: 'top',
+  },
+  '& td:first-child': {
+    color: 'text',
+    fontWeight: 'medium',
+  },
+  '& tbody tr:last-child td': {
+    borderBottomWidth: '0',
+  },
 });

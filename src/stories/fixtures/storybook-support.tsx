@@ -1,4 +1,6 @@
-import { css } from 'styled-system/css';
+import { useEffect, useState } from 'react';
+import { codeToHtml } from 'shiki';
+import { css, cx } from 'styled-system/css';
 
 import type { MarkdownEditorHostAdapters } from '@/react';
 
@@ -26,6 +28,36 @@ type StorybookCompactSummaryProps = {
   description: string;
   items: Array<{ label: string; value: string }>;
   title: string;
+};
+
+type StorybookSectionCardProps = {
+  children: React.ReactNode;
+  description?: string;
+  title: string;
+};
+
+type StorybookMetaTableProps = {
+  items: Array<{ label: string; value: string }>;
+};
+
+type StorybookCheckListProps = {
+  items: string[];
+};
+
+type StorybookStatusBadgeProps = {
+  children: React.ReactNode;
+  tone?: 'info' | 'muted' | 'positive';
+};
+
+type StorybookCodeBlockProps = {
+  code: string;
+  language?: string;
+  label?: string;
+};
+
+type HighlightedCodeProps = {
+  code: string;
+  language: string;
 };
 
 /**
@@ -265,6 +297,118 @@ export const StorybookCompactSummary = ({
   </section>
 );
 
+/**
+ * Renders a Storybook docs-oriented code block with a compact header label.
+ */
+const HighlightedCode = ({ code, language }: HighlightedCodeProps) => {
+  const [html, setHtml] = useState<string | null>(null);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const renderCode = async () => {
+      try {
+        const highlightedHtml = await codeToHtml(code, {
+          lang: language,
+          theme: 'github-dark-default',
+        });
+
+        if (isMounted) setHtml(highlightedHtml);
+      } catch {
+        const fallbackHtml = await codeToHtml(code, {
+          lang: 'txt',
+          theme: 'github-dark-default',
+        });
+
+        if (isMounted) setHtml(fallbackHtml);
+      }
+    };
+
+    void renderCode();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [code, language]);
+
+  if (!html) {
+    return (
+      <pre className={storybookCodeBlockFallbackClass}>
+        <code>{code}</code>
+      </pre>
+    );
+  }
+
+  return (
+    <div className={storybookCodeBlockSourceClass} dangerouslySetInnerHTML={{ __html: html }} />
+  );
+};
+
+export const StorybookCodeBlock = ({ code, label, language = 'tsx' }: StorybookCodeBlockProps) => (
+  <section className={storybookCodeBlockClass}>
+    <div className={storybookCodeBlockHeaderClass}>
+      <div className={storybookCodeBlockMetaClass}>
+        {label ? <p className={storybookCodeBlockLabelClass}>{label}</p> : null}
+      </div>
+      <p className={storybookCodeBlockLanguageClass}>{language}</p>
+    </div>
+    <HighlightedCode code={code} language={language} />
+  </section>
+);
+
+export const StorybookSectionCard = ({
+  children,
+  description,
+  title,
+}: StorybookSectionCardProps) => (
+  <section className={storySectionCardClass}>
+    <header className={storySectionCardHeaderClass}>
+      <h3 className={storySectionCardTitleClass}>{title}</h3>
+      {description ? <p className={storySectionCardDescriptionClass}>{description}</p> : null}
+    </header>
+    {children}
+  </section>
+);
+
+export const StorybookMetaTable = ({ items }: StorybookMetaTableProps) => (
+  <dl className={storyMetaTableClass}>
+    {items.map(item => (
+      <div className={storyMetaTableRowClass} key={item.label}>
+        <dt className={storyMetaTableLabelClass}>{item.label}</dt>
+        <dd className={storyMetaTableValueClass}>{item.value}</dd>
+      </div>
+    ))}
+  </dl>
+);
+
+export const StorybookCheckList = ({ items }: StorybookCheckListProps) => (
+  <ul className={storyCheckListClass}>
+    {items.map(item => (
+      <li className={storyCheckListItemClass} key={item}>
+        <span aria-hidden="true" className={storyCheckListIconClass}>
+          ✓
+        </span>
+        <span>{item}</span>
+      </li>
+    ))}
+  </ul>
+);
+
+export const StorybookStatusBadge = ({ children, tone = 'info' }: StorybookStatusBadgeProps) => (
+  <span
+    className={
+      tone === 'positive'
+        ? storyStatusBadgePositiveClass
+        : tone === 'muted'
+          ? storyStatusBadgeMutedClass
+          : storyStatusBadgeInfoClass
+    }
+  >
+    <span aria-hidden="true" className={storyStatusBadgeDotClass} />
+    {children}
+  </span>
+);
+
 export const sampleMarkdown = [
   '# chaeditor Reference',
   '',
@@ -297,13 +441,8 @@ export const sampleMarkdown = [
 export const panelClass = css({
   display: 'grid',
   gap: '5',
-  p: '6',
-  borderRadius: '2xl',
-  borderWidth: '1px',
-  borderStyle: 'solid',
-  borderColor: 'border',
-  bg: 'surface',
-  boxShadow: 'sm',
+  p: '0',
+  bg: 'transparent',
 });
 
 export const pageClass = css({
@@ -337,22 +476,233 @@ export const sectionDescriptionClass = css({
 export const valuePanelClass = css({
   display: 'grid',
   gap: '3',
-  p: '4',
-  borderRadius: 'xl',
-  bg: 'surfaceMuted',
+  p: '0',
+  bg: 'transparent',
+});
+
+const storySectionCardClass = css({
+  display: 'grid',
+  gap: '4',
+  paddingY: '5',
+  borderTopWidth: '1px',
+  borderTopStyle: 'solid',
+  borderTopColor: 'border',
+});
+
+const storySectionCardHeaderClass = css({
+  display: 'grid',
+  gap: '2',
+});
+
+const storySectionCardTitleClass = css({
+  fontSize: 'lg',
+  fontWeight: 'semibold',
+  color: 'text',
+});
+
+const storySectionCardDescriptionClass = css({
+  fontSize: 'sm',
+  lineHeight: 'relaxed',
+  color: 'textSubtle',
+  maxWidth: '3xl',
+});
+
+const storyMetaTableClass = css({
+  display: 'grid',
+  gap: '0',
   borderWidth: '1px',
   borderStyle: 'solid',
   borderColor: 'border',
+  borderRadius: 'lg',
+  overflow: 'hidden',
+  maxWidth: '3xl',
+  backgroundColor: 'surface',
 });
 
-export const codeBlockClass = css({
-  display: 'block',
-  whiteSpace: 'pre-wrap',
-  wordBreak: 'break-word',
-  fontFamily: 'mono',
+const storyMetaTableRowClass = css({
+  display: 'grid',
+  gridTemplateColumns: {
+    base: 'minmax(6rem, 7.5rem) minmax(0, 1fr)',
+    md: 'minmax(7rem, 8.5rem) minmax(0, 1fr)',
+  },
+  gap: '0',
+  borderTopWidth: '1px',
+  borderTopStyle: 'solid',
+  borderTopColor: 'border',
+  '&:first-of-type': {
+    borderTopWidth: '0',
+  },
+});
+
+const storyMetaTableLabelClass = css({
+  paddingX: '4',
+  paddingY: '3',
+  fontSize: 'xs',
+  fontWeight: 'semibold',
+  letterSpacing: 'wide',
+  textTransform: 'uppercase',
+  color: 'textSubtle',
+  backgroundColor: 'surfaceMuted',
+});
+
+const storyMetaTableValueClass = css({
+  paddingX: '4',
+  paddingY: '3',
+  fontSize: 'sm',
+  fontWeight: 'medium',
+  color: 'text',
+  lineHeight: 'relaxed',
+});
+
+const storyCheckListClass = css({
+  display: 'grid',
+  gap: '3',
+  listStyle: 'none',
+  padding: '0',
+  margin: '0',
+});
+
+const storyCheckListItemClass = css({
+  display: 'flex',
+  alignItems: 'flex-start',
+  gap: '3',
   fontSize: 'sm',
   lineHeight: 'relaxed',
   color: 'text',
+});
+
+const storyCheckListIconClass = css({
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  flex: 'none',
+  width: '5',
+  height: '5',
+  marginTop: '[0.1rem]',
+  borderRadius: 'full',
+  backgroundColor: 'primarySubtle',
+  color: 'primary',
+  fontSize: 'xs',
+  fontWeight: 'bold',
+});
+
+const storyStatusBadgeBaseClass = css({
+  display: 'inline-flex',
+  alignItems: 'center',
+  gap: '2',
+  minHeight: '8',
+  paddingX: '3',
+  borderRadius: 'full',
+  fontSize: 'xs',
+  fontWeight: 'semibold',
+  letterSpacing: 'wide',
+  textTransform: 'uppercase',
+});
+
+const storyStatusBadgeDotClass = css({
+  width: '2',
+  height: '2',
+  borderRadius: 'full',
+  backgroundColor: '[currentColor]',
+  flex: 'none',
+});
+
+const storyStatusBadgeInfoClass = cx(
+  storyStatusBadgeBaseClass,
+  css({
+    backgroundColor: 'primarySubtle',
+    color: 'primary',
+  }),
+);
+
+const storyStatusBadgePositiveClass = cx(
+  storyStatusBadgeBaseClass,
+  css({
+    backgroundColor: '[rgba(22,163,74,0.12)]',
+    color: '[#15803d]',
+  }),
+);
+
+const storyStatusBadgeMutedClass = cx(
+  storyStatusBadgeBaseClass,
+  css({
+    backgroundColor: 'surfaceStrong',
+    color: 'textSubtle',
+  }),
+);
+
+const storybookCodeBlockClass = css({
+  display: 'grid',
+  overflow: 'hidden',
+  borderRadius: 'xl',
+  borderWidth: '1px',
+  borderStyle: 'solid',
+  borderColor: 'border',
+  background: '[linear-gradient(180deg, #1D1E23, #111216)]',
+  boxShadow: '[0 1rem 1.75rem rgb(15 23 42 / 0.1)]',
+});
+
+const storybookCodeBlockHeaderClass = css({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  gap: '3',
+  px: '4',
+  py: '3',
+  borderBottom: '[1px solid rgb(255 255 255 / 0.08)]',
+});
+
+const storybookCodeBlockMetaClass = css({
+  display: 'inline-flex',
+  alignItems: 'center',
+  gap: '2',
+});
+
+const storybookCodeBlockLabelClass = css({
+  fontSize: 'xs',
+  fontWeight: 'semibold',
+  letterSpacing: 'wide',
+  textTransform: 'uppercase',
+  color: '[rgb(226 232 240 / 0.92)]',
+});
+
+const storybookCodeBlockLanguageClass = css({
+  fontSize: 'xs',
+  fontWeight: 'semibold',
+  letterSpacing: 'wide',
+  textTransform: 'uppercase',
+  color: '[rgb(148 163 184)]',
+});
+
+const storybookCodeBlockSourceClass = css({
+  '& .shiki': {
+    margin: '0',
+    paddingX: '5',
+    paddingY: '4',
+    overflowX: 'auto',
+    fontSize: 'sm',
+    lineHeight: '[1.75]',
+    background: 'transparent !important',
+  },
+
+  '& .line': {
+    minHeight: '[1.5em]',
+  },
+
+  '& pre': {
+    margin: '0',
+  },
+});
+
+const storybookCodeBlockFallbackClass = css({
+  margin: '0',
+  paddingX: '5',
+  paddingY: '4',
+  overflowX: 'auto',
+  fontFamily: 'mono',
+  fontSize: 'sm',
+  lineHeight: '[1.75]',
+  color: '[rgb(226 232 240 / 0.94)]',
 });
 
 const compactSummaryClass = css({
@@ -396,4 +746,12 @@ const compactSummaryMetaLabelClass = css({
 const compactSummaryMetaValueClass = css({
   fontSize: 'sm',
   color: 'text',
+});
+export const codeBlockClass = css({
+  display: 'block',
+  whiteSpace: 'pre-wrap',
+  wordBreak: 'break-word',
+  fontFamily: 'mono',
+  fontSize: 'sm',
+  lineHeight: 'relaxed',
 });

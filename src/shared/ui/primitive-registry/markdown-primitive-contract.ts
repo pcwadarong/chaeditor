@@ -1,11 +1,13 @@
 import type React from 'react';
 
-import type { ButtonProps } from '@/shared/ui/button';
-import type { InputProps } from '@/shared/ui/input';
-import type { ModalProps } from '@/shared/ui/modal';
-import type { PopoverProps } from '@/shared/ui/popover';
-import type { TextareaProps } from '@/shared/ui/textarea';
-import type { TooltipProps } from '@/shared/ui/tooltip';
+import type {
+  ButtonProps,
+  InputProps,
+  ModalProps,
+  PopoverProps,
+  TextareaProps,
+  TooltipProps,
+} from '@/shared/ui/primitive-registry/markdown-primitive-props';
 
 type MarkdownRefPrimitive<Element, Props> = React.ForwardRefExoticComponent<
   React.PropsWithoutRef<Props> & React.RefAttributes<Element>

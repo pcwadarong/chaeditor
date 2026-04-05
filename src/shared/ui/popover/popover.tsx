@@ -1,52 +1,20 @@
 'use client';
 
-import React, {
-  type ReactNode,
-  useCallback,
-  useEffect,
-  useId,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { useCallback, useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { css, cx } from 'styled-system/css';
 
 import { useDialogFocusManagement } from '@/shared/lib/react/use-dialog-focus-management';
-import type { ButtonSize, ButtonTone, ButtonVariant } from '@/shared/ui/button/button';
 import { Button } from '@/shared/ui/button/button';
+import type {
+  ClosePopover,
+  PopoverProps,
+} from '@/shared/ui/primitive-registry/markdown-primitive-props';
 import { focusVisibleRingStyles } from '@/shared/ui/styles/primitive-theme';
 import { srOnlyClass } from '@/shared/ui/styles/sr-only-style';
 import { Tooltip } from '@/shared/ui/tooltip/tooltip';
 
-export type ClosePopover = (options?: { restoreFocus?: boolean }) => void;
-
-type PopoverRenderArgs = {
-  closePopover: ClosePopover;
-};
-
-export type PopoverProps = {
-  children: ReactNode | ((args: PopoverRenderArgs) => ReactNode);
-  isOpen?: boolean;
-  label?: string;
-  onOpenChange?: (nextOpen: boolean) => void;
-  onTriggerMouseDown?: React.MouseEventHandler<HTMLButtonElement>;
-  panelClassName?: string;
-  panelLabel: string;
-  portalPlacement?: 'end' | 'start';
-  renderInPortal?: boolean;
-  rootClassName?: string;
-  triggerAriaLabel?: string;
-  triggerClassName?: string;
-  triggerContent?: ReactNode;
-  triggerLabelClassName?: string;
-  triggerSize?: ButtonSize;
-  triggerTone?: ButtonTone;
-  triggerTooltip?: string;
-  triggerValueClassName?: string;
-  triggerVariant?: ButtonVariant;
-  value?: string;
-};
+export type { ClosePopover, PopoverProps };
 
 /**
  * Shared popover shell with click-triggered dialog content.

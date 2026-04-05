@@ -1,9 +1,10 @@
 import React from 'react';
 import { cva, cx } from 'styled-system/css';
 
+import type { InputProps } from '@/shared/ui/primitive-registry/markdown-primitive-props';
 import { disabledFieldStyles, focusVisibleRingStyles } from '@/shared/ui/styles/primitive-theme';
 
-export type InputProps = React.InputHTMLAttributes<HTMLInputElement>;
+export type { InputProps };
 
 /**
  * Shared single-line input component.

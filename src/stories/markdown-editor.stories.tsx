@@ -5,19 +5,16 @@ import type { EditorContentType } from '@/entities/editor-core/model/content-typ
 import { MarkdownEditor } from '@/react';
 import {
   createStorybookAdapterSet,
-  createStorybookPrimitiveRegistry,
   customAdapterUsageSnippet,
   editorPackageUsageSnippet,
-  getStorybookThemeStyle,
   pageClass,
   panelClass,
-  primitiveRegistryUsageSnippet,
   sampleMarkdown,
   type StorybookAdapterMode,
-  StorybookCompactSummary,
-  type StorybookPrimitiveMode,
-  type StorybookThemeMode,
-  themeOverrideUsageSnippet,
+  StorybookCheckList,
+  StorybookMetaTable,
+  StorybookSectionCard,
+  StorybookStatusBadge,
 } from '@/stories/storybook-fixtures';
 
 type MarkdownEditorReferenceProps = {
@@ -27,16 +24,9 @@ type MarkdownEditorReferenceProps = {
   initialValue: string;
   placeholder?: string;
   previewEmptyText?: string;
-  primitiveMode?: StorybookPrimitiveMode;
-  themeMode?: StorybookThemeMode;
 };
 
-const getEditorStateSummary = (
-  adapterMode: StorybookAdapterMode,
-  customLabels: boolean,
-  primitiveMode: StorybookPrimitiveMode,
-  themeMode: StorybookThemeMode,
-) => {
+const getEditorStateSummary = (adapterMode: StorybookAdapterMode, customLabels: boolean) => {
   if (adapterMode === 'none') {
     return {
       description:
@@ -44,15 +34,8 @@ const getEditorStateSummary = (
       items: [
         { label: 'Mode', value: 'Host adapters off' },
         { label: 'Labels', value: 'Package-default labels' },
-        {
-          label: 'Primitives',
-          value:
-            primitiveMode === 'custom' ? 'Host button and popover overrides' : 'Package defaults',
-        },
-        {
-          label: 'Theme',
-          value: themeMode === 'host' ? 'Host theme wrapper applied' : 'Package default theme',
-        },
+        { label: 'Uploads', value: 'Disabled' },
+        { label: 'Previews', value: 'Package fallback only' },
       ],
       title: 'Core-only editor shell',
     };
@@ -68,15 +51,8 @@ const getEditorStateSummary = (
           label: 'Labels',
           value: customLabels ? 'Selected toolbar labels overridden' : 'Package-default labels',
         },
-        {
-          label: 'Primitives',
-          value:
-            primitiveMode === 'custom' ? 'Host button and popover overrides' : 'Package defaults',
-        },
-        {
-          label: 'Theme',
-          value: themeMode === 'host' ? 'Host theme wrapper applied' : 'Package default theme',
-        },
+        { label: 'Uploads', value: 'Custom host adapters' },
+        { label: 'Previews', value: 'Custom image and metadata output' },
       ],
       title: customLabels ? 'Custom host integration + custom labels' : 'Custom host integration',
     };
@@ -91,15 +67,8 @@ const getEditorStateSummary = (
         label: 'Labels',
         value: customLabels ? 'Selected toolbar labels overridden' : 'Package-default labels',
       },
-      {
-        label: 'Primitives',
-        value:
-          primitiveMode === 'custom' ? 'Host button and popover overrides' : 'Package defaults',
-      },
-      {
-        label: 'Theme',
-        value: themeMode === 'host' ? 'Host theme wrapper applied' : 'Package default theme',
-      },
+      { label: 'Uploads', value: 'Default mock adapters' },
+      { label: 'Previews', value: 'Mock image and metadata output' },
     ],
     title: customLabels ? 'Default integration + custom labels' : 'Default integrated editor',
   };
@@ -112,38 +81,40 @@ const MarkdownEditorReference = ({
   initialValue,
   placeholder,
   previewEmptyText,
-  primitiveMode = 'default',
-  themeMode = 'default',
 }: MarkdownEditorReferenceProps) => {
   const [value, setValue] = React.useState(initialValue);
   const adapters = React.useMemo(() => createStorybookAdapterSet(adapterMode), [adapterMode]);
-  const primitiveRegistry = React.useMemo(
-    () => createStorybookPrimitiveRegistry(primitiveMode),
-    [primitiveMode],
-  );
-  const themeStyle = React.useMemo(() => getStorybookThemeStyle(themeMode), [themeMode]);
 
   React.useEffect(() => {
     setValue(initialValue);
   }, [initialValue]);
 
-  const summary = getEditorStateSummary(adapterMode, customLabels, primitiveMode, themeMode);
+  const summary = getEditorStateSummary(adapterMode, customLabels);
 
   return (
     <main className={pageClass}>
-      <StorybookCompactSummary
-        description={summary.description}
-        items={summary.items}
-        title={summary.title}
-      />
-      <section className={panelClass} style={themeStyle}>
+      <StorybookSectionCard description={summary.description} title={summary.title}>
+        <StorybookMetaTable items={summary.items} />
+      </StorybookSectionCard>
+      <section className={panelClass}>
+        <StorybookSectionCard
+          description="The same editor shell stays mounted across all variants. Use the badge and checklist below to distinguish host-backed behavior from package-owned structure."
+          title="Interactive editor surface"
+        >
+          <StorybookStatusBadge>
+            {adapterMode === 'none'
+              ? 'Live editing surface without host adapters'
+              : adapterMode === 'custom'
+                ? 'Live editing surface with custom host behavior'
+                : 'Live editing surface with default mock host behavior'}
+          </StorybookStatusBadge>
+        </StorybookSectionCard>
         <MarkdownEditor
           adapters={adapters}
           contentType={contentType}
           onChange={setValue}
           placeholder={placeholder}
           previewEmptyText={previewEmptyText}
-          primitiveRegistry={primitiveRegistry}
           uiRegistry={
             customLabels
               ? {
@@ -164,6 +135,19 @@ const MarkdownEditorReference = ({
           }
           value={value}
         />
+
+        <StorybookSectionCard
+          description="These guarantees hold even when uploads, link previews, and image rendering move between package-only, default mock, and custom host modes."
+          title="What stays the same"
+        >
+          <StorybookCheckList
+            items={[
+              'Same editor layout and pane structure',
+              'Same markdown editing and preview contract',
+              'Same helper entrypoints inside the toolbar',
+            ]}
+          />
+        </StorybookSectionCard>
       </section>
     </main>
   );
@@ -179,14 +163,6 @@ const meta = {
       control: 'inline-radio',
       options: ['article', 'project', 'resume'],
     },
-    themeMode: {
-      control: 'inline-radio',
-      options: ['default', 'host'],
-    },
-    primitiveMode: {
-      control: 'inline-radio',
-      options: ['default', 'custom'],
-    },
     initialValue: {
       control: 'object',
     },
@@ -198,8 +174,6 @@ const meta = {
     initialValue: sampleMarkdown,
     placeholder: 'Write markdown content',
     previewEmptyText: 'Nothing to preview yet.',
-    primitiveMode: 'default',
-    themeMode: 'default',
   },
   component: MarkdownEditorReference,
   parameters: {
@@ -276,49 +250,6 @@ export const CustomHostIntegration: Story = {
       },
       source: {
         code: customAdapterUsageSnippet,
-      },
-    },
-  },
-};
-
-export const HostThemeOverride: Story = {
-  args: {
-    adapterMode: 'full',
-    contentType: 'article',
-    customLabels: false,
-    initialValue: sampleMarkdown,
-    themeMode: 'host',
-  },
-  parameters: {
-    docs: {
-      description: {
-        story:
-          'Applies the same editor shell and mock host adapters inside a scoped host theme wrapper. Use this story when the remaining question is visual integration with the product design system, not editor behavior.',
-      },
-      source: {
-        code: themeOverrideUsageSnippet,
-      },
-    },
-  },
-};
-
-export const PrimitiveOverrides: Story = {
-  args: {
-    adapterMode: 'full',
-    contentType: 'article',
-    customLabels: false,
-    initialValue: sampleMarkdown,
-    primitiveMode: 'custom',
-    themeMode: 'default',
-  },
-  parameters: {
-    docs: {
-      description: {
-        story:
-          'Wraps the editor with a custom primitive registry so host-specific button and popover shells can be swapped in without changing the markdown feature code.',
-      },
-      source: {
-        code: primitiveRegistryUsageSnippet,
       },
     },
   },

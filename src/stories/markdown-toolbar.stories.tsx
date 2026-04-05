@@ -1,27 +1,21 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import React from 'react';
+import { css } from 'styled-system/css';
 
 import type { EditorContentType } from '@/entities/editor-core/model/content-types';
 import { MarkdownToolbar } from '@/react';
 import { Textarea } from '@/shared/ui/textarea/textarea';
 import {
-  codeBlockClass,
   createStorybookAdapterSet,
-  createStorybookPrimitiveRegistry,
   customAdapterUsageSnippet,
-  getStorybookThemeStyle,
   pageClass,
   panelClass,
-  primitiveRegistryUsageSnippet,
-  sectionTitleClass,
-  splitLayoutClass,
   type StorybookAdapterMode,
-  StorybookCompactSummary,
-  type StorybookPrimitiveMode,
-  type StorybookThemeMode,
-  themeOverrideUsageSnippet,
+  StorybookCheckList,
+  StorybookMetaTable,
+  StorybookSectionCard,
+  StorybookStatusBadge,
   toolbarPackageUsageSnippet,
-  valuePanelClass,
 } from '@/stories/storybook-fixtures';
 
 type ToolbarReferenceProps = {
@@ -29,8 +23,6 @@ type ToolbarReferenceProps = {
   contentType: EditorContentType;
   customLabels?: boolean;
   initialValue: string;
-  primitiveMode?: StorybookPrimitiveMode;
-  themeMode?: StorybookThemeMode;
 };
 
 type ToolbarStateSummary = {
@@ -42,8 +34,6 @@ type ToolbarStateSummary = {
 const getToolbarStateSummary = (
   adapterMode: StorybookAdapterMode,
   customLabels: boolean,
-  primitiveMode: StorybookPrimitiveMode,
-  themeMode: StorybookThemeMode,
 ): ToolbarStateSummary => {
   if (adapterMode === 'none') {
     return {
@@ -52,15 +42,8 @@ const getToolbarStateSummary = (
       items: [
         { label: 'Mode', value: 'Host adapters off' },
         { label: 'Labels', value: 'Package-default labels' },
-        {
-          label: 'Primitives',
-          value:
-            primitiveMode === 'custom' ? 'Host button and popover overrides' : 'Package defaults',
-        },
-        {
-          label: 'Theme',
-          value: themeMode === 'host' ? 'Host theme wrapper applied' : 'Package default theme',
-        },
+        { label: 'Uploads', value: 'Disabled' },
+        { label: 'Previews', value: 'Package fallback only' },
       ],
       title: 'Core-only toolbar shell',
     };
@@ -80,13 +63,12 @@ const getToolbarStateSummary = (
         },
         { label: 'Labels', value: 'Heading and link labels overridden' },
         {
-          label: 'Primitives',
-          value:
-            primitiveMode === 'custom' ? 'Host button and popover overrides' : 'Package defaults',
+          label: 'Uploads',
+          value: adapterMode === 'custom' ? 'Custom host adapters' : 'Default mock adapters',
         },
         {
-          label: 'Theme',
-          value: themeMode === 'host' ? 'Host theme wrapper applied' : 'Package default theme',
+          label: 'Previews',
+          value: adapterMode === 'custom' ? 'Custom host metadata' : 'Mock host metadata',
         },
       ],
       title:
@@ -102,35 +84,11 @@ const getToolbarStateSummary = (
     items: [
       { label: 'Mode', value: 'Default mock host adapters enabled' },
       { label: 'Labels', value: 'Package-default labels' },
-      {
-        label: 'Primitives',
-        value:
-          primitiveMode === 'custom' ? 'Host button and popover overrides' : 'Package defaults',
-      },
-      {
-        label: 'Theme',
-        value: themeMode === 'host' ? 'Host theme wrapper applied' : 'Package default theme',
-      },
+      { label: 'Uploads', value: 'Default mock adapters' },
+      { label: 'Previews', value: 'Mock host metadata' },
     ],
     title: 'Default integrated toolbar',
   };
-};
-
-const ToolbarStatePanel = ({
-  adapterMode,
-  customLabels = false,
-  primitiveMode = 'default',
-  themeMode = 'default',
-}: Pick<ToolbarReferenceProps, 'adapterMode' | 'customLabels' | 'primitiveMode' | 'themeMode'>) => {
-  const summary = getToolbarStateSummary(adapterMode, customLabels, primitiveMode, themeMode);
-
-  return (
-    <StorybookCompactSummary
-      description={summary.description}
-      items={summary.items}
-      title={summary.title}
-    />
-  );
 };
 
 const ToolbarReference = ({
@@ -138,17 +96,14 @@ const ToolbarReference = ({
   contentType,
   customLabels = false,
   initialValue,
-  primitiveMode = 'default',
-  themeMode = 'default',
 }: ToolbarReferenceProps) => {
   const textareaRef = React.useRef<HTMLTextAreaElement | null>(null);
   const [value, setValue] = React.useState(initialValue);
   const adapters = React.useMemo(() => createStorybookAdapterSet(adapterMode), [adapterMode]);
-  const primitiveRegistry = React.useMemo(
-    () => createStorybookPrimitiveRegistry(primitiveMode),
-    [primitiveMode],
+  const summary = React.useMemo(
+    () => getToolbarStateSummary(adapterMode, customLabels),
+    [adapterMode, customLabels],
   );
-  const themeStyle = React.useMemo(() => getStorybookThemeStyle(themeMode), [themeMode]);
 
   React.useEffect(() => {
     setValue(initialValue);
@@ -156,56 +111,135 @@ const ToolbarReference = ({
 
   return (
     <main className={pageClass}>
-      <ToolbarStatePanel
-        adapterMode={adapterMode}
-        customLabels={customLabels}
-        primitiveMode={primitiveMode}
-        themeMode={themeMode}
-      />
-      <section className={panelClass} style={themeStyle}>
-        <div className={splitLayoutClass}>
-          <div className={panelClass}>
-            <MarkdownToolbar
-              adapters={adapters}
-              contentType={contentType}
-              onChange={setValue}
-              primitiveRegistry={primitiveRegistry}
-              textareaRef={textareaRef}
-              uiRegistry={
-                customLabels
-                  ? {
-                      labels: {
-                        headingPopover: {
-                          panelLabel: 'Choose a heading level',
-                          triggerAriaLabel: 'Headings',
-                          triggerTooltip: 'Headings',
-                        },
-                        linkEmbedPopover: {
-                          panelLabel: 'Link options',
-                          triggerAriaLabel: 'Links',
-                          triggerTooltip: 'Links',
-                        },
+      <StorybookSectionCard description={summary.description} title={summary.title}>
+        <StorybookMetaTable items={summary.items} />
+      </StorybookSectionCard>
+      <section className={panelClass}>
+        <StorybookSectionCard
+          description="Use the toolbar and textarea together to inspect visible label changes, helper availability, and the unchanged markdown insertion contract."
+          title="Interactive toolbar surface"
+        >
+          <StorybookStatusBadge>
+            {adapterMode === 'none'
+              ? 'Package-only helper surface'
+              : 'Live helper insertion surface'}
+          </StorybookStatusBadge>
+        </StorybookSectionCard>
+        <div className={toolbarSurfaceClass}>
+          <MarkdownToolbar
+            adapters={adapters}
+            contentType={contentType}
+            onChange={setValue}
+            textareaRef={textareaRef}
+            uiRegistry={
+              customLabels
+                ? {
+                    labels: {
+                      headingPopover: {
+                        panelLabel: 'Choose a heading level',
+                        triggerAriaLabel: 'Headings',
+                        triggerTooltip: 'Headings',
                       },
-                    }
-                  : undefined
-              }
-            />
-            <Textarea
-              aria-label="Toolbar story input"
-              autoResize={false}
-              onChange={event => setValue(event.target.value)}
-              placeholder="Use the toolbar to insert markdown"
-              ref={textareaRef}
-              rows={16}
-              value={value}
-            />
-          </div>
-
-          <aside className={valuePanelClass}>
-            <h3 className={sectionTitleClass}>Current value</h3>
-            <pre className={codeBlockClass}>{value || 'No markdown inserted yet.'}</pre>
-          </aside>
+                      linkEmbedPopover: {
+                        panelLabel: 'Link options',
+                        triggerAriaLabel: 'Links',
+                        triggerTooltip: 'Links',
+                      },
+                    },
+                  }
+                : undefined
+            }
+          />
+          <Textarea
+            aria-label="Toolbar story input"
+            autoResize={false}
+            onChange={event => setValue(event.target.value)}
+            placeholder="Use the toolbar to insert markdown"
+            ref={textareaRef}
+            rows={14}
+            value={value}
+          />
         </div>
+
+        <StorybookSectionCard
+          description="These rows call out what visibly changes between the baseline, label-only, and host-backed variants."
+          title="Visible differences"
+        >
+          <section className={specimenGridClass}>
+            <article className={specimenCardClass}>
+              <p className={specimenLabelClass}>Visible copy changes</p>
+              <div className={specimenStackClass}>
+                <div className={specimenRowClass}>
+                  <span className={specimenKeyClass}>Heading helper</span>
+                  <span className={specimenValueClass}>
+                    {customLabels
+                      ? 'Headings / Choose a heading level'
+                      : 'Heading tools / Pick a heading token'}
+                  </span>
+                </div>
+                <div className={specimenRowClass}>
+                  <span className={specimenKeyClass}>Link helper</span>
+                  <span className={specimenValueClass}>
+                    {customLabels ? 'Links / Link options' : 'Link helper / Link insertion'}
+                  </span>
+                </div>
+              </div>
+              <p className={specimenBodyClass}>
+                {customLabels
+                  ? 'Only the helper wording changes in this variant.'
+                  : 'This variant keeps the package-default helper wording.'}
+              </p>
+            </article>
+
+            <article className={specimenCardClass}>
+              <p className={specimenLabelClass}>Host-backed behavior</p>
+              <div className={statusRowClass}>
+                <span
+                  className={
+                    adapterMode === 'none' ? statusChipMutedClass : statusChipPositiveClass
+                  }
+                >
+                  {adapterMode === 'none'
+                    ? 'Uploads off'
+                    : adapterMode === 'custom'
+                      ? 'Custom uploads'
+                      : 'Mock uploads'}
+                </span>
+                <span
+                  className={
+                    adapterMode === 'none' ? statusChipMutedClass : statusChipPositiveClass
+                  }
+                >
+                  {adapterMode === 'none'
+                    ? 'Plain link behavior'
+                    : adapterMode === 'custom'
+                      ? 'Custom metadata'
+                      : 'Mock metadata'}
+                </span>
+              </div>
+              <p className={specimenBodyClass}>
+                {adapterMode === 'none'
+                  ? 'Helper entrypoints still render, but no host upload or preview adapter runs behind them.'
+                  : adapterMode === 'custom'
+                    ? 'The same toolbar contracts now resolve through a branded host integration.'
+                    : 'The toolbar uses the default local Storybook adapters so helper flows behave like a connected product shell.'}
+              </p>
+            </article>
+          </section>
+        </StorybookSectionCard>
+
+        <StorybookSectionCard
+          description="These guarantees stay intact even when labels or host adapters change."
+          title="What stays the same"
+        >
+          <StorybookCheckList
+            items={[
+              'Same toolbar layout and action order',
+              'Same markdown insertion contract',
+              'Same textarea editing surface',
+            ]}
+          />
+        </StorybookSectionCard>
       </section>
     </main>
   );
@@ -224,22 +258,12 @@ const meta = {
     initialValue: {
       control: 'text',
     },
-    themeMode: {
-      control: 'inline-radio',
-      options: ['default', 'host'],
-    },
-    primitiveMode: {
-      control: 'inline-radio',
-      options: ['default', 'custom'],
-    },
   },
   args: {
     adapterMode: 'full',
     contentType: 'article',
     customLabels: false,
     initialValue: '',
-    primitiveMode: 'default',
-    themeMode: 'default',
   },
   component: ToolbarReference,
   parameters: {
@@ -330,47 +354,88 @@ export const CustomHostIntegration: Story = {
 };
 CustomHostIntegration.name = 'Custom host integration';
 
-export const HostThemeOverride: Story = {
-  args: {
-    adapterMode: 'full',
-    contentType: 'article',
-    customLabels: false,
-    initialValue: '',
-    themeMode: 'host',
-  },
-  parameters: {
-    docs: {
-      description: {
-        story:
-          'Applies the same toolbar shell and default Storybook host adapters inside a scoped host theme wrapper. Use this when the question is visual alignment with a product design system rather than command behavior.',
-      },
-      source: {
-        code: themeOverrideUsageSnippet,
-      },
-    },
-  },
-};
-HostThemeOverride.name = 'Host theme override';
+const toolbarSurfaceClass = css({
+  display: 'grid',
+  gap: '4',
+});
 
-export const PrimitiveOverrides: Story = {
-  args: {
-    adapterMode: 'full',
-    contentType: 'article',
-    customLabels: false,
-    initialValue: '',
-    primitiveMode: 'custom',
-    themeMode: 'default',
+const specimenGridClass = css({
+  display: 'grid',
+  gap: '4',
+  gridTemplateColumns: {
+    base: '1fr',
+    xl: 'repeat(3, minmax(0, 1fr))',
   },
-  parameters: {
-    docs: {
-      description: {
-        story:
-          'Shows the same toolbar contract inside a host primitive registry that overrides button and popover shells. Use this when testing a design-system swap without rewriting toolbar commands.',
-      },
-      source: {
-        code: primitiveRegistryUsageSnippet,
-      },
-    },
-  },
-};
-PrimitiveOverrides.name = 'Primitive overrides';
+});
+
+const specimenCardClass = css({
+  display: 'grid',
+  gap: '3',
+  alignContent: 'start',
+  paddingTop: '2',
+});
+
+const specimenLabelClass = css({
+  color: 'primary',
+  fontSize: 'xs',
+  fontWeight: 'semibold',
+  letterSpacing: 'wide',
+  textTransform: 'uppercase',
+});
+
+const specimenBodyClass = css({
+  color: 'textSubtle',
+  fontSize: 'sm',
+  lineHeight: 'relaxed',
+});
+
+const specimenStackClass = css({
+  display: 'grid',
+  gap: '2',
+});
+
+const specimenRowClass = css({
+  display: 'grid',
+  gap: '1',
+});
+
+const specimenKeyClass = css({
+  color: 'textSubtle',
+  fontSize: 'xs',
+  fontWeight: 'semibold',
+  letterSpacing: 'wide',
+  textTransform: 'uppercase',
+});
+
+const specimenValueClass = css({
+  color: 'text',
+  fontSize: 'sm',
+  lineHeight: 'relaxed',
+  fontWeight: 'medium',
+});
+
+const statusRowClass = css({
+  display: 'flex',
+  gap: '2',
+  flexWrap: 'wrap',
+});
+
+const statusChipBaseClass = css({
+  display: 'inline-flex',
+  alignItems: 'center',
+  minHeight: '8',
+  borderRadius: 'full',
+  px: '3',
+  fontSize: 'xs',
+  fontWeight: 'semibold',
+});
+
+const statusChipPositiveClass = `${statusChipBaseClass} ${css({
+  backgroundColor: 'primarySubtle',
+  color: 'primary',
+})}`;
+
+const statusChipMutedClass = `${statusChipBaseClass} ${css({
+  backgroundColor: 'surfaceStrong',
+  color: 'textSubtle',
+})}`;

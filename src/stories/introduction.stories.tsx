@@ -1,12 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import type { CSSProperties } from 'react';
-import { css } from 'styled-system/css';
+import { css, cx } from 'styled-system/css';
 
-import {
-  StorybookCompactSummary,
-  storybookHostThemeVars,
-  themeOverrideUsageSnippet,
-} from '@/stories/storybook-fixtures';
+import { themeOverrideUsageSnippet } from '@/stories/storybook-fixtures';
 
 const IntroPage = () => (
   <main className={pageClass}>
@@ -49,94 +45,112 @@ const IntroPage = () => (
   </main>
 );
 
+const themeContractHostThemeVars = {
+  '--colors-border': '#eab39b',
+  '--colors-border-strong': '#d97706',
+  '--colors-primary': '#b45309',
+  '--colors-primary-contrast': '#fff7ed',
+  '--colors-primary-muted': '#fed7aa',
+  '--colors-primary-subtle': '#ffedd5',
+  '--colors-surface': '#fff7ed',
+  '--colors-surface-muted': '#ffedd5',
+  '--colors-surface-strong': '#fdba74',
+  '--colors-text': '#3b1906',
+  '--colors-text-subtle': '#7c2d12',
+  '--fonts-sans': 'Georgia, "Times New Roman", serif',
+  '--chaeditor-color-border': '#f3c6b3',
+  '--chaeditor-color-border-strong': '#e59b7a',
+  '--chaeditor-color-primary': '#b45309',
+  '--chaeditor-color-primary-contrast': '#fff7ed',
+  '--chaeditor-color-primary-muted': '#fed7aa',
+  '--chaeditor-color-primary-subtle': '#ffedd5',
+  '--chaeditor-color-surface': '#fff7ed',
+  '--chaeditor-color-surface-muted': '#ffedd5',
+  '--chaeditor-color-surface-strong': '#fdba74',
+  '--chaeditor-color-text': '#3b1906',
+  '--chaeditor-color-text-subtle': '#7c2d12',
+  '--chaeditor-font-sans': 'Georgia, "Times New Roman", serif',
+  '--chaeditor-font-mono': '"Courier New", "Liberation Mono", monospace',
+} as CSSProperties;
+
+const ThemeTokenCard = ({
+  description,
+  eyebrow,
+  isOverride = false,
+  title,
+}: {
+  description: string;
+  eyebrow: string;
+  isOverride?: boolean;
+  title: string;
+}) => (
+  <article
+    className={isOverride ? cx(themeCardClass, overrideThemeCardClass) : themeCardClass}
+    style={isOverride ? themeContractHostThemeVars : undefined}
+  >
+    <div className={themeCardHeaderClass}>
+      <p
+        className={
+          isOverride
+            ? cx(mutedTokenEyebrowClass, overrideTokenEyebrowClass)
+            : mutedTokenEyebrowClass
+        }
+      >
+        {eyebrow}
+      </p>
+      <h2 className={themeCardTitleClass}>{title}</h2>
+      <p className={cardBodyClass}>{description}</p>
+    </div>
+    <div className={themeSpecimenClass}>
+      <div className={themeSpecimenPanelClass}>
+        <div className={themeSpecimenHeaderClass}>
+          <div>
+            <p className={themeSpecimenEyebrowClass}>Markdown editor shell</p>
+            <h3 className={themeSpecimenTitleClass}>Composable authoring surface</h3>
+          </div>
+          <button className={themeSpecimenPrimaryButtonClass} type="button">
+            Publish
+          </button>
+        </div>
+        <p className={themeSpecimenBodyClass}>
+          Toolbar actions, preview panes, and helper overlays inherit the same scoped theme values.
+        </p>
+        <div className={themeSpecimenInputClass}>https://chaeditor.dev/docs/getting-started</div>
+        <div className={themeSpecimenFooterClass}>
+          <span className={themeSpecimenMutedChipClass}>Surface</span>
+          <code className={themeSpecimenCodeClass}>GET /articles/[slug]</code>
+        </div>
+      </div>
+    </div>
+  </article>
+);
+
 const ThemeContractPage = () => (
   <main className={pageClass}>
     <div className={heroClass}>
-      <p className={eyebrowClass}>theming</p>
+      <p className={eyebrowClass}>theming system</p>
       <h1 className={titleClass}>Host theme overrides stay scoped and optional</h1>
       <p className={descriptionClass}>
         chaeditor ships with a default theme, but every semantic color and font token can be
-        overridden through CSS variables. Regular UI fonts should come from the host app, while the
-        mono slot can optionally use D2Coding through the package fallback chain.
+        overridden through CSS variables. Import
+        <code className={inlineCodeClass}> chaeditor/styles.css </code>
+        to get fallback tokens, then override only what you need.
       </p>
     </div>
 
     <section className={sectionClass}>
-      <StorybookCompactSummary
-        description="Use the default theme when you want the package look out of the box. Use a scoped host override when the editor needs to inherit brand colors or product typography without changing its logic contract."
-        items={[
-          { label: 'Default', value: 'Package fallback tokens and system sans fonts' },
-          { label: 'Override', value: 'Scoped host CSS variables for colors and fonts' },
-          { label: 'Mono', value: 'Optional D2Coding fallback for code-heavy UI' },
-        ]}
-        title="Theme contract"
-      />
-
       <div className={themeGridClass}>
-        <article className={cardClass}>
-          <p className={tokenEyebrowClass}>Default package theme</p>
-          <h2 className={cardTitleClass}>Fallback tokens only</h2>
-          <p className={cardBodyClass}>
-            No wrapper overrides are applied here. This is what consumers get after importing
-            <code className={inlineCodeClass}> chaeditor/styles.css </code>
-            and mounting the editor surface as-is.
-          </p>
-          <div className={swatchGridClass}>
-            <div className={swatchClass}>
-              <span className={surfaceSwatchClass} />
-              <div className={swatchTextClass}>
-                <strong>Surface</strong>
-                <span>Package default canvas</span>
-              </div>
-            </div>
-            <div className={swatchClass}>
-              <span className={primarySwatchClass} />
-              <div className={swatchTextClass}>
-                <strong>Primary</strong>
-                <span>Package action color</span>
-              </div>
-            </div>
-            <div className={swatchClass}>
-              <span className={textSwatchClass} />
-              <div className={swatchTextClass}>
-                <strong>Typography</strong>
-                <span>System sans + package mono fallback</span>
-              </div>
-            </div>
-          </div>
-        </article>
-
-        <article className={cardClass} style={storybookHostThemeVars as CSSProperties}>
-          <p className={tokenEyebrowClass}>Scoped host override</p>
-          <h2 className={cardTitleClass}>Brand tokens through CSS variables</h2>
-          <p className={cardBodyClass}>
-            The host can set only the values it cares about. In this example, the primary palette,
-            surfaces, and sans font are overridden while the component contracts stay unchanged.
-          </p>
-          <div className={swatchGridClass}>
-            <div className={swatchClass}>
-              <span className={surfaceSwatchClass} />
-              <div className={swatchTextClass}>
-                <strong>Surface</strong>
-                <span>Host-owned product background</span>
-              </div>
-            </div>
-            <div className={swatchClass}>
-              <span className={primarySwatchClass} />
-              <div className={swatchTextClass}>
-                <strong>Primary</strong>
-                <span>Brand action color</span>
-              </div>
-            </div>
-            <div className={swatchClass}>
-              <span className={textSwatchClass} />
-              <div className={swatchTextClass}>
-                <strong>Typography</strong>
-                <span>Host sans font + optional mono fallback</span>
-              </div>
-            </div>
-          </div>
-        </article>
+        <ThemeTokenCard
+          description="No wrapper overrides are applied. This is the package theme as shipped."
+          eyebrow="Default package theme"
+          title="Fallback tokens only"
+        />
+        <ThemeTokenCard
+          description="The host injects brand colors and typography while keeping the same component contracts."
+          eyebrow="Scoped host override"
+          isOverride
+          title="Brand tokens via CSS variables"
+        />
       </div>
     </section>
   </main>
@@ -269,73 +283,135 @@ const themeGridClass = css({
   gridTemplateColumns: { base: '1fr', xl: 'repeat(2, minmax(0, 1fr))' },
 });
 
-const tokenEyebrowClass = css({
-  color: 'primary',
+const themeCardClass = css({
+  bg: 'surface',
+  border: '[1px solid var(--colors-border)]',
+  borderRadius: '2xl',
+  display: 'grid',
+  overflow: 'hidden',
+});
+
+const overrideThemeCardClass = css({
+  borderColor: 'primary',
+  boxShadow: '[0_0_0_1px_var(--colors-primary-subtle)]',
+});
+
+const themeCardHeaderClass = css({
+  display: 'grid',
+  gap: '3',
+  p: '7',
+});
+
+const mutedTokenEyebrowClass = css({
+  color: 'textSubtle',
   fontSize: 'xs',
   fontWeight: 'semibold',
   letterSpacing: 'wide',
   textTransform: 'uppercase',
 });
 
-const swatchGridClass = css({
-  display: 'grid',
-  gap: '3',
-  marginTop: '2',
+const overrideTokenEyebrowClass = css({
+  color: 'primary',
 });
 
-const swatchClass = css({
-  alignItems: 'center',
-  display: 'grid',
-  gap: '3',
-  gridTemplateColumns: '[2.75rem_1fr]',
+const themeCardTitleClass = css({
+  fontSize: '2xl',
+  fontWeight: 'semibold',
+  lineHeight: 'tight',
 });
 
-const swatchTextClass = css({
-  display: 'grid',
-  gap: '1',
-  lineHeight: 'relaxed',
-  '& span': {
-    color: 'textSubtle',
-    fontSize: 'sm',
-  },
-});
-
-const swatchDotStyles = {
-  border: '[1px solid var(--colors-border)]',
-  borderRadius: 'xl',
-  boxShadow: 'sm',
-  display: 'block',
-  height: '11',
-  width: '11',
-} as const;
-
-const surfaceSwatchClass = css({
-  ...swatchDotStyles,
+const themeSpecimenClass = css({
   bg: 'surfaceMuted',
+  borderBlockStart: '[1px solid var(--colors-border)]',
+  px: '7',
+  py: '6',
 });
 
-const primarySwatchClass = css({
-  ...swatchDotStyles,
-  bg: 'primary',
-  borderColor: 'primary',
+const themeSpecimenPanelClass = css({
+  backgroundColor: `[var(--chaeditor-color-surface,${'#ffffff'})]`,
+  border: `[1px solid var(--chaeditor-color-border,${'#d4d4d8'})]`,
+  borderRadius: 'xl',
+  display: 'grid',
+  gap: '4',
+  p: '5',
 });
 
-const textSwatchClass = css({
-  ...swatchDotStyles,
-  bg: 'surface',
-  position: 'relative',
-  _after: {
-    content: '"Aa"',
-    color: 'text',
-    fontFamily: 'sans',
-    fontSize: 'sm',
-    fontWeight: 'bold',
-    inset: '0',
-    position: 'absolute',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+const themeSpecimenHeaderClass = css({
+  alignItems: 'start',
+  display: 'flex',
+  gap: '4',
+  justifyContent: 'space-between',
+  flexWrap: 'wrap',
+});
+
+const themeSpecimenEyebrowClass = css({
+  color: `[var(--chaeditor-color-text-subtle,${'#52525b'})]`,
+  fontSize: 'xs',
+  fontWeight: 'semibold',
+  letterSpacing: 'wide',
+  textTransform: 'uppercase',
+});
+
+const themeSpecimenTitleClass = css({
+  color: `[var(--chaeditor-color-text,${'#18181b'})]`,
+  fontFamily: `[var(--chaeditor-font-sans,${"system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"})]`,
+  fontSize: '2xl',
+  fontWeight: 'bold',
+  lineHeight: 'tight',
+});
+
+const themeSpecimenBodyClass = css({
+  color: `[var(--chaeditor-color-text-subtle,${'#52525b'})]`,
+  fontFamily: `[var(--chaeditor-font-sans,${"system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"})]`,
+  fontSize: 'sm',
+  lineHeight: 'relaxed',
+  maxWidth: 'lg',
+});
+
+const themeSpecimenInputClass = css({
+  backgroundColor: `[var(--chaeditor-color-surface-muted,${'#f4f4f5'})]`,
+  border: `[1px solid var(--chaeditor-color-border,${'#d4d4d8'})]`,
+  borderRadius: 'lg',
+  color: `[var(--chaeditor-color-text,${'#18181b'})]`,
+  fontFamily: `[var(--chaeditor-font-mono,${"var(--font-d2coding), 'D2Coding', 'SFMono-Regular', 'JetBrains Mono', Consolas, 'Liberation Mono', monospace"})]`,
+  fontSize: 'sm',
+  px: '3',
+  py: '3',
+});
+
+const themeSpecimenFooterClass = css({
+  alignItems: 'center',
+  display: 'flex',
+  gap: '3',
+  justifyContent: 'space-between',
+  flexWrap: 'wrap',
+});
+
+const themeSpecimenMutedChipClass = css({
+  alignItems: 'center',
+  backgroundColor: `[var(--chaeditor-color-surface-strong,${'#e4e4e7'})]`,
+  borderRadius: 'full',
+  color: `[var(--chaeditor-color-text,${'#18181b'})]`,
+  display: 'inline-flex',
+  fontFamily: `[var(--chaeditor-font-sans,${"system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"})]`,
+  fontSize: 'xs',
+  fontWeight: 'semibold',
+  minHeight: '8',
+  px: '3',
+});
+
+const themeSpecimenPrimaryButtonClass = css({
+  alignItems: 'center',
+  backgroundColor: `[var(--chaeditor-color-primary,${'#3b82f6'})]`,
+  borderRadius: 'full',
+  color: `[var(--chaeditor-color-primary-contrast,${'#ffffff'})]`,
+  display: 'inline-flex',
+  fontFamily: `[var(--chaeditor-font-sans,${"system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"})]`,
+  fontSize: 'sm',
+  fontWeight: 'semibold',
+  justifyContent: 'center',
+  minHeight: '10',
+  px: '4',
 });
 
 const inlineCodeClass = css({
@@ -346,4 +422,14 @@ const inlineCodeClass = css({
   fontSize: 'sm',
   px: '1.5',
   py: '0.5',
+});
+
+const themeSpecimenCodeClass = css({
+  backgroundColor: `[var(--chaeditor-color-surface-muted,${'#f4f4f5'})]`,
+  borderRadius: 'md',
+  color: `[var(--chaeditor-color-text-subtle,${'#52525b'})]`,
+  fontFamily: `[var(--chaeditor-font-mono,${"var(--font-d2coding), 'D2Coding', 'SFMono-Regular', 'JetBrains Mono', Consolas, 'Liberation Mono', monospace"})]`,
+  fontSize: 'xs',
+  px: '2.5',
+  py: '1.5',
 });
