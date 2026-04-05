@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useMemo, useRef, useState } from 'react';
-import { css, cx } from 'styled-system/css';
+import { cx } from 'styled-system/css';
 
 import type { HostImageRenderer, UploadEditorImage } from '@/entities/editor-core';
 import type { EditorContentType } from '@/entities/editor-core/model/content-types';
@@ -12,7 +12,6 @@ import {
 } from '@/features/edit-markdown/image/model/embed-popover-state';
 import {
   ACCEPTED_IMAGE_FILE_TYPES,
-  ACCEPTED_IMAGE_FORMAT_LABEL,
   createImageRow,
   getDuplicateRowIds,
   getFilledImageRows,
@@ -22,8 +21,17 @@ import {
   reorderRows,
   resolvePreviewImageSrc,
 } from '@/features/edit-markdown/image/model/image-embed-modal-state';
+import {
+  modalContentClass,
+  modalFooterActionGroupClass,
+  modalFooterClass,
+  modalScrollableContentClass,
+  triggerButtonClass,
+} from '@/features/edit-markdown/image/ui/image-embed-modal.panda';
 import { ImageEmbedModalEditor } from '@/features/edit-markdown/image/ui/image-embed-modal-editor';
 import { ImageEmbedModalEmptyState } from '@/features/edit-markdown/image/ui/image-embed-modal-empty-state';
+import { ImageEmbedModalHeader } from '@/features/edit-markdown/image/ui/image-embed-modal-header';
+import { ImageEmbedModalUrlPanel } from '@/features/edit-markdown/image/ui/image-embed-modal-url-panel';
 import { ImageIcon } from '@/shared/ui/icons/app-icons';
 import type { ClosePopover } from '@/shared/ui/popover/popover';
 import { useMarkdownPrimitives } from '@/shared/ui/primitive-registry/markdown-primitive-registry';
@@ -60,7 +68,7 @@ export const ImageEmbedModal = ({
   onTriggerMouseDown,
   triggerClassName,
 }: ImageEmbedModalProps) => {
-  const { Button, Modal, Textarea, Tooltip } = useMarkdownPrimitives();
+  const { Button, Modal, Tooltip } = useMarkdownPrimitives();
   const nextRowIdRef = useRef(0);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
   const emptyStateUrlInputRef = useRef<HTMLTextAreaElement | null>(null);
@@ -361,38 +369,14 @@ export const ImageEmbedModal = ({
         onClose={() => setIsOpen(false)}
       >
         <div className={modalContentClass}>
-          <header className={modalHeaderClass}>
-            <div className={headerTopRowClass}>
-              <h2 className={modalTitleClass}>Insert images</h2>
-              {!isEmptyState ? (
-                <div className={headerButtonGroupClass}>
-                  <label className={uploadButtonWrapClass}>
-                    <span aria-live="polite" className={uploadButtonLabelClass} role="status">
-                      {isUploading ? 'Uploading...' : 'Upload multiple'}
-                    </span>
-                    <input
-                      accept={ACCEPTED_IMAGE_FILE_TYPES}
-                      aria-label="Upload image files"
-                      className={fileInputClass}
-                      disabled={isUploading || !canAddRow || !isImageUploadEnabled}
-                      multiple
-                      onChange={handleFileChange}
-                      type="file"
-                    />
-                  </label>
-                  <Button
-                    disabled={!canAddRow}
-                    onClick={() => setIsUrlPanelOpen(current => !current)}
-                    size="sm"
-                    tone="white"
-                  >
-                    Add URLs
-                  </Button>
-                </div>
-              ) : null}
-            </div>
-            <p className={metaTextClass}>Supported formats: {ACCEPTED_IMAGE_FORMAT_LABEL}</p>
-          </header>
+          <ImageEmbedModalHeader
+            canAddRow={canAddRow}
+            isEmptyState={isEmptyState}
+            isImageUploadEnabled={isImageUploadEnabled}
+            isUploading={isUploading}
+            onFileChange={handleFileChange}
+            onToggleUrlPanel={() => setIsUrlPanelOpen(current => !current)}
+          />
 
           <div className={modalScrollableContentClass}>
             {isEmptyState ? (
@@ -416,40 +400,13 @@ export const ImageEmbedModal = ({
             ) : (
               <>
                 {isUrlPanelOpen ? (
-                  <section className={urlPanelClass}>
-                    <label className={fieldLabelClass} htmlFor="markdown-toolbar-image-url-panel">
-                      Add web URLs
-                    </label>
-                    <Textarea
-                      autoResize={false}
-                      id="markdown-toolbar-image-url-panel"
-                      onChange={event => setPendingUrls(event.target.value)}
-                      placeholder={`https://example.com/image.png\nhttps://example.com/image-2.png`}
-                      rows={3}
-                      value={pendingUrls}
-                    />
-                    <div className={urlPanelActionRowClass}>
-                      <p className={metaTextClass}>Enter one URL per line.</p>
-                      <div className={headerButtonGroupClass}>
-                        <Button
-                          onClick={() => setIsUrlPanelOpen(false)}
-                          size="sm"
-                          tone="white"
-                          variant="ghost"
-                        >
-                          Cancel
-                        </Button>
-                        <Button
-                          disabled={isAddUrlsDisabled}
-                          onClick={handleAddUrls}
-                          size="sm"
-                          tone="white"
-                        >
-                          Add
-                        </Button>
-                      </div>
-                    </div>
-                  </section>
+                  <ImageEmbedModalUrlPanel
+                    isAddDisabled={isAddUrlsDisabled}
+                    onAdd={handleAddUrls}
+                    onCancel={() => setIsUrlPanelOpen(false)}
+                    onChange={setPendingUrls}
+                    pendingUrls={pendingUrls}
+                  />
                 ) : null}
                 <ImageEmbedModalEditor
                   duplicateRowIds={duplicateRowIds}
@@ -500,143 +457,3 @@ export const ImageEmbedModal = ({
     </>
   );
 };
-
-const modalContentClass = css({
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '4',
-  width: '[min(72rem,calc(100dvw-2rem))]',
-  maxWidth: 'full',
-  maxHeight: '[calc(100dvh-2rem)]',
-  p: '6',
-  backgroundColor: 'surface',
-  minHeight: '0',
-  minWidth: '0',
-  overflowX: 'hidden',
-  overflowY: 'auto',
-});
-
-const modalScrollableContentClass = css({
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '4',
-  paddingBottom: '2',
-});
-
-const modalFooterClass = css({
-  display: 'flex',
-  justifyContent: 'flex-end',
-  paddingTop: '4',
-  borderTopWidth: '1px',
-  borderTopStyle: 'solid',
-  borderTopColor: 'border',
-});
-
-const modalFooterActionGroupClass = css({
-  display: 'flex',
-  justifyContent: 'flex-end',
-  alignItems: 'center',
-  gap: '2',
-  flexWrap: 'wrap',
-});
-
-const modalHeaderClass = css({
-  display: 'grid',
-  gap: '1',
-  paddingRight: '10',
-});
-
-const headerTopRowClass = css({
-  display: 'flex',
-  alignItems: 'center',
-  gap: '4',
-  flexWrap: 'wrap',
-});
-
-const modalTitleClass = css({
-  fontSize: '2xl',
-  fontWeight: 'bold',
-  color: 'text',
-});
-
-const headerButtonGroupClass = css({
-  display: 'flex',
-  alignItems: 'center',
-  gap: '2',
-  flexWrap: 'wrap',
-});
-
-const triggerButtonClass = css({
-  minWidth: '9',
-  minHeight: '9',
-  width: '9',
-  height: '9',
-  px: '0',
-  borderRadius: 'lg',
-  borderColor: 'border',
-});
-
-const uploadButtonWrapClass = css({
-  position: 'relative',
-  display: 'inline-flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  width: '[fit-content]',
-  minHeight: '10',
-  px: '3',
-  borderRadius: 'full',
-  borderWidth: '1px',
-  borderStyle: 'solid',
-  borderColor: 'border',
-  backgroundColor: 'surface',
-  color: 'text',
-  cursor: 'pointer',
-  flex: 'none',
-  _focusWithin: {
-    outline: '[2px solid var(--colors-focus-ring)]',
-    outlineOffset: '[2px]',
-    borderColor: 'primary',
-  },
-});
-
-const uploadButtonLabelClass = css({
-  fontSize: 'sm',
-  fontWeight: 'semibold',
-});
-
-const fileInputClass = css({
-  position: 'absolute',
-  inset: '0',
-  opacity: '0',
-  cursor: 'pointer',
-});
-
-const urlPanelClass = css({
-  display: 'grid',
-  gap: '2',
-  padding: '4',
-  borderWidth: '1px',
-  borderStyle: 'solid',
-  borderColor: 'border',
-  borderRadius: 'xl',
-  backgroundColor: 'surfaceMuted',
-});
-
-const fieldLabelClass = css({
-  fontSize: 'sm',
-  fontWeight: 'bold',
-  color: 'text',
-});
-
-const urlPanelActionRowClass = css({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-  gap: '3',
-  flexWrap: 'wrap',
-});
-
-const metaTextClass = css({
-  fontSize: 'xs',
-  color: 'muted',
-});

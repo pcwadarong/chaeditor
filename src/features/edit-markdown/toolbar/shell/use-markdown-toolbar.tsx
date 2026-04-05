@@ -25,18 +25,11 @@ import type { ImageEmbedApplyPayload } from '@/features/edit-markdown/image';
 import type { LinkEmbedMode } from '@/features/edit-markdown/link';
 import type { MathEmbedApplyPayload } from '@/features/edit-markdown/math';
 import type {
-  AlignPopoverRenderProps,
-  FileEmbedPopoverRenderProps,
-  ImageEmbedModalRenderProps,
-  LinkEmbedPopoverRenderProps,
   MarkdownToolbarPresetItemKey,
   MarkdownToolbarProps,
-  MathEmbedPopoverRenderProps,
-  TextColorPopoverRenderProps,
   ToolbarActionItem,
   ToolbarCustomItem,
   ToolbarSectionItem,
-  VideoEmbedModalRenderProps,
 } from '@/features/edit-markdown/toolbar/contracts/markdown-toolbar.types';
 import {
   createMarkdownToolbarSections,
@@ -44,27 +37,20 @@ import {
   createToolbarCustomItem,
   createToolbarTokenOptions,
 } from '@/features/edit-markdown/toolbar/contracts/markdown-toolbar-composition';
+import {
+  createBlockSyntaxActions,
+  createHeadingActions,
+  createInlineFormatActions,
+  createTextStructureActions,
+  createToggleActions,
+} from '@/features/edit-markdown/toolbar/shell/markdown-toolbar-action-groups';
+import {
+  createEmbedItems,
+  createHighlightItems,
+} from '@/features/edit-markdown/toolbar/shell/markdown-toolbar-custom-items';
 import { resolveMarkdownToolbarUiRegistry } from '@/features/edit-markdown/toolbar/shell/markdown-toolbar-ui-registry';
 import type { VideoEmbedApplyPayload } from '@/features/edit-markdown/video';
-import {
-  CodeBlockIcon,
-  DashIcon,
-  MarkDownBoldIcon,
-  MarkDownItalicIcon,
-  MarkDownStrikeIcon,
-  MarkDownUnderlineIcon,
-  QuoteIcon,
-  SpoilerIcon,
-  SubtextIcon,
-  TableIcon,
-} from '@/shared/ui/icons/app-icons';
 import type { ClosePopover } from '@/shared/ui/popover/popover';
-
-const tableTemplate = [
-  '| Heading1 | Heading2 | Heading3 |',
-  '|-------|-------|-------|',
-  '| Cell 1   | Cell 2   | Cell 3   |',
-].join('\n');
 
 /**
  * Builds textarea actions and section data for the markdown toolbar.
@@ -262,12 +248,7 @@ export const useMarkdownToolbar = ({
   );
 
   const headingActions = React.useMemo<ToolbarActionItem[]>(
-    () => [
-      { key: 'heading-1', label: 'Heading 1', onClick: () => applyHeading(1), token: 'H1' },
-      { key: 'heading-2', label: 'Heading 2', onClick: () => applyHeading(2), token: 'H2' },
-      { key: 'heading-3', label: 'Heading 3', onClick: () => applyHeading(3), token: 'H3' },
-      { key: 'heading-4', label: 'Heading 4', onClick: () => applyHeading(4), token: 'H4' },
-    ],
+    () => createHeadingActions(applyHeading),
     [applyHeading],
   );
 
@@ -277,110 +258,27 @@ export const useMarkdownToolbar = ({
   );
 
   const inlineFormatActions = React.useMemo<ToolbarActionItem[]>(
-    () => [
-      {
-        icon: <MarkDownBoldIcon aria-hidden color="current" size="sm" />,
-        key: 'bold',
-        label: 'Bold',
-        onClick: () => applyWrap('**', '**', 'Bold'),
-      },
-      {
-        icon: <MarkDownItalicIcon aria-hidden color="current" size="sm" />,
-        key: 'italic',
-        label: 'Italic',
-        onClick: () => applyWrap('*', '*', 'Italic'),
-      },
-      {
-        icon: <MarkDownStrikeIcon aria-hidden color="current" size="sm" />,
-        key: 'strike',
-        label: 'Strikethrough',
-        onClick: () => applyWrap('~~', '~~', 'Strikethrough'),
-      },
-      {
-        icon: <MarkDownUnderlineIcon aria-hidden color="current" size="sm" />,
-        key: 'underline',
-        label: 'Underline',
-        onClick: () => applyWrap('<u>', '</u>', 'Underline'),
-      },
-    ],
+    () => createInlineFormatActions(applyWrap),
     [applyWrap],
   );
 
   const textStructureActions = React.useMemo<ToolbarActionItem[]>(
-    () => [
-      {
-        icon: <SubtextIcon aria-hidden color="current" size="sm" />,
-        key: 'subtext',
-        label: 'Subtext',
-        onClick: () => applyPrefix('-# '),
-      },
-    ],
+    () => createTextStructureActions(applyPrefix),
     [applyPrefix],
   );
 
   const blockSyntaxActions = React.useMemo<ToolbarActionItem[]>(
-    () => [
-      {
-        icon: <DashIcon aria-hidden color="current" size="sm" />,
-        key: 'horizontal-rule',
-        label: 'Divider',
-        onClick: () => applyTemplate('\n---\n'),
-      },
-      {
-        icon: <QuoteIcon aria-hidden color="current" size="sm" />,
-        key: 'quote',
-        label: 'Quote',
-        onClick: () => applyPrefix('> '),
-      },
-      {
-        icon: <CodeBlockIcon aria-hidden color="current" size="sm" />,
-        key: 'code-block',
-        label: 'Code block',
-        onClick: () => applyWrap('```ts\n', '\n```', 'Enter code here'),
-      },
-      {
-        icon: <TableIcon aria-hidden color="current" size="sm" />,
-        key: 'table',
-        label: 'Table',
-        onClick: () => applyTemplate(tableTemplate, 2),
-      },
-      {
-        icon: <SpoilerIcon aria-hidden color="current" size="sm" />,
-        key: 'spoiler',
-        label: 'Spoiler',
-        onClick: () => applyWrap('||', '||', 'Spoiler'),
-      },
-    ],
+    () =>
+      createBlockSyntaxActions({
+        applyPrefix,
+        applyTemplate,
+        applyWrap,
+      }),
     [applyPrefix, applyTemplate, applyWrap],
   );
 
   const toggleActions = React.useMemo<ToolbarActionItem[]>(
-    () => [
-      {
-        key: 'toggle-1',
-        label: 'Toggle Heading 1',
-        onClick: () => handleToggleApply(1),
-        token: 'T1',
-      },
-      {
-        key: 'toggle-2',
-        label: 'Toggle Heading 2',
-        onClick: () => handleToggleApply(2),
-        token: 'T2',
-      },
-      {
-        key: 'toggle-3',
-        label: 'Toggle Heading 3',
-        onClick: () => handleToggleApply(3),
-        token: 'T3',
-      },
-      {
-        key: 'toggle-4',
-        label: 'Toggle Heading 4',
-        onClick: () => handleToggleApply(4),
-        token: 'T4',
-      },
-    ],
+    () => createToggleActions(handleToggleApply),
     [handleToggleApply],
   );
 
@@ -393,101 +291,41 @@ export const useMarkdownToolbar = ({
    * Resolves the token popover implementation from the host registry or defaults.
    */
   const highlightItems = React.useMemo<ToolbarCustomItem[]>(
-    () => [
-      createToolbarCustomItem(
-        'text-color',
-        toolbarUiRegistry.renderTextColorPopover({
-          labels: toolbarLabels?.textColorPopover,
-          onApply: handleTextColorApply,
-          onTriggerMouseDown: event => event.preventDefault(),
-          triggerClassName: popoverTriggerClassName,
-        } satisfies TextColorPopoverRenderProps),
-      ),
-      createToolbarCustomItem(
-        'background-color',
-        toolbarUiRegistry.renderBackgroundColorPopover({
-          labels: toolbarLabels?.backgroundColorPopover,
-          onApply: handleBackgroundColorApply,
-          onTriggerMouseDown: event => event.preventDefault(),
-          triggerClassName: popoverTriggerClassName,
-        } satisfies TextColorPopoverRenderProps),
-      ),
-      createToolbarCustomItem(
-        'align',
-        toolbarUiRegistry.renderAlignPopover({
-          onApply: handleAlignApply,
-          onTriggerMouseDown: event => event.preventDefault(),
-          triggerClassName: popoverTriggerClassName,
-        } satisfies AlignPopoverRenderProps),
-      ),
-    ],
+    () =>
+      createHighlightItems({
+        handleAlignApply,
+        handleBackgroundColorApply,
+        handleTextColorApply,
+        labels: toolbarLabels,
+        popoverTriggerClassName,
+        toolbarUiRegistry,
+      }),
     [
       handleAlignApply,
       handleBackgroundColorApply,
       handleTextColorApply,
       popoverTriggerClassName,
-      toolbarLabels?.backgroundColorPopover,
-      toolbarLabels?.textColorPopover,
+      toolbarLabels,
       toolbarUiRegistry,
     ],
   );
 
   const embedItems = React.useMemo<ToolbarCustomItem[]>(
-    () => [
-      createToolbarCustomItem(
-        'math-embed',
-        toolbarUiRegistry.renderMathEmbedPopover({
-          onApply: handleMathApply,
-          onTriggerMouseDown: event => event.preventDefault(),
-          triggerClassName: popoverTriggerClassName,
-        } satisfies MathEmbedPopoverRenderProps),
-      ),
-      createToolbarCustomItem(
-        'file-embed',
-        toolbarUiRegistry.renderFileEmbedPopover({
-          contentType,
-          onApply: handleAttachmentApply,
-          onUploadFile: adapters?.uploadFile,
-          onTriggerMouseDown: event => event.preventDefault(),
-          triggerClassName: popoverTriggerClassName,
-        } satisfies FileEmbedPopoverRenderProps),
-      ),
-      createToolbarCustomItem(
-        'image-embed',
-        toolbarUiRegistry.renderImageEmbedModal({
-          contentType,
-          onApply: handleImageApply,
-          renderImage: adapters?.renderImage,
-          onUploadImage: adapters?.uploadImage,
-          onTriggerMouseDown: event => event.preventDefault(),
-          triggerClassName: popoverTriggerClassName,
-        } satisfies ImageEmbedModalRenderProps),
-      ),
-      createToolbarCustomItem(
-        'link-embed',
-        toolbarUiRegistry.renderLinkEmbedPopover({
-          labels: toolbarLabels?.linkEmbedPopover,
-          onApply: handleLinkApply,
-          onTriggerMouseDown: event => event.preventDefault(),
-          triggerClassName: popoverTriggerClassName,
-        } satisfies LinkEmbedPopoverRenderProps),
-      ),
-      createToolbarCustomItem(
-        'video-embed',
-        toolbarUiRegistry.renderVideoEmbedModal({
-          contentType,
-          onApply: handleVideoApply,
-          onUploadVideo: adapters?.uploadVideo,
-          onTriggerMouseDown: event => event.preventDefault(),
-          triggerClassName: popoverTriggerClassName,
-        } satisfies VideoEmbedModalRenderProps),
-      ),
-    ],
+    () =>
+      createEmbedItems({
+        adapters,
+        contentType,
+        handleAttachmentApply,
+        handleImageApply,
+        handleLinkApply,
+        handleMathApply,
+        handleVideoApply,
+        labels: toolbarLabels,
+        popoverTriggerClassName,
+        toolbarUiRegistry,
+      }),
     [
-      adapters?.uploadFile,
-      adapters?.renderImage,
-      adapters?.uploadImage,
-      adapters?.uploadVideo,
+      adapters,
       contentType,
       handleAttachmentApply,
       handleImageApply,
@@ -495,7 +333,7 @@ export const useMarkdownToolbar = ({
       handleMathApply,
       handleVideoApply,
       popoverTriggerClassName,
-      toolbarLabels?.linkEmbedPopover,
+      toolbarLabels,
       toolbarUiRegistry,
     ],
   );

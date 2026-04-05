@@ -2,18 +2,46 @@
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { css, cx } from 'styled-system/css';
+import { cx } from 'styled-system/css';
 
 import { useDialogFocusManagement } from '@/shared/lib/react/use-dialog-focus-management';
-import { Button } from '@/shared/ui/button/button';
 import {
-  ChevronRightIcon,
   FitSizeIcon,
   ImageIcon,
   ImageQuestionIcon,
   ZoomInIcon,
   ZoomOutIcon,
 } from '@/shared/ui/icons/app-icons';
+import {
+  actionBarClass,
+  actionButtonClass,
+  actionTextClass,
+  actionTooltipClass,
+  actionTooltipPortalClass,
+  activeThumbnailButtonClass,
+  draggingImageViewportClass,
+  IMAGE_VIEWER_NAVIGATION_ANIMATION_MS,
+  imageInnerClass,
+  imageStageClass,
+  imageViewportClass,
+  nextTransitionImageClass,
+  previousTransitionImageClass,
+  thumbnailButtonClass,
+  thumbnailImageClass,
+  thumbnailRailClass,
+  thumbnailRailTrackClass,
+  topScrimClass,
+  viewerBackdropClass,
+  viewerCloseButtonClass,
+  viewerContentClass,
+  viewerFrameClass,
+  viewerImageClass,
+  viewerTopActionButtonClass,
+  viewerTopActionGroupClass,
+  viewerTopActionLabelClass,
+  zoomedImageViewportClass,
+} from '@/shared/ui/image-viewer/image-viewer-modal.panda';
+import { ImageViewerSideControls } from '@/shared/ui/image-viewer/image-viewer-side-controls';
 import { createImageViewerUrl } from '@/shared/ui/image-viewer/model/create-image-viewer-url';
 import { Tooltip } from '@/shared/ui/tooltip/tooltip';
 import { XButton } from '@/shared/ui/x-button/x-button';
@@ -50,7 +78,6 @@ type ImageViewerModalProps = {
 const MIN_ZOOM = 0.5;
 const MAX_ZOOM = 5;
 const ZOOM_STEP = 0.25;
-const IMAGE_NAVIGATION_ANIMATION_MS = 360;
 const ACTION_TOOLTIP_HOLD_MS = 1200;
 const DEFAULT_PAN_OFFSET = { x: 0, y: 0 } as const;
 
@@ -86,62 +113,6 @@ type ImageViewerPinchState = {
 };
 
 type ImageViewerTransitionDirection = 'next' | 'previous' | null;
-
-/**
- * Defines labels and handlers for the image viewer navigation buttons.
- */
-type ImageViewerSideControlsProps = {
-  nextAriaLabel: string;
-  onNext: () => void;
-  onPrevious: () => void;
-  previousAriaLabel: string;
-  stopClickPropagation: (event: React.MouseEvent<HTMLButtonElement>) => void;
-};
-
-/**
- * Renders the previous and next navigation buttons for the image viewer.
- */
-const ImageViewerSideControls = React.memo(
-  ({
-    nextAriaLabel,
-    onNext,
-    onPrevious,
-    previousAriaLabel,
-    stopClickPropagation,
-  }: ImageViewerSideControlsProps) => (
-    <>
-      <Button
-        aria-label={previousAriaLabel}
-        className={cx(viewerControlButtonClass, sideButtonClass, sideButtonLeftClass)}
-        onClick={event => {
-          stopClickPropagation(event);
-          onPrevious();
-        }}
-        tone="white"
-        type="button"
-        variant="ghost"
-      >
-        <ChevronRightIcon aria-hidden="true" className={sideButtonLeftIconClass} size={28} />
-      </Button>
-
-      <Button
-        aria-label={nextAriaLabel}
-        className={cx(viewerControlButtonClass, sideButtonClass, sideButtonRightClass)}
-        onClick={event => {
-          stopClickPropagation(event);
-          onNext();
-        }}
-        tone="white"
-        type="button"
-        variant="ghost"
-      >
-        <ChevronRightIcon aria-hidden="true" size={28} />
-      </Button>
-    </>
-  ),
-);
-
-ImageViewerSideControls.displayName = 'ImageViewerSideControls';
 
 /**
  * Clamps the image viewer zoom level to a safe range.
@@ -349,7 +320,7 @@ export const ImageViewerModal = ({
 
     const timeout = window.setTimeout(() => {
       setTransitionDirection(null);
-    }, IMAGE_NAVIGATION_ANIMATION_MS);
+    }, IMAGE_VIEWER_NAVIGATION_ANIMATION_MS);
 
     return () => {
       window.clearTimeout(timeout);
@@ -814,243 +785,3 @@ export const ImageViewerModal = ({
     document.body,
   );
 };
-
-/* Styles */
-
-const viewerBackdropClass = css({
-  position: 'fixed',
-  inset: '0',
-  zIndex: '1200',
-  backgroundColor: '[rgb(15 23 42 / 0.86)]',
-  display: 'grid',
-  placeItems: 'center',
-  p: '4',
-});
-
-const viewerFrameClass = css({
-  position: 'relative',
-  width: '[min(1280px,100%)]',
-  height: '[min(94dvh,100%)]',
-  borderRadius: '3xl',
-  overflow: 'hidden',
-});
-
-const viewerContentClass = css({
-  display: 'flex',
-  flexDirection: 'column',
-  width: 'full',
-  height: 'full',
-  position: 'relative',
-});
-
-const topScrimClass = css({
-  position: 'absolute',
-  top: '0',
-  left: '0',
-  right: '0',
-  height: '[120px]',
-  background: '[linear-gradient(to bottom, rgb(15 23 42 / 0.72) 0%, transparent 100%)]',
-  zIndex: '5',
-  pointerEvents: 'none',
-});
-
-const imageStageClass = css({
-  flex: '1',
-  display: 'flex',
-  flexDirection: 'column',
-  position: 'relative',
-  minHeight: '0',
-  alignItems: 'center',
-});
-
-const imageViewportClass = css({
-  flex: '1',
-  width: 'full',
-  minHeight: '0',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  position: 'relative',
-  touchAction: 'none',
-});
-
-const zoomedImageViewportClass = css({
-  cursor: 'grab',
-  overflow: 'hidden',
-});
-
-const draggingImageViewportClass = css({
-  cursor: 'grabbing',
-});
-
-const imageInnerClass = css({
-  width: 'full',
-  height: 'full',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  p: '4',
-});
-
-const viewerImageClass = css({
-  maxWidth: 'full',
-  maxHeight: 'full',
-  width: 'auto',
-  height: 'auto',
-  objectFit: 'contain',
-  willChange: 'transform',
-  transition: '[transform 140ms ease-out]',
-  userSelect: 'none',
-});
-
-const nextTransitionImageClass = css({
-  animation: `[image-viewer-slide-next ${IMAGE_NAVIGATION_ANIMATION_MS}ms cubic-bezier(0.22, 1, 0.36, 1)]`,
-});
-
-const previousTransitionImageClass = css({
-  animation: `[image-viewer-slide-previous ${IMAGE_NAVIGATION_ANIMATION_MS}ms cubic-bezier(0.22, 1, 0.36, 1)]`,
-});
-
-const viewerCloseButtonClass = css({
-  color: 'white',
-});
-
-const viewerTopActionGroupClass = css({
-  position: 'fixed',
-  top: '4',
-  right: '4',
-  zIndex: '10',
-  display: 'inline-flex',
-  alignItems: 'center',
-  gap: '2',
-});
-
-const viewerTopActionButtonClass = css({
-  display: 'inline-flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  gap: '2',
-  minHeight: '10',
-  px: '4',
-  color: 'white',
-  borderRadius: 'full',
-  backgroundColor: '[rgb(15 23 42 / 0.86)]',
-  border: '[1px solid rgb(255 255 255 / 0.24)]',
-  boxShadow: '[0 12px 32px rgb(15 23 42 / 0.28)]',
-  cursor: 'pointer',
-  _hover: {
-    backgroundColor: '[rgb(15 23 42 / 0.94)]',
-  },
-});
-
-const viewerTopActionLabelClass = css({
-  fontSize: 'sm',
-  fontWeight: 'semibold',
-  lineHeight: 'tight',
-  whiteSpace: 'nowrap',
-});
-
-const viewerControlButtonClass = css({
-  color: 'white',
-  backgroundColor: '[rgb(15 23 42 / 0.52)]',
-  borderRadius: 'full',
-  zIndex: '8',
-  _hover: {
-    backgroundColor: '[rgb(15 23 42 / 0.64)]',
-  },
-});
-
-const sideButtonClass = css({
-  position: 'absolute',
-  top: '[50%]',
-  transform: 'translateY(-50%)',
-});
-
-const sideButtonLeftClass = css({ left: '4' });
-const sideButtonRightClass = css({ right: '4' });
-const sideButtonLeftIconClass = css({ transform: 'rotate(180deg)' });
-
-const actionBarClass = css({
-  position: 'absolute',
-  bottom: '6',
-  left: '[50%]',
-  transform: '[translateX(-50%)]',
-  display: 'inline-flex',
-  alignItems: 'center',
-  gap: '2',
-  px: '3',
-  py: '1.5',
-  borderRadius: 'full',
-  backgroundColor: '[rgb(15 23 42 / 0.75)]',
-  zIndex: '10',
-});
-
-const actionTooltipClass = css({
-  whiteSpace: 'nowrap',
-  px: '3',
-  py: '1.5',
-  borderRadius: 'full',
-  backgroundColor: '[rgb(15 23 42 / 0.92)]',
-  color: 'white',
-  fontSize: 'xs',
-  lineHeight: 'tight',
-  pointerEvents: 'none',
-  zIndex: '1300',
-  animation: '[image-viewer-tooltip-fade 180ms ease-out]',
-});
-
-const actionTooltipPortalClass = css({
-  zIndex: '[2147483647]',
-});
-
-const actionButtonClass = css({
-  width: '8',
-  height: '8',
-  color: 'white',
-  cursor: 'pointer',
-});
-
-const actionTextClass = css({
-  minWidth: '12',
-  textAlign: 'center',
-  color: 'zinc.200',
-  fontSize: 'sm',
-});
-
-const thumbnailRailClass = css({
-  width: 'full',
-  overflowX: 'auto',
-  overflowY: 'hidden',
-});
-
-const thumbnailRailTrackClass = css({
-  display: 'flex',
-  gap: '2',
-  justifyContent: 'center',
-  minWidth: '[max-content]',
-  alignItems: 'stretch',
-});
-
-const thumbnailButtonClass = css({
-  width: '[clamp(80px, 12vw, 120px)]',
-  aspectRatio: '[16 / 9]',
-  borderRadius: 'md',
-  overflow: 'hidden',
-  transition: '[all 0.2s]',
-  border: '[2px solid transparent]',
-  _focusVisible: {
-    outline: '[4px solid var(--colors-primary)]',
-    outlineOffset: '[2px]',
-  },
-});
-
-const activeThumbnailButtonClass = css({
-  borderColor: 'primary',
-  transform: 'scale(1.05)',
-});
-
-const thumbnailImageClass = css({
-  width: 'full',
-  height: 'full',
-  objectFit: 'cover',
-});

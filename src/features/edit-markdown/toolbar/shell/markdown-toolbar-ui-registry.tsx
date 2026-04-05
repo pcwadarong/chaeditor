@@ -25,7 +25,7 @@ import type {
 import { ToolbarTokenPopover } from '@/features/edit-markdown/toolbar/ui/toolbar-token-popover';
 import { VideoEmbedModal } from '@/features/edit-markdown/video';
 
-type ResolvedMarkdownToolbarUiRegistry = {
+export type ResolvedMarkdownToolbarUiRegistry = {
   renderAlignPopover: (props: AlignPopoverRenderProps) => React.ReactNode;
   renderBackgroundColorPopover: (props: TextColorPopoverRenderProps) => React.ReactNode;
   renderFileEmbedPopover: (props: FileEmbedPopoverRenderProps) => React.ReactNode;
