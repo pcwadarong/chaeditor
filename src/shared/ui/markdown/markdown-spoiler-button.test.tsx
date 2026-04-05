@@ -17,6 +17,6 @@ describe('MarkdownSpoilerButton', () => {
 
     expect(screen.getByRole('button', { name: /Spoiler/ })).toBeTruthy();
     expect(spoilerButton.getAttribute('aria-expanded')).toBe('true');
-    expect(screen.getByRole('status').textContent).toContain('Opened');
+    expect(screen.getByRole('status').textContent).toContain('Spoiler is open.');
   });
 });

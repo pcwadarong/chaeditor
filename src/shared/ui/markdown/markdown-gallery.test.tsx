@@ -51,7 +51,7 @@ describe('MarkdownGallery', () => {
     });
     scrollContainer.scrollTo = vi.fn();
 
-    fireEvent.click(screen.getByRole('button', { name: 'Next Image' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Next image' }));
 
     expect(scrollContainer.scrollTo).toHaveBeenCalledWith({
       behavior: 'smooth',

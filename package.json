@@ -76,7 +76,7 @@
     "chromatic": "npx chromatic --project-token=chpt_e7dfd62937e7687",
     "verify:package-surface": "node ./scripts/verify-package-surface.mjs"
   },
-  "version": "0.0.0",
+  "version": "0.1.0",
   "publishConfig": {
     "access": "public"
   },

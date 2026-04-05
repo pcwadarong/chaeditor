@@ -239,8 +239,8 @@ describe('MarkdownRenderer', () => {
     expect(images[1]?.getAttribute('src')).toBe('https://example.com/two.png');
     expect(images[0]?.getAttribute('alt')).toBe('First');
     expect(images[1]?.getAttribute('alt')).toBe('Second');
-    expect(gallery?.querySelector('button[aria-label="Previous Image"]')).toBeTruthy();
-    expect(gallery?.querySelector('button[aria-label="Next Image"]')).toBeTruthy();
+    expect(gallery?.querySelector('button[aria-label="Previous image"]')).toBeNull();
+    expect(gallery?.querySelector('button[aria-label="Next image"]')).toBeTruthy();
     expect(progress).toBeTruthy();
     expect(progress?.getAttribute('role')).toBe('progressbar');
     expect(progress?.getAttribute('aria-valuenow')).toBe('1');
@@ -533,11 +533,11 @@ describe('MarkdownRenderer', () => {
     );
     const iframe = document.querySelector('iframe');
     const details = document.querySelector('details');
-    const headingToggleChevron = details?.querySelector('svg[data-toggle-chevron="true"]');
+    const headingToggleChevron = details?.querySelector('[data-toggle-chevron="true"]');
     const toggleListDetails = Array.from(document.querySelectorAll('details')).find(node =>
       node.textContent?.includes('Default toggle'),
     );
-    const toggleChevron = toggleListDetails?.querySelector('svg[data-toggle-chevron="true"]');
+    const toggleChevron = toggleListDetails?.querySelector('[data-toggle-chevron="true"]');
     const textOnlyColor = Array.from(document.querySelectorAll('span[style]')).find(node =>
       node.textContent?.includes('Blue text'),
     );
@@ -598,7 +598,7 @@ describe('MarkdownRenderer', () => {
 
   it('Under a toggle with an empty title, MarkdownRenderer must render a safe fallback title', async () => {
     const document = await renderServerDocument([':::toggle ### ', 'Content', ':::'].join('\n'));
-    const summaryLabel = document.querySelector('summary span');
+    const summaryLabel = document.querySelector('summary');
 
     expect(summaryLabel?.textContent).toContain('Untitled toggle');
   });

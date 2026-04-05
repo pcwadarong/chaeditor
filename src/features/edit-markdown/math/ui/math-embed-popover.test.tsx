@@ -44,7 +44,13 @@ describe('MathEmbedPopover', () => {
     });
     fireEvent.click(screen.getByRole('button', { name: 'Inline' }));
 
-    expect(onApply).toHaveBeenCalledWith('a^2 + b^2 = c^2', false, expect.any(Function));
+    expect(onApply).toHaveBeenCalledWith(
+      {
+        formula: 'a^2 + b^2 = c^2',
+        isBlock: false,
+      },
+      expect.any(Function),
+    );
   });
 
   it('Under whitespace-only input, MathEmbedPopover must not call the insert callback', () => {
@@ -69,8 +75,10 @@ describe('MathEmbedPopover', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Block' }));
 
     expect(onApply).toHaveBeenCalledWith(
-      '\\begin{cases} x, &x \\ge 0 \\\\ -x, &x < 0 \\end{cases}',
-      true,
+      {
+        formula: '\\begin{cases} x, &x \\ge 0 \\\\ -x, &x < 0 \\end{cases}',
+        isBlock: true,
+      },
       expect.any(Function),
     );
   });
