@@ -2,7 +2,7 @@
 
 import React, { useMemo, useRef, useState } from 'react';
 import { MarkdownHooks } from 'react-markdown';
-import { css, cva, cx } from 'styled-system/css';
+import { cx } from 'styled-system/css';
 
 import type { MarkdownEditorHostAdapters } from '@/entities/editor-core';
 import {
@@ -27,6 +27,18 @@ import {
   MarkdownPrimitiveProvider,
   useMarkdownPrimitives,
 } from '@/shared/ui/primitive-registry/markdown-primitive-registry';
+import {
+  bodyClass,
+  editorPaneClass,
+  editorTextareaClass,
+  emptyPreviewClass,
+  mobilePaneTabListClass,
+  mobilePaneTabRecipe,
+  previewPaneClass,
+  rootClass,
+  tabIconClass,
+  toolbarWrapClass,
+} from '@/widgets/editor/ui/markdown-editor.panda';
 
 type MarkdownEditorProps = {
   adapters?: MarkdownEditorHostAdapters;
@@ -260,114 +272,5 @@ const useMobileEditorLayout = () => {
 
   return isMobile;
 };
-
-const rootClass = css({
-  display: 'grid',
-  gap: '4',
-  minWidth: '0',
-});
-
-const toolbarWrapClass = css({
-  minWidth: '0',
-  overflowX: 'auto',
-  overflowY: 'hidden',
-});
-
-const bodyClass = css({
-  display: 'grid',
-  gap: '4',
-  minWidth: '0',
-  gridTemplateColumns: {
-    base: '1fr',
-    md: 'repeat(2, minmax(0, 1fr))',
-  },
-});
-
-const editorPaneClass = css({
-  display: 'flex',
-  minWidth: '0',
-  minHeight: '0',
-  borderWidth: '1px',
-  borderStyle: 'solid',
-  borderColor: 'border',
-  borderRadius: '2xl',
-  backgroundColor: 'surface',
-  overflow: 'hidden',
-  p: '4',
-});
-
-const previewPaneClass = css({
-  minWidth: '0',
-  minHeight: '0',
-  borderWidth: '1px',
-  borderStyle: 'solid',
-  borderColor: 'border',
-  borderRadius: '2xl',
-  backgroundColor: 'surface',
-  overflowY: 'auto',
-  overscrollBehaviorY: 'contain',
-  p: '4',
-});
-
-const editorTextareaClass = css({
-  width: 'full',
-  minHeight: '80',
-  height: 'full',
-  resize: 'none',
-  overflowY: 'auto',
-  overscrollBehaviorY: 'contain',
-  fontFamily: 'mono',
-});
-
-const emptyPreviewClass = css({
-  margin: '0',
-  fontSize: 'sm',
-  color: 'muted',
-});
-
-const mobilePaneTabListClass = css({
-  display: {
-    base: 'flex',
-    md: 'none',
-  },
-  gap: '2',
-});
-
-const mobilePaneTabRecipe = cva({
-  base: {
-    display: 'inline-flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: '2',
-    minWidth: '0',
-    flex: '1',
-    borderRadius: 'full',
-    borderWidth: '1px',
-    borderStyle: 'solid',
-    borderColor: 'border',
-    backgroundColor: 'surface',
-    px: '4',
-    py: '2.5',
-    fontSize: 'sm',
-    fontWeight: 'semibold',
-    color: 'muted',
-    transition: 'common',
-  },
-  variants: {
-    active: {
-      true: {
-        borderColor: 'primary',
-        color: 'text',
-      },
-      false: {},
-    },
-  },
-});
-
-const tabIconClass = css({
-  display: 'inline-flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-});
 
 export type { MarkdownEditorProps };
