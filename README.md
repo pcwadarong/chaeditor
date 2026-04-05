@@ -19,6 +19,11 @@ It combines authoring helpers, embed workflows, and rich markdown rendering in a
 - [Package Surface and Import Matrix](https://github.com/pcwadarong/chaeditor/wiki/EN-%3A-Package-Surface-and-Import-Matrix)
 - [Architecture and Folder Ownership](https://github.com/pcwadarong/chaeditor/wiki/EN-%3A-Architecture-and-Folder-Ownership)
 
+## Links
+
+- [npm package](https://www.npmjs.com/package/chaeditor)
+- [Storybook (Chromatic)](https://www.chromatic.com/library?appId=69cd38a84da2f3f99e158f5c)
+
 ## Installation
 
 Install `chaeditor` once, then import only the subpaths you need.

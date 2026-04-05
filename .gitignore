@@ -72,3 +72,4 @@ styled-system/
 # Storybook
 *storybook.log
 storybook-static
+chromatic-diagnostics.json

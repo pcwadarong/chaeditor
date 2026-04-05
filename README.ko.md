@@ -19,6 +19,11 @@
 - [패키지 표면과 import 매트릭스](https://github.com/pcwadarong/chaeditor/wiki/KO-%3A-%ED%8C%A8%ED%82%A4%EC%A7%80-%ED%91%9C%EB%A9%B4%EA%B3%BC-import-%EB%A7%A4%ED%8A%B8%EB%A6%AD%EC%8A%A4)
 - [아키텍처와 폴더 책임](https://github.com/pcwadarong/chaeditor/wiki/KO-%3A--%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98%EC%99%80-%ED%8F%B4%EB%8D%94-%EC%B1%85%EC%9E%84)
 
+## 링크
+
+- [npm 패키지](https://www.npmjs.com/package/chaeditor)
+- [스토리북(Chromatic)](https://www.chromatic.com/library?appId=69cd38a84da2f3f99e158f5c)
+
 ## 설치
 
 ```bash
