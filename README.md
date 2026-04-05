@@ -1,33 +1,63 @@
 # chaeditor
 
-`chaeditor`는 마크다운 작성, 삽입형 편집 도구, 미리보기 렌더러를 하나의 흐름으로 제공하는 React 기반 에디터 프로젝트입니다.
-일반적인 textarea 편집기보다 더 풍부한 authoring experience를 목표로 하며 , 이미지 · 파일 · 영상 · 수식 · 링크 같은 콘텐츠를 markdown 문법으로 쉽게 만들고 렌더링할 수 있게 설계하고 있습니다.
-또한 host app이 업로드, 링크 미리보기, 라벨, UI primitive를 주입할 수 있는 구조를 지향해 다양한 제품 환경에 맞게 커스터마이징할 수 있도록 준비하고 있습니다.
+`chaeditor`는 React 애플리케이션을 위한 조합형 마크다운 에디터 툴킷입니다.
+작성 보조 도구, 임베드 워크플로우, 리치 마크다운 렌더링을 하나의 패키지 안에서 제공하면서도, host 통합, 스타일, primitive shell은 외부에서 주입하거나 교체할 수 있도록 설계되어 있습니다.
 
 ## Features
 
-- 마크다운 작성과 selection transform 유틸
+- 마크다운 작성 보조와 selection transform 유틸
 - preset 기반 toolbar 조합
-- 제목, 서브텍스트, 강조, 취소선, 밑줄
-- 텍스트 색상, 배경색, 정렬
-- 인용문, 코드 블록, 표, 스포일러, 토글
-- 이미지(개별, 슬라이더), 파일, 영상, 수학 공식, 머메이드, 링크 삽입
-- 이미지 viewer와 markdown renderer adapter 구조
-- upload, attachment href, link preview, labels를 주입할 수 있는 확장성
+- attachment, gallery, math, Mermaid, spoiler, video를 포함한 리치 마크다운 렌더링
+- upload, href 해석, 이미지 렌더링, 링크 미리보기 메타데이터를 위한 host adapter
+- theme variable override와 primitive shell replacement
 
-## Getting Started
+## 설치
+
+패키지는 하나만 설치하면 됩니다.
 
 ```bash
 pnpm add react react-dom chaeditor
 ```
 
-스타일 토큰과 기본 컴포넌트 스타일은 패키지 CSS를 함께 불러와야 합니다.
+기본 theme token과 Panda 기반 primitive shell을 함께 사용하려면 패키지 CSS를 불러와야 합니다.
 
 ```tsx
 import 'chaeditor/styles.css';
 ```
 
-가장 단순한 시작점은 `chaeditor/react`에서 editor surface를 가져오는 방식입니다.
+## 패키지 표면
+
+`chaeditor`는 하나의 패키지로 배포됩니다.
+subpath를 별도로 설치하는 구조가 아니라, `chaeditor`를 한 번 설치한 뒤 필요한 entrypoint만 골라 import하는 방식입니다.
+
+| Import 경로                  | 제공 내용                                                                                                | 사용할 때                                        |
+| ---------------------------- | -------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| `chaeditor/react`            | `MarkdownEditor`, `MarkdownToolbar`, `MarkdownRenderer` 같은 React surface와 primitive registry contract | 대부분의 앱 통합                                 |
+| `chaeditor/core`             | 순수 유틸, 마크다운 helper, parser contract, `createChaeditorThemeVars()`                                | UI 없이 로직만 쓸 때, 서버 안전 유틸이 필요할 때 |
+| `chaeditor/default-host`     | 기본 upload adapter 구현                                                                                 | 번들된 기본 업로드 구현이 필요할 때만            |
+| `chaeditor/panda-primitives` | 패키지에 번들된 Panda 기반 primitive shell                                                               | 기본 primitive 구현을 재사용하거나 감쌀 때만     |
+| `chaeditor/styles.css`       | 기본 theme token과 컴포넌트 스타일                                                                       | 패키지 기본 스타일을 쓸 때                       |
+
+## Selective Import 전략
+
+의도한 사용 방식은 아래와 같습니다.
+
+1. `chaeditor`를 한 번 설치합니다.
+2. 실제로 필요한 subpath만 import합니다.
+3. `default-host`와 `panda-primitives`는 opt-in surface로 취급합니다.
+
+실제로는 이렇게 이해하면 됩니다.
+
+- renderer만 필요하면 `chaeditor/react`와 `chaeditor/styles.css`만 가져오면 됩니다.
+- UI 없이 유틸만 필요하면 `chaeditor/core`만 써도 됩니다.
+- 자체 업로드 파이프라인이 있는 제품이라면 `chaeditor/default-host`는 무시해도 됩니다.
+- 자체 디자인 시스템이 있는 제품이라면 `chaeditor/panda-primitives` 없이 `primitiveRegistry`만 주입하면 됩니다.
+
+즉 설치는 하나지만, 실제 소비는 subpath import와 bundler tree-shaking 기준으로 선택적으로 이루어집니다.
+
+## 대표적인 사용 조합
+
+### 1. 기본 editor surface
 
 ```tsx
 import 'chaeditor/styles.css';
@@ -41,7 +71,7 @@ const Example = () => {
 };
 ```
 
-툴바와 렌더러를 따로 조합할 수도 있습니다.
+### 2. Toolbar와 renderer를 따로 조합
 
 ```tsx
 import 'chaeditor/styles.css';
@@ -62,7 +92,17 @@ const Example = () => {
 };
 ```
 
-업로드 기본 구현이 필요하면 optional subpath에서 가져와 연결할 수 있습니다.
+### 3. core 유틸만 사용
+
+```ts
+import {
+  createImageGalleryMarkdown,
+  createMathEmbedMarkdown,
+  parseRichMarkdownSegments,
+} from 'chaeditor/core';
+```
+
+### 4. 기본 host adapter를 선택적으로 연결
 
 ```tsx
 import 'chaeditor/styles.css';
@@ -84,26 +124,16 @@ const Example = () => (
 );
 ```
 
-현재 패키지에 번들된 Panda 기반 primitive shell을 그대로 재사용하거나 감싸고 싶다면 `chaeditor/panda-primitives` subpath를 사용할 수 있습니다.
+### 5. Panda primitive를 선택적으로 재사용
 
 ```tsx
 import { Button, createPandaMarkdownPrimitiveRegistry } from 'chaeditor/panda-primitives';
 ```
 
-순수 유틸과 타입만 필요하면 `chaeditor/core`를 사용할 수 있습니다.
+## Theme Override
 
-```ts
-import {
-  createImageGalleryMarkdown,
-  createMathEmbedMarkdown,
-  parseRichMarkdownSegments,
-} from 'chaeditor/core';
-```
-
-## Theme Overrides
-
-기본 스타일은 `chaeditor/styles.css`만으로 바로 사용할 수 있습니다.  
-브랜드 색상이나 폰트를 맞춰야 한다면, host app이 CSS 변수만 override하면 됩니다.
+기본 스타일 구현은 Panda CSS를 사용하지만, 공개된 theme contract는 CSS variable 기반입니다.
+즉 패키지 기본값을 그대로 써도 되고, host app이 필요한 값만 override해도 됩니다.
 
 ```tsx
 import 'chaeditor/styles.css';
@@ -129,309 +159,31 @@ const Example = () => (
 );
 ```
 
-일반 UI 폰트는 host app이 책임지는 것이 기본 방향입니다.
+폰트 정책은 아래처럼 가져가면 됩니다.
 
-- `sansFont`: 제품 전체에서 쓰는 기본 sans font를 연결
-- `sansJaFont`: 일본어/다국어 fallback이 필요할 때만 override
-- `monoFont`: 필요하면 직접 넣고, 아무 값도 주지 않으면 D2Coding fallback chain이 기본으로 동작
-
-즉 패키지는 기본 theme를 제공하되, host가 원하면 자기 primary/surface/text/font 체계를 그대로 editor scope에 입힐 수 있습니다.
+- `sansFont`: host app의 기본 sans 폰트
+- `sansJaFont`: 다국어 fallback이 필요할 때만 override
+- `monoFont`: 필요하면 host mono를 넣고, 비워두면 D2Coding fallback chain이 기본으로 동작
 
 ## Styling Runtime Recipes
 
-스타일 라이브러리 호환의 핵심은 `chaeditor`가 런타임별 adapter를 직접 들고 있는 것이 아니라, host app이 같은 CSS variable contract를 어떤 방식으로 주입하느냐에 있습니다.
+패키지 기본 스타일 런타임은 Panda CSS입니다.
+host 쪽 스타일링 레시피는 host app이 variable을 override하거나 primitive shell을 교체하고 싶을 때만 필요합니다.
 
-바로 가져다 시작할 수 있는 런타임별 host wrapper preset 초안은 [recipes/host-presets](/home/chaen/programming/chaeditor/recipes/host-presets/README.md)에 따로 정리되어 있습니다.
+지원 예시는 아래 범위로 제공합니다.
 
-### Tailwind CSS
+- Tailwind CSS
+- Emotion
+- styled-components
+- vanilla-extract
+- primitive shell replacement
 
-Tailwind를 쓰는 앱이라면 wrapper에 arbitrary property utility를 붙여 editor scope를 만들 수 있습니다.
+바로 가져다 쓸 수 있는 host wrapper 템플릿은 [recipes/host-presets](./recipes/host-presets/README.md)에 정리되어 있습니다.
 
-```tsx
-import 'chaeditor/styles.css';
+## Primitive Shell Replacement
 
-import { MarkdownEditor } from 'chaeditor/react';
-
-const Example = () => (
-  <div
-    className={[
-      '[--chaeditor-color-primary:#0f766e]',
-      '[--chaeditor-color-primary-subtle:#ccfbf1]',
-      '[--chaeditor-color-surface:#f8fafc]',
-      '[--chaeditor-color-text:#0f172a]',
-      '[--chaeditor-font-sans:var(--app-font-sans),system-ui,sans-serif]',
-      '[--chaeditor-font-mono:var(--font-d2coding),D2Coding,monospace]',
-    ].join(' ')}
-  >
-    <MarkdownEditor contentType="article" onChange={() => {}} value="" />
-  </div>
-);
-```
-
-입력창이나 overlay shell도 Tailwind utility 기반으로 맞추고 싶다면 `primitiveRegistry`를 같은 wrapper 안에서 함께 사용하면 됩니다.
-
-```tsx
-import 'chaeditor/styles.css';
-
-import { Button, Input, MarkdownEditor, Modal, Popover, Textarea, Tooltip } from 'chaeditor/react';
-
-const HostButton = props => (
-  <Button
-    {...props}
-    className={`rounded-xl border border-teal-700 bg-teal-50 font-semibold text-teal-900 ${props.className ?? ''}`.trim()}
-  />
-);
-
-const HostInput = props => (
-  <Input
-    {...props}
-    className={`rounded-xl border border-teal-700 bg-cyan-50 ${props.className ?? ''}`.trim()}
-  />
-);
-
-const Example = () => (
-  <div className="[--chaeditor-color-primary:#0f766e] [--chaeditor-color-surface:#f8fafc] [--chaeditor-color-text:#0f172a]">
-    <MarkdownEditor
-      contentType="article"
-      onChange={() => {}}
-      primitiveRegistry={{
-        Button: HostButton,
-        Input: HostInput,
-        Textarea,
-        Popover,
-        Modal,
-        Tooltip,
-      }}
-      value=""
-    />
-  </div>
-);
-```
-
-### Emotion
-
-Emotion을 쓰는 앱이라면 `createChaeditorThemeVars()` 결과를 그대로 wrapper style object에 합칠 수 있습니다.
-
-```tsx
-import 'chaeditor/styles.css';
-
-import { css } from '@emotion/react';
-import { createChaeditorThemeVars } from 'chaeditor/core';
-import { MarkdownEditor } from 'chaeditor/react';
-
-const editorTheme = css({
-  ...createChaeditorThemeVars({
-    primary: '#0f766e',
-    surface: '#f8fafc',
-    text: '#0f172a',
-    sansFont: 'var(--app-font-sans), system-ui, sans-serif',
-  }),
-});
-
-const Example = () => (
-  <div css={editorTheme}>
-    <MarkdownEditor contentType="article" onChange={() => {}} value="" />
-  </div>
-);
-```
-
-primitive shell도 Emotion으로 맞추려면 wrapper class를 생성해서 `primitiveRegistry`에 연결하면 됩니다.
-
-```tsx
-import 'chaeditor/styles.css';
-
-import { css } from '@emotion/react';
-import { Button, Input, MarkdownEditor, Modal, Popover, Textarea, Tooltip } from 'chaeditor/react';
-import { createChaeditorThemeVars } from 'chaeditor/core';
-
-const themeScope = css({
-  ...createChaeditorThemeVars({
-    primary: '#0f766e',
-    surface: '#f8fafc',
-    text: '#0f172a',
-  }),
-});
-
-const hostButton = css({ borderColor: '#0f766e', borderRadius: 20, background: '#ccfbf1' });
-const hostInput = css({ borderColor: '#0f766e', borderRadius: 20, background: '#ecfeff' });
-
-const HostButton = props => <Button {...props} className={hostButton} />;
-const HostInput = props => <Input {...props} className={hostInput} />;
-
-const Example = () => (
-  <div css={themeScope}>
-    <MarkdownEditor
-      contentType="article"
-      onChange={() => {}}
-      primitiveRegistry={{
-        Button: HostButton,
-        Input: HostInput,
-        Textarea,
-        Popover,
-        Modal,
-        Tooltip,
-      }}
-      value=""
-    />
-  </div>
-);
-```
-
-### styled-components
-
-styled-components를 쓰는 앱이라면 scoped wrapper component에 같은 contract를 적용하면 됩니다.
-
-```tsx
-import 'chaeditor/styles.css';
-
-import styled from 'styled-components';
-import { createChaeditorThemeVars } from 'chaeditor/core';
-import { MarkdownEditor } from 'chaeditor/react';
-
-const EditorThemeScope = styled.div(
-  createChaeditorThemeVars({
-    primary: '#0f766e',
-    surface: '#f8fafc',
-    text: '#0f172a',
-    sansFont: 'var(--app-font-sans), system-ui, sans-serif',
-  }),
-);
-
-const Example = () => (
-  <EditorThemeScope>
-    <MarkdownEditor contentType="article" onChange={() => {}} value="" />
-  </EditorThemeScope>
-);
-```
-
-같은 방식으로 host primitive도 styled wrapper로 승격해서 `primitiveRegistry`에 연결할 수 있습니다.
-
-```tsx
-import 'chaeditor/styles.css';
-
-import styled from 'styled-components';
-import { Button, Input, MarkdownEditor, Modal, Popover, Textarea, Tooltip } from 'chaeditor/react';
-import { createChaeditorThemeVars } from 'chaeditor/core';
-
-const EditorThemeScope = styled.div(
-  createChaeditorThemeVars({
-    primary: '#0f766e',
-    surface: '#f8fafc',
-    text: '#0f172a',
-  }),
-);
-
-const HostButton = styled(Button)`
-  border-color: #0f766e;
-  border-radius: 20px;
-  background: #ccfbf1;
-`;
-const HostInput = styled(Input)`
-  border-color: #0f766e;
-  border-radius: 20px;
-  background: #ecfeff;
-`;
-
-const Example = () => (
-  <EditorThemeScope>
-    <MarkdownEditor
-      contentType="article"
-      onChange={() => {}}
-      primitiveRegistry={{
-        Button: HostButton,
-        Input: HostInput,
-        Textarea,
-        Popover,
-        Modal,
-        Tooltip,
-      }}
-      value=""
-    />
-  </EditorThemeScope>
-);
-```
-
-요점은 동일합니다.
-
-### vanilla-extract
-
-vanilla-extract를 쓰는 앱이라면 typed scope class에 editor theme variable map을 그대로 넣을 수 있습니다.
-
-```tsx
-import 'chaeditor/styles.css';
-
-import { createChaeditorThemeVars } from 'chaeditor/core';
-import { MarkdownEditor } from 'chaeditor/react';
-import { style } from '@vanilla-extract/css';
-
-const editorThemeScope = style({
-  vars: createChaeditorThemeVars({
-    primary: '#0f766e',
-    surface: '#f8fafc',
-    text: '#0f172a',
-    sansFont: 'var(--app-font-sans), system-ui, sans-serif',
-  }),
-});
-
-const Example = () => (
-  <div className={editorThemeScope}>
-    <MarkdownEditor contentType="article" onChange={() => {}} value="" />
-  </div>
-);
-```
-
-typed class를 그대로 primitive wrapper에도 재사용하면 static extraction 기반 design system과도 무리 없이 연결됩니다.
-
-```tsx
-import 'chaeditor/styles.css';
-
-import { style } from '@vanilla-extract/css';
-import { Button, Input, MarkdownEditor, Modal, Popover, Textarea, Tooltip } from 'chaeditor/react';
-import { createChaeditorThemeVars } from 'chaeditor/core';
-
-const themeScope = style({
-  vars: createChaeditorThemeVars({
-    primary: '#0f766e',
-    surface: '#f8fafc',
-    text: '#0f172a',
-  }),
-});
-
-const hostButton = style({ borderColor: '#0f766e', borderRadius: 20, background: '#ccfbf1' });
-const hostInput = style({ borderColor: '#0f766e', borderRadius: 20, background: '#ecfeff' });
-
-const HostButton = props => <Button {...props} className={hostButton} />;
-const HostInput = props => <Input {...props} className={hostInput} />;
-
-const Example = () => (
-  <div className={themeScope}>
-    <MarkdownEditor
-      contentType="article"
-      onChange={() => {}}
-      primitiveRegistry={{
-        Button: HostButton,
-        Input: HostInput,
-        Textarea,
-        Popover,
-        Modal,
-        Tooltip,
-      }}
-      value=""
-    />
-  </div>
-);
-```
-
-요점은 동일합니다.
-
-- package는 semantic CSS variable contract를 공개한다
-- host는 Tailwind, Emotion, styled-components, vanilla-extract, plain CSS 중 원하는 runtime으로 값을 주입한다
-- editor 로직과 toolbar/renderer contract는 바뀌지 않는다
-
-## Primitive Overrides
-
-색상, 폰트, spacing 같은 수준은 theme variable override로 충분하지만, 실제 입력창이나 overlay shell 자체를 교체해야 하는 경우도 있습니다.  
-그럴 때는 `primitiveRegistry`를 사용해 host app의 `Button`, `Input`, `Textarea`, `Popover`, `Modal`, `Tooltip`을 editor surface에 주입할 수 있습니다.
+색상, 폰트, spacing 정도는 theme variable override로 충분하지만, 실제 `Button`, `Input`, `Textarea`, `Popover`, `Modal`, `Tooltip` shell 자체를 교체해야 할 수도 있습니다.
+그럴 때는 `primitiveRegistry`를 사용합니다.
 
 ```tsx
 import 'chaeditor/styles.css';
@@ -492,14 +244,12 @@ const Example = () => (
 );
 ```
 
-정리하면 역할은 이렇게 나뉩니다.
+기준을 정리하면:
 
-- `createChaeditorThemeVars()`: package가 제공하는 기본 primitive는 유지한 채 색상, 폰트, radius 같은 semantic token만 host에 맞춤
-- `primitiveRegistry`: host design system의 실제 input, popover, modal, tooltip shell을 editor에 연결
+- `createChaeditorThemeVars()`는 semantic token을 바꿉니다.
+- `primitiveRegistry`는 실제 shell 컴포넌트를 바꿉니다.
 
-보통은 theme override부터 시작하고, 제품 셸과 interaction contract까지 통일해야 할 때만 `primitiveRegistry`로 넘어가는 흐름이 가장 자연스럽습니다.
-
-현재 저장소를 로컬에서 실행하거나 검증하려면 아래 명령을 사용하세요.
+## 로컬 개발
 
 ```bash
 pnpm install
@@ -509,26 +259,13 @@ pnpm build
 pnpm test
 ```
 
-## Reporting Issues
+## 이슈 제보
 
-- 버그를 제보하기 전에, 이미 이슈 탭에 같은 문제가 등록되어 있는지 먼저 확인해 주세요.
-- 아직 등록되지 않은 문제라면 새로운 이슈를 만들어 주세요.
-- 이슈를 작성할 때는 사용 중인 패키지 버전, 런타임 또는 프레임워크 버전, 에러 메시지나 스택 트레이스, 관련 설정, 재현 방법을 가능한 한 자세히 적어 주세요.
+새 이슈를 열기 전에 같은 문제가 이미 등록되어 있는지 먼저 확인해 주세요.
+버그를 제보할 때는 아래 정보를 함께 적어 주세요.
 
-## Guides
-
-추가 예정
-
-- toolbar preset 커스터마이징
-- renderer registry 교체
-- upload / link preview adapter 주입
-- 이미지 viewer와 embed modal 통합
-- framework / styling system 별 primitive 교체
-
-## Examples
-
-추가 예정
-
-## License
-
-MIT
+- 패키지 버전
+- 런타임 또는 프레임워크 버전
+- 에러 메시지나 스택 트레이스
+- 관련 설정
+- 재현 방법

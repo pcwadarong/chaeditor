@@ -73,7 +73,8 @@
     "typecheck": "tsc --noEmit",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "chromatic": "npx chromatic --project-token=chpt_e7dfd62937e7687"
+    "chromatic": "npx chromatic --project-token=chpt_e7dfd62937e7687",
+    "verify:package-surface": "node ./scripts/verify-package-surface.mjs"
   },
   "version": "0.0.0",
   "publishConfig": {
