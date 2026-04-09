@@ -1,3 +1,7 @@
+/**
+ * Compatibility entrypoint.
+ * Prefer `chaeditor/react` and `chaeditor/core` subpath imports in app code.
+ */
 export type {
   ChaeditorThemeDefinition,
   ChaeditorThemeVariableName,

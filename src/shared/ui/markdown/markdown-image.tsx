@@ -4,7 +4,7 @@ import React, { type ImgHTMLAttributes, useEffect, useMemo, useRef, useState } f
 import { css, cx } from 'styled-system/css';
 
 import type { MarkdownImageViewerLabels } from '@/entities/editor-core';
-import type { MarkdownImageViewerItem } from '@/shared/lib/markdown/collect-markdown-images';
+import type { MarkdownImageViewerItem } from '@/entities/editor-core/model/collect-markdown-images';
 import { ImageViewerModal } from '@/shared/ui/image-viewer/image-viewer-modal';
 
 type MarkdownImageProps = ImgHTMLAttributes<HTMLImageElement> & {

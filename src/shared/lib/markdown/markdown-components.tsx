@@ -10,7 +10,7 @@ import type { Components } from 'react-markdown';
 import { cx } from 'styled-system/css';
 
 import type { MarkdownRendererHostAdapters } from '@/entities/editor-core';
-import type { MarkdownImageViewerItem } from '@/shared/lib/markdown/collect-markdown-images';
+import type { MarkdownImageViewerItem } from '@/entities/editor-core/model/collect-markdown-images';
 import {
   getLinkText,
   getMarkdownLinkRenderMode,

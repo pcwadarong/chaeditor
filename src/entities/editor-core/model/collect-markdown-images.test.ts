@@ -1,4 +1,4 @@
-import { collectMarkdownImages } from '@/shared/lib/markdown/collect-markdown-images';
+import { collectMarkdownImages } from '@/entities/editor-core/model/collect-markdown-images';
 
 describe('collectMarkdownImages', () => {
   it('Under markdown content, collectMarkdownImages must extract images in order', () => {

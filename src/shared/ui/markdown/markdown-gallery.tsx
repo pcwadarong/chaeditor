@@ -3,7 +3,7 @@
 import React, { useEffect, useId, useRef, useState } from 'react';
 import { cx } from 'styled-system/css';
 
-import type { MarkdownImageViewerItem } from '@/shared/lib/markdown/collect-markdown-images';
+import type { MarkdownImageViewerItem } from '@/entities/editor-core/model/collect-markdown-images';
 import { ChevronRightIcon } from '@/shared/ui/icons/app-icons';
 import {
   galleryFrameClass,
@@ -17,6 +17,7 @@ import {
   gallerySlideClass,
   galleryTitleClass,
   galleryTrackClass,
+  galleryTrackNoScrollbarClass,
   galleryViewportClass,
 } from '@/shared/ui/markdown/markdown-gallery.panda';
 import { MarkdownImage } from '@/shared/ui/markdown/markdown-image';
@@ -40,6 +41,8 @@ const createScopedViewerItems = ({
 
 /**
  * Resolves the nearest slide index for the current scroll position.
+ * Uses getBoundingClientRect so the result is correct even when the last
+ * slide cannot snap to the container's left edge due to max-scroll limits.
  */
 const resolveActiveSlideIndex = (container: HTMLElement, totalCount: number) => {
   if (totalCount <= 1) return 0;
@@ -50,9 +53,11 @@ const resolveActiveSlideIndex = (container: HTMLElement, totalCount: number) => 
 
   if (slideElements.length === 0) return 0;
 
+  const containerLeft = container.getBoundingClientRect().left;
+
   const nearestSlide = slideElements.reduce(
     (closest, slide, index) => {
-      const distance = Math.abs(slide.offsetLeft - container.scrollLeft);
+      const distance = Math.abs(slide.getBoundingClientRect().left - containerLeft);
 
       if (distance < closest.distance) {
         return {
@@ -141,7 +146,14 @@ export const MarkdownGallery = ({ galleryId, items }: MarkdownGalleryProps) => {
         Image gallery
       </h2>
       <div className={galleryViewportClass}>
-        <div className={galleryTrackClass} data-markdown-gallery-track="true" ref={containerRef}>
+        <div
+          className={cx(
+            galleryTrackClass,
+            scopedViewerItems.length > 1 && galleryTrackNoScrollbarClass,
+          )}
+          data-markdown-gallery-track="true"
+          ref={containerRef}
+        >
           {scopedViewerItems.map((item, index) => (
             <figure
               className={gallerySlideClass}

@@ -30,6 +30,8 @@ Once uploads, image insertion, OG cards, or route wiring enter the picture, the 
 ## Installation
 
 Install `chaeditor` once, then import only the subpaths you need.
+For app code, prefer `chaeditor/react` and `chaeditor/core`.
+The root `chaeditor` entrypoint remains for compatibility, but it mixes React and core exports into one surface.
 
 ```bash
 npm install react react-dom chaeditor
@@ -78,6 +80,7 @@ Recommended order:
 
 `chaeditor` is published as a single npm package.
 You do not install subpaths separately. Install `chaeditor` once, then selectively import the entrypoints you actually need.
+In app code, use `chaeditor/react` and `chaeditor/core` by default instead of `from 'chaeditor'`.
 
 | Import path                  | Provides                                                                                                            | Use when                                                     |
 | ---------------------------- | ------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |

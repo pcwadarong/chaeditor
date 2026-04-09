@@ -3,7 +3,7 @@
 import {
   parseRichMarkdownSegments,
   parseToggleTitle,
-} from '@/entities/editor-core/model/markdown-segments';
+} from '@/entities/editor-core/model/rich-markdown-segments';
 
 describe('rich-markdown segment parser', () => {
   it('Under a toggle title with a heading prefix, parseToggleTitle must split the heading level and display title', () => {
@@ -37,11 +37,13 @@ describe('rich-markdown segment parser', () => {
         items: [
           {
             alt: 'First',
+            sourceOffset: 0,
             src: 'https://example.com/one.png',
             viewerId: 'markdown-image-0',
           },
           {
             alt: 'Second',
+            sourceOffset: 38,
             src: 'https://example.com/two.png',
             viewerId: 'markdown-image-1',
           },

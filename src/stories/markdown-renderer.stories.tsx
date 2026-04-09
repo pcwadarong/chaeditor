@@ -3,8 +3,8 @@ import React from 'react';
 import { MarkdownHooks } from 'react-markdown';
 import { css, cx } from 'styled-system/css';
 
+import { collectMarkdownImages } from '@/entities/editor-core/model/collect-markdown-images';
 import type { PartialRichMarkdownRendererRegistry } from '@/react';
-import { collectMarkdownImages } from '@/shared/lib/markdown/collect-markdown-images';
 import { getMarkdownOptions } from '@/shared/lib/markdown/markdown-config';
 import { markdownBodyClass } from '@/shared/lib/markdown/markdown-styles.panda';
 import { renderRichMarkdown } from '@/shared/lib/markdown/rich-markdown';

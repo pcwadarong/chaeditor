@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-import type { MarkdownImageViewerItem } from '@/shared/lib/markdown/collect-markdown-images';
+import type { MarkdownImageViewerItem } from '@/entities/editor-core/model/collect-markdown-images';
 import { createMarkdownComponents } from '@/shared/lib/markdown/markdown-components';
 import { MarkdownImage } from '@/shared/ui/markdown/markdown-image';
 

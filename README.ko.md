@@ -29,6 +29,9 @@
 
 ## 설치
 
+앱 코드에서는 `chaeditor/react`, `chaeditor/core` 같은 subpath import를 기본으로 생각하면 됩니다.
+루트 `chaeditor` entrypoint도 남아 있지만, 그 경로는 React surface와 core 유틸이 한곳에 섞인 호환용 경로에 가깝습니다.
+
 ```bash
 npm install react react-dom chaeditor
 pnpm add react react-dom chaeditor
@@ -76,6 +79,7 @@ import 'katex/dist/katex.min.css';
 
 `chaeditor`는 하나의 패키지로 배포됩니다.
 subpath를 따로 설치하는 구조가 아니라, `chaeditor`를 한 번 설치한 뒤 필요한 entrypoint만 골라 import하는 방식으로 사용합니다.
+실제 앱 코드에서는 `from 'chaeditor'`보다 `chaeditor/react`, `chaeditor/core`를 먼저 떠올리는 편이 좋습니다.
 
 | Import 경로                  | 제공 내용                                                                                                | 사용할 때                                          |
 | ---------------------------- | -------------------------------------------------------------------------------------------------------- | -------------------------------------------------- |

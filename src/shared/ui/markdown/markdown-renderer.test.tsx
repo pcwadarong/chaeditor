@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { renderToReadableStream } from 'react-dom/server';
 
-import { collectMarkdownImages } from '@/shared/lib/markdown/collect-markdown-images';
+import { collectMarkdownImages } from '@/entities/editor-core/model/collect-markdown-images';
 import { MarkdownRenderer } from '@/shared/ui/markdown/markdown-renderer';
 
 vi.mock('@/shared/lib/storage/attachment-download-path', () => ({
@@ -36,8 +36,18 @@ describe('MarkdownRenderer', () => {
         ),
       ),
     ).toEqual([
-      { alt: 'First', src: 'https://example.com/one.png', viewerId: 'markdown-image-0' },
-      { alt: 'Second', src: 'https://example.com/two.png', viewerId: 'markdown-image-1' },
+      {
+        alt: 'First',
+        sourceOffset: 0,
+        src: 'https://example.com/one.png',
+        viewerId: 'markdown-image-0',
+      },
+      {
+        alt: 'Second',
+        sourceOffset: 38,
+        src: 'https://example.com/two.png',
+        viewerId: 'markdown-image-1',
+      },
     ]);
   });
 

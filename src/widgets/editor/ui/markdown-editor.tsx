@@ -12,12 +12,12 @@ import {
   insertTemplate,
   outdentMarkdownList,
 } from '@/entities/editor-core';
+import { collectMarkdownImages } from '@/entities/editor-core/model/collect-markdown-images';
 import type { EditorContentType } from '@/entities/editor-core/model/content-types';
 import { buildEditorLinkInsertion } from '@/entities/editor-core/model/markdown-link';
 import type { MarkdownToolbarUiRegistry } from '@/features/edit-markdown/toolbar';
 import { MarkdownToolbar } from '@/features/edit-markdown/toolbar';
 import { mediaQueryDown } from '@/shared/config/breakpoints';
-import { collectMarkdownImages } from '@/shared/lib/markdown/collect-markdown-images';
 import { getMarkdownOptions } from '@/shared/lib/markdown/markdown-config';
 import { markdownBodyClass } from '@/shared/lib/markdown/markdown-styles.panda';
 import { renderRichMarkdown } from '@/shared/lib/markdown/rich-markdown';

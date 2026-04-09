@@ -36,15 +36,6 @@ export {
   createMarkdownLink,
   createMarkdownLinkByMode,
 } from '@/entities/editor-core/model/markdown-link';
-export type {
-  MarkdownSegment,
-  RichMarkdownRenderArgs,
-} from '@/entities/editor-core/model/markdown-segments';
-export {
-  decodeHtmlAttributeEntities,
-  parseRichMarkdownSegments,
-  parseToggleTitle,
-} from '@/entities/editor-core/model/markdown-segments';
 export {
   createAlignBlockMarkdown,
   createAttachmentEmbedMarkdown,
@@ -59,6 +50,15 @@ export {
   extractVideoEmbedReference,
   extractYoutubeId,
 } from '@/entities/editor-core/model/markdown-templates';
+export type {
+  MarkdownSegment,
+  RichMarkdownRenderArgs,
+} from '@/entities/editor-core/model/rich-markdown-segments';
+export {
+  decodeHtmlAttributeEntities,
+  parseRichMarkdownSegments,
+  parseToggleTitle,
+} from '@/entities/editor-core/model/rich-markdown-segments';
 export {
   applyTextareaTransform,
   continueMarkdownList,

@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-import { collectMarkdownImages } from '@/shared/lib/markdown/collect-markdown-images';
+import { collectMarkdownImages } from '@/entities/editor-core/model/collect-markdown-images';
 
 type MarkdownFragmentRenderer = (markdown: string, key: string) => ReactNode;
 

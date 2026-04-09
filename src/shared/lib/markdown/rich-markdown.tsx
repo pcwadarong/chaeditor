@@ -9,7 +9,7 @@ import {
 import {
   parseRichMarkdownSegments,
   type RichMarkdownRenderArgs,
-} from '@/entities/editor-core/model/markdown-segments';
+} from '@/entities/editor-core/model/rich-markdown-segments';
 import {
   markdownH1Class,
   markdownH2Class,

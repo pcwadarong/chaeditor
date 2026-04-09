@@ -1,9 +1,12 @@
+/* global console, process */
+
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 
 const rootDir = process.cwd();
 const tempDir = path.join(rootDir, '.tmp', 'package-surface-smoke');
+const consumerExampleRoots = ['README.md', 'README.ko.md', 'docs', 'src/stories'];
 
 /**
  * Runs a command and throws when it exits with a non-zero status.
@@ -41,6 +44,62 @@ const parsePackJson = output => {
   }
 
   return JSON.parse(lines.slice(jsonStartIndex).join('\n'));
+};
+
+/**
+ * Recursively lists files under a directory.
+ */
+const listFiles = async directoryPath => {
+  const entries = await fs.readdir(directoryPath, {
+    recursive: true,
+    withFileTypes: true,
+  });
+
+  return entries
+    .filter(entry => entry.isFile())
+    .map(entry => path.join(entry.parentPath, entry.name));
+};
+
+/**
+ * Verifies consumer-facing examples avoid the compatibility root import.
+ */
+const verifyNoConsumerRootImports = async () => {
+  const candidateFiles = [];
+
+  for (const relativePath of consumerExampleRoots) {
+    const absolutePath = path.join(rootDir, relativePath);
+    const stat = await fs.stat(absolutePath);
+
+    if (stat.isDirectory()) {
+      candidateFiles.push(...(await listFiles(absolutePath)));
+      continue;
+    }
+
+    candidateFiles.push(absolutePath);
+  }
+
+  const consumerFilePattern = /\.(?:md|ts|tsx)$/u;
+  const rootImportPattern = /^\s*import\s.+\sfrom\s+['"]chaeditor['"]/mu;
+  const matches = [];
+
+  for (const filePath of candidateFiles) {
+    if (!consumerFilePattern.test(filePath)) continue;
+
+    const contents = await fs.readFile(filePath, 'utf8');
+    if (rootImportPattern.test(contents)) {
+      matches.push(path.relative(rootDir, filePath));
+    }
+  }
+
+  if (matches.length > 0) {
+    throw new Error(
+      [
+        'Consumer-facing examples should prefer subpath imports from chaeditor/react or chaeditor/core.',
+        'Found root imports in:',
+        ...matches.map(filePath => `- ${filePath}`),
+      ].join('\n'),
+    );
+  }
 };
 
 /**
@@ -132,6 +191,8 @@ assert.equal(
 };
 
 const main = async () => {
+  await verifyNoConsumerRootImports();
+
   const packOutput = run('npm', ['pack', '--json', '--silent'], rootDir);
   const [{ filename }] = parsePackJson(packOutput);
   const tarballPath = path.join(rootDir, filename);

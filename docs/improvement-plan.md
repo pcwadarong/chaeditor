@@ -142,30 +142,25 @@ img: ({ alt, src }) => {
 
 ---
 
-### 2-4. `entities/editor-core` ↔ `shared/lib` 경계 흐림
+### 2-4. `entities/editor-core` ↔ `shared/lib` 경계 흐림 [메모: 2026-04-09 rich-markdown parser/image collector를 entity layer로 이동 완료]
 
-**파일 위치**: `src/entities/editor-core/model/markdown-segments.ts`
+**파일 위치**: `src/entities/editor-core/model/rich-markdown-segments.ts`
 
-**문제**: 이 파일은 사실상 얇은 re-export다:
+**상태**: segment parser 구현과 `collect-markdown-images.ts`를 entity layer로 옮기고, `shared/lib/markdown` 쪽 thin re-export는 제거했다.
 
-```ts
-// entities/editor-core/model/markdown-segments.ts
-export * from '@/shared/lib/markdown/rich-markdown-segments';
-```
+segment 파서는 이제 개념적으로도, 실제 파일 위치로도 entity-layer 책임과 맞는다. `link-embed`처럼 아직 `shared/lib`에 남아 있는 markdown helper는 별도 후속 정리 대상으로 본다.
 
-segment 파서는 개념적으로 entity-layer 관심사인데, 구현이 `shared/lib/`에 있다. 또한 `entities/editor-core/index.ts`가 `@/shared/lib/markdown/link-embed`에서 직접 임포트하기도 한다. 이 경계가 명확하지 않으면 나중에 layer 규칙이 의미 없어진다.
-
-**개선 방향**: 단기적으로는 현 상태 유지. 중장기적으로는 `rich-markdown-segments.ts`를 `entities/editor-core/model/`으로 이동하거나, `shared/lib`에 두되 entities re-export를 제거하고 직접 `shared/lib`에서 임포트하는 방향 중 하나를 선택한다.
+**개선 결과**: parser, gallery image collector, 관련 테스트가 모두 `entities/editor-core/model/` 기준으로 정리됐다.
 
 ---
 
-### 2-5. 루트 `src/index.ts` 트리쉐이킹 방해
+### 2-5. 루트 `src/index.ts` 트리쉐이킹 방해 [메모: 2026-04-09 subpath 우선 가이드와 root import 감지 검증 추가]
 
 **파일 위치**: `src/index.ts`
 
 **현재**: `@/core`와 `@/react`를 동시에 전부 re-export한다. 루트 진입점에서 임포트하면 framework-free 유틸과 React 컴포넌트가 함께 번들에 들어간다.
 
-**개선 방향**: README/문서에서 루트 임포트(`from 'chaeditor'`) 사용을 명시적으로 discourage하고, `chaeditor/react` 또는 `chaeditor/core` 서브패스 임포트를 권장한다. `verify:package-surface` 스크립트에 루트 진입점 사용 감지를 추가하는 것도 고려.
+**개선 결과**: README와 package surface 가이드에서 루트 임포트(`from 'chaeditor'`)를 호환용으로만 설명하고, `chaeditor/react`, `chaeditor/core` 서브패스 임포트를 기본 경로로 안내한다. `verify:package-surface`는 consumer-facing 예시에 루트 임포트가 섞이면 실패하도록 바꿨다.
 
 ---
 

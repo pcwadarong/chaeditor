@@ -2,7 +2,7 @@ import React from 'react';
 import { MarkdownAsync } from 'react-markdown';
 
 import type { MarkdownRendererHostAdapters } from '@/entities/editor-core';
-import { collectMarkdownImages } from '@/shared/lib/markdown/collect-markdown-images';
+import { collectMarkdownImages } from '@/entities/editor-core/model/collect-markdown-images';
 import { getMarkdownOptions } from '@/shared/lib/markdown/markdown-config';
 import {
   markdownBodyClass,

@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
 
-import type { MarkdownImageViewerItem } from '@/shared/lib/markdown/collect-markdown-images';
+import type { MarkdownImageViewerItem } from '@/entities/editor-core/model/collect-markdown-images';
 import { MarkdownImage } from '@/shared/ui/markdown/markdown-image';
 
 vi.mock('@/shared/ui/image-viewer/image-viewer-modal', () => ({
