@@ -2,124 +2,55 @@
 
 English | [한국어](./README.ko.md)
 
-`chaeditor` is a composable markdown editor toolkit for React applications.
-It combines authoring helpers, embed workflows, and rich markdown rendering in a single package while keeping host integration, styling, and primitive shells open to override.
-
-## Features
-
-- markdown authoring helpers and selection transform utilities
-- preset-based toolbar composition
-- rich markdown rendering for attachments, galleries, math, Mermaid, spoilers, and video
-- host adapters for uploads, href resolution, image rendering, and link preview metadata
-- theme variable overrides and primitive shell replacement
-
-## Guides
-
-- [Next.js Integration](https://github.com/pcwadarong/chaeditor/wiki/EN-%3A-Next.js-Integration)
-- [Package Surface and Import Matrix](https://github.com/pcwadarong/chaeditor/wiki/EN-%3A-Package-Surface-and-Import-Matrix)
-- [Architecture and Folder Ownership](https://github.com/pcwadarong/chaeditor/wiki/EN-%3A-Architecture-and-Folder-Ownership)
-
-If you are integrating for the first time, start with the Next.js guide.
-Once uploads, image insertion, OG cards, or route wiring enter the picture, the guide is more useful than the README alone.
+Build composable markdown editors for React with authoring helpers, rich embeds, and styling that stays overridable.
+`chaeditor` ships as one package, but the recommended way to consume it is through subpath imports such as `chaeditor/react` and `chaeditor/core`.
 
 ## Links
 
 - [npm package](https://www.npmjs.com/package/chaeditor)
 - [Storybook (Chromatic)](https://www.chromatic.com/library?appId=69cd38a84da2f3f99e158f5c)
 
-## Installation
+## Guides
 
-Install `chaeditor` once, then import only the subpaths you need.
-For app code, prefer `chaeditor/react` and `chaeditor/core`.
-The root `chaeditor` entrypoint remains for compatibility, but it mixes React and core exports into one surface.
+The links below use repository paths.
+If you publish these docs as a web wiki, replace them with your public wiki URLs.
 
-```bash
-npm install react react-dom chaeditor
-pnpm add react react-dom chaeditor
-yarn add react react-dom chaeditor
-bun add react react-dom chaeditor
-```
+- [Next.js Integration](./docs/wiki/nextjs-integration.md)
+- [Package Surface and Import Matrix](./docs/wiki/package-surface-and-import-matrix.md)
+- [CSS Setup](./docs/wiki/css-setup.md)
+- [Primitive Shell Replacement](./docs/wiki/primitive-shell-replacement.md)
+- [Architecture and Folder Ownership](./docs/wiki/architecture-and-folder-ownership.md)
 
-Choose one CSS entrypoint depending on whether you want the package to include KaTeX styling.
+If you are integrating for the first time, start with the Next.js guide.
+If uploads, image insertion, preview cards, or route wiring are part of the job, the wiki is more useful than the README alone.
+
+## Quick Start
+
+Pick the path that matches what you need right now.
+
+### Renderer only
+
+Use this when you only need markdown display.
 
 ```tsx
 import 'chaeditor/styles.css';
+
+import { MarkdownRenderer } from 'chaeditor/react';
+
+const Example = async () => {
+  return <MarkdownRenderer markdown="# Hello chaeditor" />;
+};
 ```
 
-`chaeditor/styles.css` is the full bundle: Panda-based default styles, theme tokens, KaTeX styles, and KaTeX fonts.
+### Editor without host adapters
 
-If you want the lighter bundle without KaTeX runtime styles, use:
-
-```tsx
-import 'chaeditor/styles-lite.css';
-```
-
-When you choose `chaeditor/styles-lite.css` and render math, your app must also load KaTeX CSS separately:
+Use this when you want to validate basic typing, toolbar behavior, and preview first.
 
 ```tsx
-import 'chaeditor/styles-lite.css';
-import 'katex/dist/katex.min.css';
-```
+'use client';
 
-## Where To Start
+import { useState } from 'react';
 
-The cleanest starting point depends on what you need right now.
-
-- If you only need markdown display, start with `MarkdownRenderer` and `chaeditor/styles.css`.
-- If you want basic authoring first, mount `MarkdownEditor` without adapters.
-- If you need image uploads, attachments, videos, and OG cards, use `createDefaultHostAdapters()` and follow the Next.js guide.
-
-Recommended order:
-
-1. Import `styles.css` or `styles-lite.css` globally.
-2. Render `MarkdownRenderer` or `MarkdownEditor` once.
-3. Add host adapters only after the basic authoring flow works.
-4. Before release, run a packed-tarball smoke test in a consumer app.
-
-## Package Surface
-
-`chaeditor` is published as a single npm package.
-You do not install subpaths separately. Install `chaeditor` once, then selectively import the entrypoints you actually need.
-In app code, use `chaeditor/react` and `chaeditor/core` by default instead of `from 'chaeditor'`.
-
-| Import path                  | Provides                                                                                                            | Use when                                                     |
-| ---------------------------- | ------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
-| `chaeditor/react`            | React surfaces such as `MarkdownEditor`, `MarkdownToolbar`, `MarkdownRenderer`, and the primitive registry contract | most app integrations                                        |
-| `chaeditor/core`             | pure utilities, markdown helpers, parser contracts, and `createChaeditorThemeVars()`                                | logic-only usage or server-safe helpers                      |
-| `chaeditor/default-host`     | bundled default upload adapters                                                                                     | only when you want the packaged upload implementations       |
-| `chaeditor/panda-primitives` | the bundled Panda-based primitive shells                                                                            | only when you want to reuse or wrap the default primitives   |
-| `chaeditor/styles.css`       | bundled theme tokens, component styles, KaTeX math styles, and KaTeX fonts                                          | when you want the default package styling with math support  |
-| `chaeditor/styles-lite.css`  | bundled theme tokens and component styles without KaTeX runtime styles                                              | when your app already owns KaTeX CSS or does not render math |
-
-## CSS Entrypoints
-
-Use `chaeditor/styles.css` when:
-
-- you want the package defaults to work out of the box
-- your renderer uses math
-- you do not want to manage KaTeX CSS and fonts separately
-
-Use `chaeditor/styles-lite.css` when:
-
-- you want a lighter default CSS bundle
-- your app does not render math
-- your app already imports `katex/dist/katex.min.css` elsewhere
-
-Rule of thumb:
-
-- `styles.css`: safest default
-- `styles-lite.css`: opt in only when you intentionally own KaTeX styling
-
-## Selective Imports
-
-Install `chaeditor` once, then import only the subpaths you need.
-`default-host` and `panda-primitives` are opt-in surfaces.
-
-Representative examples:
-
-### Basic editor
-
-```tsx
 import 'chaeditor/styles.css';
 
 import { MarkdownEditor } from 'chaeditor/react';
@@ -131,28 +62,15 @@ const Example = () => {
 };
 ```
 
-### Basic editor with lighter CSS
+### Full integration
+
+Use this when you need uploads, attachments, videos, and preview cards.
 
 ```tsx
-import 'chaeditor/styles-lite.css';
-import 'katex/dist/katex.min.css';
+'use client';
 
-import { MarkdownEditor } from 'chaeditor/react';
-```
+import { useState } from 'react';
 
-### Core utilities only
-
-```ts
-import {
-  createImageGalleryMarkdown,
-  createMathEmbedMarkdown,
-  parseRichMarkdownSegments,
-} from 'chaeditor/core';
-```
-
-### Optional default host adapters
-
-```tsx
 import 'chaeditor/styles.css';
 
 import { createDefaultHostAdapters } from 'chaeditor/default-host';
@@ -160,53 +78,91 @@ import { MarkdownEditor } from 'chaeditor/react';
 
 const adapters = createDefaultHostAdapters();
 
-const Example = () => (
-  <MarkdownEditor adapters={adapters} contentType="article" onChange={() => {}} value="" />
-);
-```
+const Example = () => {
+  const [value, setValue] = useState('');
 
-`createDefaultHostAdapters()` expects these host routes:
-
-- `/api/attachments`
-- `/api/images`
-- `/api/videos`
-- `/api/link-preview`
-
-For a first setup, this order is the least confusing:
-
-1. Mount `MarkdownEditor` without adapters.
-2. Add `createDefaultHostAdapters()`.
-3. Create `app/api/attachments/route.ts`, `app/api/images/route.ts`, `app/api/videos/route.ts`, and `app/api/link-preview/route.ts`.
-4. Click through image upload, file attachment, and link paste once each.
-
-If you only need OG or preview-card metadata, you can wire just the preview helper:
-
-```tsx
-import { createFetchLinkPreviewMeta } from 'chaeditor/default-host';
-
-const adapters = {
-  fetchLinkPreviewMeta: createFetchLinkPreviewMeta(),
+  return (
+    <MarkdownEditor adapters={adapters} contentType="article" onChange={setValue} value={value} />
+  );
 };
 ```
 
-The Next.js guide now covers the rest in one place:
+Then follow [Next.js Integration](./docs/wiki/nextjs-integration.md) to create the expected host routes and verify the real app flow.
 
-- which files to create and where
-- what each route should accept and return
-- copy-paste starter route handlers
-- a smoke checklist for confirming the integration is actually complete
-- troubleshooting for missing preview cards, broken upload URLs, and math styling issues
+## Installation
 
-### Optional Panda primitive reuse
+Install `chaeditor` once, then import only the subpaths you need.
+Prefer `chaeditor/react` and `chaeditor/core` in app code.
+The root `chaeditor` entrypoint remains available for compatibility, but it mixes React and core exports into one surface.
 
-```tsx
-import { Button, createPandaMarkdownPrimitiveRegistry } from 'chaeditor/panda-primitives';
+```bash
+npm install react react-dom chaeditor
+pnpm add react react-dom chaeditor
+yarn add react react-dom chaeditor
+bun add react react-dom chaeditor
 ```
 
-## Theme Override
+### CSS choice
 
-The default implementation uses Panda CSS, but the public theme contract is CSS-variable based.
-You can keep the package defaults as-is, or override only the values your host app actually owns.
+| Entry                       | Use when                                                   | Includes                                                |
+| --------------------------- | ---------------------------------------------------------- | ------------------------------------------------------- |
+| `chaeditor/styles.css`      | you want the safest default, or you render math            | package styles, Panda output, KaTeX styles, KaTeX fonts |
+| `chaeditor/styles-lite.css` | you intentionally own KaTeX CSS, or you do not render math | package styles without KaTeX runtime styles             |
+
+Safe default:
+
+```tsx
+import 'chaeditor/styles.css';
+```
+
+Lighter bundle:
+
+```tsx
+import 'chaeditor/styles-lite.css';
+```
+
+If you choose `styles-lite.css` and render math, also import:
+
+```tsx
+import 'chaeditor/styles-lite.css';
+import 'katex/dist/katex.min.css';
+```
+
+See [CSS Setup](./docs/wiki/css-setup.md) for a fuller decision guide and consumer-side checklists.
+
+## Package Surface
+
+`chaeditor` is one npm package with selective subpath imports.
+You do not install subpaths separately.
+
+| Import path                  | Provides                                                                      | Use when                                               |
+| ---------------------------- | ----------------------------------------------------------------------------- | ------------------------------------------------------ |
+| `chaeditor/react`            | `MarkdownEditor`, `MarkdownToolbar`, `MarkdownRenderer`, and React registries | most app integrations                                  |
+| `chaeditor/core`             | pure helpers, markdown contracts, and theme utilities                         | logic-only usage or server-safe helpers                |
+| `chaeditor/default-host`     | packaged upload and preview helpers                                           | quick start, demos, or route-convention wiring         |
+| `chaeditor/panda-primitives` | packaged Panda primitive shells                                               | only when you want to reuse or wrap the default shells |
+| `chaeditor/styles.css`       | full default CSS bundle                                                       | safest styling path                                    |
+| `chaeditor/styles-lite.css`  | lighter default CSS bundle                                                    | when your app owns KaTeX styling                       |
+
+If you want the longer decision matrix, read [Package Surface and Import Matrix](./docs/wiki/package-surface-and-import-matrix.md).
+
+## What To Read Next
+
+- Need a practical app-router walkthrough: [Next.js Integration](./docs/wiki/nextjs-integration.md)
+- Need to choose imports or entrypoints: [Package Surface and Import Matrix](./docs/wiki/package-surface-and-import-matrix.md)
+- Need help choosing `styles.css` vs `styles-lite.css`: [CSS Setup](./docs/wiki/css-setup.md)
+- Need to replace package UI shells with your own design system: [Primitive Shell Replacement](./docs/wiki/primitive-shell-replacement.md)
+- Need ready-to-adapt wrappers for Tailwind, Emotion, styled-components, or vanilla-extract: [Host Preset Templates](./recipes/host-presets/README.md)
+
+## Theme And Host Customization
+
+`chaeditor` keeps theme values and host ownership separate on purpose.
+
+- Use `createChaeditorThemeVars()` when you want to override semantic tokens such as `primary`, `surface`, `text`, or font stacks.
+- Use `primitiveRegistry` when you need to replace the actual `Button`, `Input`, `Textarea`, `Popover`, `Modal`, or `Tooltip` shells.
+- Use `createDefaultHostAdapters()` or custom adapters when uploads, href resolution, image rendering, or link preview metadata belong to your app layer.
+
+Minimal theme override example:
 
 ```tsx
 import 'chaeditor/styles.css';
@@ -218,11 +174,8 @@ const themeVars = createChaeditorThemeVars({
   primary: '#0f766e',
   primarySubtle: '#ccfbf1',
   surface: '#f8fafc',
-  surfaceMuted: '#eff6ff',
   text: '#0f172a',
-  textSubtle: '#475569',
   sansFont: 'var(--app-font-sans), system-ui, sans-serif',
-  monoFont: "var(--font-d2coding), 'D2Coding', monospace",
 });
 
 const Example = () => (
@@ -232,95 +185,7 @@ const Example = () => (
 );
 ```
 
-Recommended font ownership:
-
-- `sansFont`: host app sans font stack
-- `sansJaFont`: optional multilingual fallback
-- `monoFont`: optional host mono stack, otherwise the built-in D2Coding fallback chain is used
-
-## Styling Runtime Recipes
-
-The default package styling runtime is Panda CSS.
-Host-side styling recipes are only needed when the host app wants to override variables or replace primitive shells.
-
-Available examples:
-
-- Tailwind CSS
-- Emotion
-- styled-components
-- vanilla-extract
-- primitive shell replacement
-
-Ready-to-adapt host wrapper templates are available in [recipes/host-presets](./recipes/host-presets/README.md).
-
-## Primitive Shell Replacement
-
-Theme variables are enough for colors, fonts, and semantic tokens.
-If you need to replace the actual `Button`, `Input`, `Textarea`, `Popover`, `Modal`, or `Tooltip` shells, use `primitiveRegistry`.
-
-```tsx
-import 'chaeditor/styles.css';
-
-import { MarkdownEditor } from 'chaeditor/react';
-
-const HostButton = props => (
-  <button {...props} className={`host-button ${props.className ?? ''}`.trim()} />
-);
-
-const HostInput = props => (
-  <input {...props} className={`host-input ${props.className ?? ''}`.trim()} />
-);
-
-const HostTextarea = props => (
-  <textarea {...props} className={`host-textarea ${props.className ?? ''}`.trim()} />
-);
-
-const HostPopover = props => (
-  <Popover
-    {...props}
-    panelClassName={`host-popover-panel ${props.panelClassName ?? ''}`.trim()}
-    triggerClassName={`host-popover-trigger ${props.triggerClassName ?? ''}`.trim()}
-  />
-);
-
-const HostModal = props => (
-  <Modal
-    {...props}
-    backdropClassName={`host-modal-backdrop ${props.backdropClassName ?? ''}`.trim()}
-    closeButtonClassName={`host-modal-close ${props.closeButtonClassName ?? ''}`.trim()}
-    frameClassName={`host-modal-frame ${props.frameClassName ?? ''}`.trim()}
-  />
-);
-
-const HostTooltip = props => (
-  <Tooltip
-    {...props}
-    contentClassName={`host-tooltip ${props.contentClassName ?? ''}`.trim()}
-    portalClassName={`host-tooltip-portal ${props.portalClassName ?? ''}`.trim()}
-  />
-);
-
-const Example = () => (
-  <MarkdownEditor
-    contentType="article"
-    onChange={() => {}}
-    primitiveRegistry={{
-      Button: HostButton,
-      Input: HostInput,
-      Modal: HostModal,
-      Popover: HostPopover,
-      Textarea: HostTextarea,
-      Tooltip: HostTooltip,
-    }}
-    value=""
-  />
-);
-```
-
-Rule of thumb:
-
-- `createChaeditorThemeVars()` changes semantic tokens
-- `primitiveRegistry` changes shell components
+The full primitive replacement walkthrough lives in [Primitive Shell Replacement](./docs/wiki/primitive-shell-replacement.md).
 
 ## Local Development
 
@@ -328,10 +193,28 @@ Rule of thumb:
 pnpm install
 pnpm lint
 pnpm check-types
-pnpm build
 pnpm test
+pnpm build
+pnpm run verify:package-surface
 ```
+
+If a change is visual or touches docs-facing examples, also run:
+
+```bash
+pnpm storybook
+```
+
+## Reporting Issues
+
+Before opening a new issue, check whether the same problem is already reported.
+Bug reports are much easier to act on when they include:
+
+- package version
+- framework or runtime version
+- a clear reproduction path
+- error text or screenshots when relevant
+- whether the bug happens in the real app, Storybook, or only after packing
 
 ## Contributing
 
-If you want to contribute, see [CONTRIBUTING.md](./CONTRIBUTING.md).
+If you want to contribute, start with [CONTRIBUTING.md](./CONTRIBUTING.md).

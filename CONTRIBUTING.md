@@ -2,19 +2,31 @@
 
 English | [한국어](./CONTRIBUTING.ko.md)
 
-Thank you for considering a contribution to `chaeditor`.
-This document explains the expected workflow, documentation rules, and review expectations for this repository.
+Thanks for taking the time to contribute to `chaeditor`.
+This guide is for day-to-day contributor workflow. It explains how to make changes, how to verify them, and which docs need to stay aligned.
+
+## Welcome
+
+We welcome:
+
+- bug reports with reproduction steps
+- documentation improvements
+- test coverage improvements
+- focused bug fixes
+- feature work that has already been discussed in an issue
+
+If this is your first contribution, start with a small documentation fix, a focused bug fix, or an issue labeled `good first issue`.
 
 ## Communication
 
 - Issues and pull requests may be written in English or Korean.
 - Keep problem statements concrete and implementation notes short.
-- When possible, explain user-facing impact before internal refactoring details.
+- Explain user-facing impact before internal refactoring details whenever possible.
 
 ## Before You Start
 
-1. Confirm that a similar issue or pull request does not already exist.
-2. Open or reference an issue when the change is large enough to need discussion.
+1. Check whether the same issue or pull request already exists.
+2. Open or reference an issue if the change is large enough to need scope discussion.
 3. Prefer small, reviewable pull requests over broad refactors.
 
 ## Local Setup
@@ -25,17 +37,33 @@ This repository uses `pnpm`.
 pnpm install
 ```
 
-Common checks:
+### Common commands
 
 ```bash
-pnpm lint
-pnpm check-types
-pnpm test
-pnpm build
+pnpm lint                    # run ESLint
+pnpm check-types             # run TypeScript checks
+pnpm test                    # run the test suite
+pnpm build                   # build the package
 pnpm run verify:package-surface
 ```
 
-Storybook:
+What `verify:package-surface` checks:
+
+- packed package entrypoints
+- export conditions
+- CSS entrypoints
+- consumer-facing examples that should prefer subpath imports
+
+### Targeted commands
+
+Use the smallest relevant command first.
+
+```bash
+pnpm vitest run path/to/file.test.ts
+pnpm test -- --watch
+```
+
+If a change is visual, docs-facing, or easier to validate in a browser, run Storybook as well:
 
 ```bash
 pnpm storybook
@@ -44,47 +72,46 @@ pnpm build-storybook
 
 ## Repository Expectations
 
-### 1. Package surface
+### Package surface
 
 `chaeditor` is published as one package with selective subpath imports.
-Keep the published surface intentional:
+Keep the public surface deliberate:
 
 - `chaeditor/react`
 - `chaeditor/core`
 - `chaeditor/default-host`
 - `chaeditor/panda-primitives`
 - `chaeditor/styles.css`
+- `chaeditor/styles-lite.css`
 
-If you change public exports, update both:
+If you change public exports, install paths, or publish behavior, update all relevant places:
 
 - `package.json`
-- `README.md` and `README.ko.md`
+- `README.md`
+- `README.ko.md`
+- related wiki pages under `docs/wiki/`
 
-### 2. Styling
+### Styling and runtime boundaries
 
 - The bundled default styling runtime is Panda CSS.
-- Host-side overrides must continue to work through:
-  - CSS variable theme overrides
-  - primitive shell replacement via `primitiveRegistry`
+- Host-side overrides must continue to work through CSS variables and `primitiveRegistry`.
 - Avoid coupling public contracts to one styling runtime unless that runtime is explicitly opt-in.
 
-### 3. Documentation
+### Documentation alignment
 
-Update documentation when shipped behavior changes.
-
+Update docs when shipped behavior changes.
 At minimum, consider:
 
 - `README.md`
 - `README.ko.md`
-- Storybook reference stories
+- wiki pages under `docs/wiki/`
 - host preset templates in `recipes/host-presets`
 
-If you add or change a public function, hook, component prop, or package entrypoint:
+If you add or change a public function, hook, prop, or package entrypoint:
 
 - add or update JSDoc comments
 - include examples when the contract is not obvious
-- update both English and Korean documentation when the change affects public usage
-- keep localized docs in sync as closely as possible
+- update both English and Korean docs when public usage changes
 
 ## Code Style
 
@@ -97,24 +124,22 @@ If you add or change a public function, hook, component prop, or package entrypo
 ## Commits
 
 - Write commits through `pnpm run commit`.
-- Do not bypass the commit prompt with ad-hoc local message formats unless there is a strong reason.
 - Keep each commit scoped to one logical unit of change.
+- Do not bypass the commit flow unless there is a strong reason.
 
 ## Testing
 
 Choose the lowest-cost environment that still validates the behavior:
 
-- Node: pure utilities and transformation logic
-- JSDOM: component wiring and DOM behavior
-- Storybook: visual comparison and integration references
+- Node for pure utilities and transforms
+- JSDOM for component wiring and DOM behavior
+- Storybook for visual or interaction review
 
-Follow a test-first workflow whenever possible:
+Prefer this order whenever possible:
 
 1. write or update the test first
 2. change the implementation
 3. rerun the smallest relevant verification
-
-The goal is to reduce regressions by locking expected behavior before modifying code.
 
 If you change package exports or publish behavior, run:
 
@@ -126,15 +151,16 @@ npm pack --dry-run
 
 ## Pull Requests
 
-Include:
+Use the repository PR template:
+
+- `.github/pull_request_template.md`
+
+Every pull request should explain:
 
 - what changed
 - why it changed
 - user-facing impact
 - verification steps
-
-Use the repository PR template when opening a pull request.
-Do not replace it with a free-form summary unless the template is clearly inapplicable.
 
 Recommended structure:
 
@@ -143,52 +169,26 @@ Recommended structure:
 3. User-facing impact
 4. Verification
 
-If the change affects a public API, the pull request should also mention:
+If the change affects a public API, also mention:
 
 - whether JSDoc was added or updated
-- which docs pages were updated
-- whether `README.md` and `README.ko.md` are now aligned
+- which docs were updated
+- whether `README.md` and `README.ko.md` are aligned
 
-## Release-sensitive changes
+## Release-sensitive Changes
 
 Pay extra attention to:
 
 - `package.json` exports
 - build output shape
 - generated `dist` typings
-- `styled-system/styles.css`
 - `styles.css` and `styles-lite.css`
-- `README` install/import examples
+- install and import examples
+- packed assets such as fonts and CSS
 
-If your change affects how consumers install or import the package, verify the packed tarball before asking for review.
+If your change affects how consumers install, import, or render the package, verify the packed tarball before asking for review.
 
-If you need higher confidence before release, do a local consumer smoke test with the packed tarball.
-This is closer to the real published state than `pnpm link` because it validates the actual packed files, CSS, fonts, and export map.
+The release-specific smoke-test flow now lives in:
 
-Suggested flow:
-
-```bash
-pnpm run build
-pnpm run verify:package-surface
-pnpm pack --pack-destination .tmp
-
-mkdir -p ../chaeditor-consumer-smoke
-cd ../chaeditor-consumer-smoke
-pnpm create vite . --template react-ts
-pnpm add file:../chaeditor/.tmp/chaeditor-0.1.0.tgz
-```
-
-Then import the package exactly as a consumer would:
-
-```tsx
-import 'chaeditor/styles.css';
-import { MarkdownRenderer } from 'chaeditor/react';
-```
-
-Use this when you want to visually verify issues such as:
-
-- missing packed assets
-- broken `styles.css` output
-- KaTeX math styling or font regressions
-- icon rendering differences in a real consumer app
-- export conditions that only fail after packing
+- [Release Checklist](./docs/wiki/release-checklist.md)
+- [Release Checklist (Korean)](./docs/wiki/ko/release-checklist.md)

@@ -1,7 +1,7 @@
 # chaeditor 개선 계획서
 
 > 작성 기준: 2026-04-09  
-> 대상 범위: 코드 아키텍처, Storybook 디자인 가독성, 이미지 갤러리 슬라이더 크기, README/CONTRIBUTING 영한 문서
+> 대상 범위: 코드 아키텍처, 이미지 갤러리 슬라이더 크기, README/CONTRIBUTING 영한 문서
 
 ---
 
@@ -9,14 +9,13 @@
 
 1. [분석 요약](#1-분석-요약)
 2. [코드 아키텍처 개선 포인트](#2-코드-아키텍처-개선-포인트)
-3. [Storybook 디자인 가독성 개선](#3-storybook-디자인-가독성-개선)
-4. [이미지 갤러리 슬라이더 크기 문제](#4-이미지-갤러리-슬라이더-크기-문제)
-5. [README 개선 — 영어](#5-readme-개선--영어)
-6. [README 개선 — 한국어](#6-readme-개선--한국어)
-7. [CONTRIBUTING 개선 — 영어](#7-contributing-개선--영어)
-8. [CONTRIBUTING 개선 — 한국어](#8-contributing-개선--한국어)
-9. [문서 구조 분리 제안](#9-문서-구조-분리-제안)
-10. [작업 우선순위 및 순서](#10-작업-우선순위-및-순서)
+3. [이미지 갤러리 슬라이더 크기 문제](#3-이미지-갤러리-슬라이더-크기-문제)
+4. [README 개선 — 영어](#4-readme-개선--영어)
+5. [README 개선 — 한국어](#5-readme-개선--한국어)
+6. [CONTRIBUTING 개선 — 영어](#6-contributing-개선--영어)
+7. [CONTRIBUTING 개선 — 한국어](#7-contributing-개선--한국어)
+8. [문서 구조 분리 제안](#8-문서-구조-분리-제안)
+9. [작업 우선순위 및 순서](#9-작업-우선순위-및-순서)
 
 ---
 
@@ -33,28 +32,14 @@
 | `chaeditor/default-host` | 기본 upload adapter 구현 (`createDefaultHostAdapters()`) |
 | `chaeditor/panda-primitives` | Panda CSS 기반 primitive shell |
 
-### Storybook 구조
-
-스토리는 `src/stories/` 아래에 있으며 6개 파일이다:
-
-- `introduction.stories.tsx` — Overview, ThemeContract
-- `markdown-editor.stories.tsx` — Default, CoreOnly, CustomHostIntegration
-- `markdown-renderer.stories.tsx` — FeatureShowcase, MinimalMarkdown, CustomRendererOverride, CustomHostAdapters
-- `embed-workflows.stories.tsx` — Default, CoreOnly, CustomHostAdapters
-- `markdown-toolbar.stories.tsx`
-- `styling-recipes.stories.tsx` — Tailwind, Emotion, StyledComponents, VanillaExtract, PrimitiveRegistry
-
-공유 컴포넌트는 `src/stories/fixtures/` 세 파일(`storybook-support.tsx`, `storybook-primitives.tsx`, `storybook-snippets.ts`)에 나뉘어 있다.
-
 ### 핵심 발견 사항 요약
 
 | 영역 | 발견된 문제 | 심각도 |
 |---|---|---|
 | 갤러리 슬라이더 | `aspectRatio: 4/5` (세로형) + 너비 78% → 데스크톱에서 1400px+ 높이 | 높음 |
-| Storybook 가독성 | 섹션 경계 희미, 코드 패널 배경 없음, 계층 구조 혼재 | 중간 |
 | README(영) | 섹션 중복, 설명 톤 무미건조, 하단에 기여 단 한 줄 | 중간 |
 | README(한) | 영어 README와 비대칭 섹션 존재, 기술 용어 무설명, 너무 압축된 문장 | 중간 |
-| CONTRIBUTING(영) | 첫 기여자 경로 없음, 각 명령 설명 없음, Storybook 워크플로우 빠짐 | 중간 |
+| CONTRIBUTING(영) | 첫 기여자 경로 없음, 각 명령 설명 없음, PR 흐름 설명 부족 | 중간 |
 | CONTRIBUTING(한) | 직역체, 어색한 경어체 혼재, 커뮤니티 느낌 없음 | 중간 |
 
 ---
@@ -175,475 +160,9 @@ code-review-graph가 **132개 커뮤니티**를 감지했으며 대부분 크기
 
 ---
 
-## 3. Storybook 전체 리디자인 — shadcn/ui 스타일
+## 3. 이미지 갤러리 슬라이더 크기 문제 [메모: 2026-04-09 edge scroll state 동기화 버그 수정 완료]
 
-> 현재 Storybook은 정보는 많지만 잘 읽히지 않는다. 배경이 가득 찬 카드, 섹션 경계가 흐림, 컴포넌트마다 스타일 불일치.
-> 목표: **line-based, 미니멀, 타이포그래피 중심** — shadcn/ui·Linear처럼 읽히는 디자인.
-> 동시에 "지금 어떤 상황에서 뭘 써야 하는가"를 Storybook 안에서 바로 안내하는 가이던스 시스템도 함께 구축.
-
----
-
-### 3-1. 디자인 원칙 전환
-
-#### 현재 vs. 목표
-
-| 현재 | 목표 |
-|---|---|
-| 섹션마다 배경색(surfaceMuted 등) 채우기 | 배경 없이 선(border)으로만 구분 |
-| 다양한 색상 배지 5~6종 | 테두리+텍스트 방식의 단색 배지로 통일 |
-| `padding: '8'` + canvas `padding: '6'` 이중 여백 | 캔버스 padding 제거, 스토리가 직접 레이아웃 관리 |
-| 카드에 `borderRadius: '2xl'` 이상 | radius `md` 수준 또는 없음 |
-| 각 섹션이 독립된 "카드" | 페이지 흐름처럼 자연스럽게 이어지는 섹션 |
-| 메타 테이블이 bordered box | 인라인 정의 목록 (한 줄로 읽힘) |
-| 상태 배지가 크고 눈에 띔 | 작고 인라인 — 텍스트의 일부처럼 |
-| 가이던스/안내 없음 | 각 스토리에 "언제 이걸 쓰나" + "다음에 볼 곳" 내장 |
-
----
-
-### 3-2. 색상/타이포그래피 시스템
-
-#### 4단계 타이포그래피 계층
-
-```
-레벨 1 — 페이지 제목: Storybook 자체 처리 (우리 관여 없음)
-레벨 2 — 섹션 구분 레이블: xs, semibold, textSubtle, uppercase, wide tracking
-          → 마치 구분선 역할 ("CONFIGURATION", "LIVE SURFACE" 같은 라벨)
-레벨 3 — 블록 제목 (h3): base, semibold, text
-레벨 4 — 레이블/eyebrow: xs, medium, textSubtle
-본문: sm, relaxed, textSubtle
-코드: mono, xs 또는 sm
-```
-
-현재 문제: 레벨 2~3이 역전·뒤섞여 있고, `StorybookSectionCard`의 h3가 실제로는 레벨 2 역할을 함.
-
-#### 색상 사용 단순화
-
-```
-primary        → 링크, active 상태만
-text           → 제목, 강조 텍스트만
-textSubtle     → 본문, 설명, 레이블
-border         → 구분선, 카드 테두리
-surfaceMuted   → 코드 블록 배경, 인라인 코드
-surface        → 페이지 배경
-```
-
-배지 배경색을 모두 없앤다. `primarySubtle`, `surfaceStrong`, `rgba(...)` 등 5~6가지 대신 **테두리+텍스트 컬러** 방식 하나로 통일.
-
----
-
-### 3-3. 컴포넌트별 리디자인 명세
-
-#### A. `previewCanvasClass` (`.storybook/preview.ts`)
-
-```tsx
-// 변경
-const previewCanvasClass = css({
-  minHeight: '100dvh',
-  padding: '0',          // 제거: 스토리마다 자체 레이아웃
-  backgroundColor: 'surface',
-  color: 'text',
-});
-```
-
----
-
-#### B. `pageClass`
-
-```tsx
-// 변경
-export const pageClass = css({
-  display: 'grid',
-  gap: '0',
-  maxWidth: '4xl',
-  marginInline: 'auto',
-  px: { base: '5', md: '8' },
-  py: { base: '8', md: '12' },
-  bg: 'surface',
-});
-```
-
----
-
-#### C. `StorybookSectionCard` → prose 흐름으로 교체
-
-**현재**: borderTop 선으로 구분. 제목 h3 + 설명 + children.
-
-**목표**: 배경 없는 섹션. 위 공백으로만 구분. 섹션 레이블은 작고 uppercase.
-
-```tsx
-// 새 storySectionClass (StorybookSectionCard 내부 구조 변경)
-const storySectionClass = css({
-  display: 'grid',
-  gap: '3',
-  paddingTop: '8',
-  '&:first-of-type': { paddingTop: '0' },
-});
-
-const storySectionLabelClass = css({
-  fontSize: 'xs',
-  fontWeight: 'semibold',
-  letterSpacing: 'widest',
-  textTransform: 'uppercase',
-  color: 'textSubtle',
-});
-
-const storySectionDescClass = css({
-  fontSize: 'sm',
-  lineHeight: 'relaxed',
-  color: 'textSubtle',
-  maxWidth: '2xl',
-});
-```
-
----
-
-#### D. `StorybookMetaTable` → 인라인 정의 목록
-
-현재: bordered box 안에 행 구분선 테이블.
-
-목표: `Mode · Default  Labels · Package-default  Uploads · Enabled` 처럼 인라인으로 읽힘. 작은 화면에서 자연스럽게 줄바꿈.
-
-```tsx
-const storyMetaListClass = css({
-  display: 'flex',
-  flexWrap: 'wrap',
-  columnGap: '5',
-  rowGap: '2',
-});
-
-const storyMetaItemClass = css({
-  display: 'inline-flex',
-  alignItems: 'baseline',
-  gap: '1.5',
-});
-
-const storyMetaLabelClass = css({
-  fontSize: 'xs',
-  fontWeight: 'semibold',
-  color: 'textSubtle',
-  letterSpacing: 'wide',
-  textTransform: 'uppercase',
-});
-
-const storyMetaValueClass = css({
-  fontSize: 'sm',
-  color: 'text',
-  fontWeight: 'medium',
-});
-```
-
----
-
-#### E. `StorybookStatusBadge` → 작은 outline 배지
-
-현재: 배경 채운 pill (3가지 색상 variant).
-
-목표: 얇은 테두리 + 컬러 도트 + 텍스트. 배경 없음.
-
-```tsx
-const storyBadgeClass = css({
-  display: 'inline-flex',
-  alignItems: 'center',
-  gap: '1.5',
-  fontSize: 'xs',
-  fontWeight: 'medium',
-  color: 'textSubtle',
-  border: '[1px solid var(--colors-border)]',
-  borderRadius: 'md',
-  px: '2',
-  py: '0.5',
-});
-
-const storyBadgeDotClass = css({
-  width: '[5px]',
-  height: '[5px]',
-  borderRadius: 'full',
-  flex: 'none',
-  // active: bg primary, muted: bg textSubtle
-});
-```
-
----
-
-#### F. `StorybookCheckList` → em-dash 리스트
-
-현재: 동그라미 배경 ✓ 아이콘.
-
-목표: `—` 또는 `·` 불릿, 배경 없음, 본문의 자연스러운 일부.
-
-```tsx
-const storyCheckListItemClass = css({
-  display: 'flex',
-  gap: '2',
-  fontSize: 'sm',
-  color: 'textSubtle',
-  lineHeight: 'relaxed',
-});
-// 아이콘: '—' 텍스트 노드, color 'border'
-```
-
----
-
-#### G. `codeBlockClass` (raw pre)
-
-```tsx
-export const codeBlockClass = css({
-  display: 'block',
-  bg: 'surfaceMuted',
-  border: '[1px solid var(--colors-border)]',
-  borderRadius: 'md',
-  p: '4',
-  fontFamily: 'mono',
-  fontSize: 'xs',
-  lineHeight: '[1.7]',
-  color: 'text',
-  overflowX: 'auto',
-  whiteSpace: 'pre',
-});
-```
-
----
-
-#### H. `StorybookCodeBlock` (Shiki 다크 블록)
-
-현재는 잘 되어 있음. 다음만 조정:
-- 헤더의 language 레이블 폰트 스타일 통일
-- border를 `var(--colors-border)` 토큰으로 교체 (현재 `rgba` 하드코딩)
-
----
-
-### 3-4. 신규 컴포넌트: 가이던스 & 내비게이션
-
-이 컴포넌트들은 `storybook-support.tsx`에 추가. "어떤 상황에서 어떤 선택"을 Storybook 안에서 바로 안내하는 역할.
-
----
-
-#### `StorybookNavLink` — 문서 링크 버튼
-
-스토리에서 GitHub Wiki나 다른 스토리로 이동하는 버튼. "더 알고 싶다면" 연결.
-
-```tsx
-type StorybookNavLinkProps = {
-  href: string;
-  label: string;
-  description?: string;
-  type: 'wiki' | 'story' | 'external';
-};
-
-// 스타일: 얇은 테두리, hover시 border-color → primary, 배경 없음
-// 아이콘: wiki='↗', story='→', external='↗'
-```
-
----
-
-#### `StorybookNavGroup` — 링크 묶음
-
-여러 NavLink를 묶는 컨테이너.
-
-```tsx
-// 사용 예 (각 스토리 하단)
-<StorybookNavGroup title="More resources">
-  <StorybookNavLink
-    href="https://github.com/pcwadarong/chaeditor/wiki/EN-:-Next.js-Integration"
-    label="Next.js Integration Guide"
-    description="App Router 프로젝트 단계별 연결 방법"
-    type="wiki"
-  />
-  <StorybookNavLink
-    href="https://github.com/pcwadarong/chaeditor/wiki/EN-:-Package-Surface-and-Import-Matrix"
-    label="Package Surface and Import Matrix"
-    description="어떤 entrypoint를 언제 쓰는가"
-    type="wiki"
-  />
-</StorybookNavGroup>
-```
-
-스타일: 섹션 하단에 가는 선 위 링크 목록. 제목은 작은 uppercase 레이블.
-
----
-
-#### `StorybookDecisionCard` — "언제 어떤 옵션?" 안내
-
-각 스토리 상단에 배치. 사용자가 지금 자신의 상황을 클릭하면 맞춤 설명 + 링크가 보임.
-
-```tsx
-type DecisionItem = {
-  id: string;
-  label: string;             // 짧은 상황 설명 ("처음 붙여보는 중")
-  body: string;              // 선택시 보일 설명
-  recommended?: boolean;     // 추천 경로 표시
-  links?: Array<{ label: string; href: string; type: 'wiki' | 'story' }>;
-};
-
-type StorybookDecisionCardProps = {
-  question: string;          // "어댑터를 언제 붙여야 하는가?"
-  items: DecisionItem[];
-};
-```
-
-**MarkdownEditor용 예시**:
-```
-어댑터를 언제 붙여야 하는가?
-
-[처음 마운트해보는 중] [기본 업로드만 연결]  [자체 API가 이미 있어]
-
-처음 마운트해보는 중 →
-  adapters 없이 MarkdownEditor를 먼저 띄워보세요.
-  텍스트 입력과 툴바가 동작하는 걸 확인한 뒤
-  그 다음 단계로 넘어가세요.
-  → CoreOnly story 보기
-  → Next.js Integration Guide (wiki)
-```
-
-스타일: 얇은 테두리 컨테이너. 선택지는 tab-strip 형태(배경 없는 버튼들). 선택한 항목 하단에 설명+링크 펼쳐짐.
-
----
-
-#### `StorybookUseCaseBadge` — 시나리오 태그
-
-각 스토리의 목적을 한눈에 표시.
-
-```tsx
-type UseCase =
-  | 'renderer-only'      // "Renderer only"
-  | 'full-editor'        // "Full editor"
-  | 'custom-host'        // "Custom host"
-  | 'no-adapters'        // "No adapters"
-  | 'design-system'      // "Design system override"
-  | 'server-rendering';  // "Server rendering"
-
-// 스타일: 작은 outline pill, 배경 없음
-// 스토리 제목 옆 또는 StorybookSectionCard 상단에 배치
-```
-
----
-
-### 3-5. 스토리별 가이던스 추가 계획
-
-#### `introduction.stories.tsx` — Overview + **새 스토리: IntegrationPaths**
-
-현재: 마케팅 히어로 + 피처 카드 3개. 가이던스 없음.
-
-추가:
-
-1. **`IntegrationPaths` 신규 스토리** — "무엇을 만들려는가?" 3가지 경로 카드:
-
-```
-┌─────────────────────────────────────────┐
-│  Renderer only                          │
-│  마크다운을 보여주기만 하면 됩니다       │
-│  • MarkdownRenderer — 서버 렌더링 가능  │
-│  • adapters 불필요                      │
-│  → MarkdownRenderer story               │
-└─────────────────────────────────────────┘
-
-┌─────────────────────────────────────────┐
-│  Editor (no uploads)                    │
-│  에디터 입력부터 붙이고 싶습니다         │
-│  • MarkdownEditor CoreOnly             │
-│  • adapters 없이 바로 동작              │
-│  → MarkdownEditor CoreOnly story        │
-└─────────────────────────────────────────┘
-
-┌─────────────────────────────────────────┐  ← 추천 (recommended badge)
-│  Full integration                       │
-│  업로드, 링크 프리뷰까지 전부 연결      │
-│  • createDefaultHostAdapters() 사용     │
-│  • Next.js App Router 기준 단계별 안내  │
-│  → Next.js Integration Guide (wiki)     │
-│  → MarkdownEditor Default story         │
-└─────────────────────────────────────────┘
-```
-
-2. 기존 Overview 하단에 `StorybookNavGroup` 추가 (wiki 전체 링크)
-
----
-
-#### `markdown-editor.stories.tsx`
-
-추가:
-1. 스토리 최상단 `StorybookDecisionCard`:
-   - "처음 마운트" → CoreOnly + Next.js wiki
-   - "기본 어댑터 연결" → Default + wiki Step 3
-   - "자체 API 있음" → CustomHostIntegration + adapter 타입 설명
-2. 각 variant에 `StorybookUseCaseBadge` (`no-adapters` / `full-editor` / `custom-host`)
-3. 하단 `StorybookNavGroup`:
-   - Next.js Integration Guide
-   - Package Surface matrix
-
----
-
-#### `markdown-renderer.stories.tsx`
-
-추가:
-1. 상단 `StorybookDecisionCard`:
-   - "서버에서 렌더링" → adapters 없이 가능, MarkdownRenderer async
-   - "이미지만 커스텀" → `renderImage` adapter 하나만 선택적으로
-   - "링크 프리뷰 보여주기" → `fetchLinkPreviewMeta` adapter만
-   - "전체 렌더 + 에디터" → MarkdownEditor story로 이동
-2. "Renderer vs Editor" 안내: 언제 렌더러만 쓰는 게 맞는지 한 단락
-
----
-
-#### `embed-workflows.stories.tsx`
-
-추가:
-1. 각 helper 카드 (`Uploads`, `Image renderer`, `Link previews`)에 "이 helper는 어떤 역할인가" 한 줄 설명
-2. 빈 payload log 상태 안내 개선: "왼쪽 버튼 중 하나를 눌러 플로우를 완료하면 여기에 실제 콜백 값이 표시됩니다"
-3. 하단 `StorybookNavGroup` → 어댑터 연결 Next.js wiki
-
----
-
-#### `styling-recipes.stories.tsx`
-
-추가:
-1. 최상단 `StorybookDecisionCard`: "어떤 경우에 어떤 레시피를 선택하는가?"
-   - "색상·폰트만 바꾸면 됨" → Theme Override (`createChaeditorThemeVars`)
-   - "버튼·모달을 교체해야 함" → PrimitiveRegistry
-   - "Tailwind를 메인으로 씀" → Tailwind 레시피
-   - "Emotion/SC/VE를 씀" → 해당 레시피
-2. 각 레시피 카드에 "이것만으로 충분한가? PrimitiveRegistry도 같이 필요한가?" 안내
-
----
-
-#### `markdown-toolbar.stories.tsx`
-
-추가:
-1. 각 variant에 `StorybookUseCaseBadge`
-2. "툴바만 따로 쓸 수 있나?" 안내 (`MarkdownToolbar`는 standalone 사용 가능)
-
----
-
-### 3-6. 위키 → Storybook 연동
-
-현재 위키(GitHub Wiki)와 Storybook이 완전히 분리되어 있다. 다음 방향으로 연결:
-
-| 위키 페이지 | 관련 Storybook 스토리 | 연결 방법 |
-|---|---|---|
-| Next.js Integration | MarkdownEditor Default | wiki 내 "Storybook에서 확인" 링크 추가 |
-| Package Surface & Import Matrix | Introduction/IntegrationPaths | wiki에서 스토리 링크, Storybook에서 wiki 링크 |
-| Architecture & Folder Ownership | 해당 없음 (contributor용) | CONTRIBUTING.md에서만 링크 |
-
----
-
-### 3-7. 수정 대상 파일
-
-| 파일 | 작업 |
-|---|---|
-| `.storybook/preview.ts` | `previewCanvasClass` padding 제거, bg 조정 |
-| `src/stories/fixtures/storybook-support.tsx` | 전체 스타일 시스템 교체 + `StorybookNavLink`, `StorybookNavGroup`, `StorybookDecisionCard`, `StorybookUseCaseBadge` 신규 컴포넌트 추가 |
-| `src/stories/introduction.stories.tsx` | `IntegrationPaths` 스토리 신규 추가, `StorybookNavGroup` wiki 링크 |
-| `src/stories/markdown-editor.stories.tsx` | `StorybookDecisionCard`, `StorybookUseCaseBadge`, `StorybookNavGroup` 추가 |
-| `src/stories/markdown-renderer.stories.tsx` | `StorybookDecisionCard`, "Renderer vs Editor" 안내, `StorybookNavGroup` 추가 |
-| `src/stories/embed-workflows.stories.tsx` | 빈 상태 안내 개선, helper 설명 추가, `StorybookNavGroup` |
-| `src/stories/styling-recipes.stories.tsx` | `StorybookDecisionCard` 추가 |
-| `src/stories/markdown-toolbar.stories.tsx` | `StorybookUseCaseBadge`, standalone 안내 추가 |
-
----
-
-## 4. 이미지 갤러리 슬라이더 크기 문제 [메모: 2026-04-09 edge scroll state 동기화 버그 수정 완료]
-
-### 4-1. 현재 코드
+### 3-1. 현재 코드
 
 **`src/shared/ui/markdown/markdown-gallery.panda.ts`**
 
@@ -799,7 +318,7 @@ export const gallerySlideClass = css({
 
 ---
 
-## 5. README 개선 — 영어
+## 4. README 개선 — 영어 [메모: 2026-04-09 quick start / CSS 선택 / 시작 경로 재구성 완료]
 
 ### 4-1. 현재 구조 문제
 
@@ -837,7 +356,7 @@ Contributing         ← 딱 한 줄
 ```
 # chaeditor
 [1줄 설명]
-링크 (npm / Storybook)
+링크 (npm / 문서)
 언어 전환 (English | 한국어)
 
 ## Quick Start
@@ -917,7 +436,7 @@ const HostButton = (props) => (
 
 ---
 
-## 6. README 개선 — 한국어
+## 5. README 개선 — 한국어 [메모: 2026-04-09 톤 정리 / 용어 설명 / 시작 동선 재구성 완료]
 
 ### 5-1. 현재 구조 문제
 
@@ -986,7 +505,7 @@ const HostButton = (props) => (
 
 ---
 
-## 7. CONTRIBUTING 개선 — 영어
+## 6. CONTRIBUTING 개선 — 영어 [메모: 2026-04-09 welcome / 명령 설명 / release 경계 정리 완료]
 
 ### 6-1. 현재 문제
 
@@ -1006,24 +525,19 @@ pnpm run verify:package-surface
 
 각 명령이 무엇을 하는지 한 줄 설명이 없다. 처음 보는 사람은 "lint가 실패하면 뭘 봐야 하는지" 모른다.
 
-#### C. Storybook 워크플로우 빠짐
-
-현재 문서에 Storybook은 명령어만 있고, 언제/어떻게 스토리를 보면 좋은지 설명이 없다. 특히 "시각적으로 확인이 필요한 변경"(컴포넌트 스타일, 갤러리, 에디터 동작)은 Storybook이 핵심 도구인데.
-
-#### D. 테스트 섹션이 너무 이론적
+#### C. 테스트 섹션이 너무 이론적
 
 ```
 Choose the lowest-cost environment that still validates the behavior:
 - Node: pure utilities and transformation logic
 - JSDOM: component wiring and DOM behavior
-- Storybook: visual comparison and integration references
 ```
 
 언제 어떤 환경을 선택하는지 기준은 있지만, 실제로 테스트를 어떻게 실행하는지(watch 모드, 특정 파일만 실행) 없다.
 
-#### E. PR 흐름 설명 부족
+#### D. PR 흐름 설명 부족
 
-"Use the repository PR template" — PR 템플릿이 어디에 있는지 경로를 알려주지 않는다. 또 Chromatic(Storybook visual diff)이 PR에 연결되어 있는지 없는지, 있다면 어떻게 확인하는지도 없다.
+"Use the repository PR template" — PR 템플릿이 어디에 있는지 경로를 알려주지 않는다.
 
 ### 6-2. 개선 방향
 
@@ -1046,9 +560,6 @@ Choose the lowest-cost environment that still validates the behavior:
 
 ### 의존성 설치
 pnpm install
-
-### 개발 서버 및 Storybook
-pnpm storybook  ← "언제" 켜야 하는지 설명 추가
 
 ### 주요 검증 명령 (각 명령에 한 줄 설명 추가)
 - pnpm lint          # ESLint 실행
@@ -1098,7 +609,7 @@ If this is your first contribution, look for issues labeled `good first issue`.
 
 ---
 
-## 8. CONTRIBUTING 개선 — 한국어
+## 7. CONTRIBUTING 개선 — 한국어 [메모: 2026-04-09 번역체 정리 / 안내형 톤 통일 완료]
 
 ### 7-1. 현재 문제
 
@@ -1167,7 +678,7 @@ pnpm run verify:package-surface   # 공개 entrypoint 무결성 검증
 
 ---
 
-## 9. 문서 구조 분리 제안
+## 8. 문서 구조 분리 제안 [메모: 2026-04-09 README와 wiki 역할 분리, CSS/primitive/release 문서 추가 완료]
 
 현재 README 하나에 너무 많은 내용이 있다. 장기적으로는 아래처럼 나누는 게 유지보수하기 쉽다.
 
@@ -1194,7 +705,7 @@ README에서 중복 섹션을 정리하고, 너무 긴 코드 예제(Primitive S
 | 현재 위치 | 이동 대상 |
 |---|---|
 | Primitive Shell Replacement 전체 예제 | `docs/wiki/primitive-shell-replacement.md` |
-| Styling Runtime Recipes 전체 예제 | 이미 Storybook에 있으므로 README에서 링크만 |
+| Styling Runtime Recipes 전체 예제 | 별도 문서 또는 위키로 이동 |
 | 상세 CSS entrypoint 설명 | `docs/wiki/css-setup.md` |
 
 **CONTRIBUTING 분리 제안**
@@ -1208,25 +719,21 @@ docs/release-checklist.md → 릴리즈 전 smoke test 절차 (maintainer용)
 
 ---
 
-## 10. 작업 우선순위 및 순서
+## 9. 작업 우선순위 및 순서
 
 ### 우선순위 매트릭스
 
 | 항목 | 영향도 | 난이도 | 우선순위 |
 |---|---|---|---|
 | 갤러리 슬라이더 크기 | 높음 (기능 버그) | 낮음 (CSS만 수정) | **1순위** |
-| Storybook 전체 스타일 시스템 교체 | 높음 | 중간 | **2순위** |
-| Storybook 신규 컴포넌트 (NavLink, DecisionCard 등) | 높음 | 중간 | **2순위** |
-| Storybook 스토리별 가이던스 추가 | 높음 | 중간 | **2순위** |
-| Introduction/IntegrationPaths 신규 스토리 | 높음 | 낮음 | **2순위** |
-| README(영) 섹션 구조 개편 | 높음 | 중간 | **3순위** |
-| README(한) 톤/용어 개선 | 높음 | 중간 | **3순위** |
-| CONTRIBUTING(영) Welcome + 명령어 설명 | 중간 | 낮음 | **4순위** |
-| CONTRIBUTING(한) 자연스러운 한국어 | 중간 | 중간 | **4순위** |
-| `imageIndex` 뮤터블 카운터 수정 | 낮음 (현재 버그 없음) | 중간 | **5순위** |
-| `markdown-config.tsx` 분리 리팩터링 | 중간 (유지보수성) | 높음 (영향 범위 넓음) | **6순위 (추후)** |
-| 문서 구조 분리 | 낮음 | 높음 | **6순위 (추후)** |
-| `use-markdown-toolbar.tsx` handler 분리 | 낮음 (기능 없음) | 높음 | **7순위 (추후)** |
+| README(영) 섹션 구조 개편 | 높음 | 중간 | **2순위** |
+| README(한) 톤/용어 개선 | 높음 | 중간 | **2순위** |
+| CONTRIBUTING(영) Welcome + 명령어 설명 | 중간 | 낮음 | **3순위** |
+| CONTRIBUTING(한) 자연스러운 한국어 | 중간 | 중간 | **3순위** |
+| `imageIndex` 뮤터블 카운터 수정 | 낮음 (현재 버그 없음) | 중간 | **4순위** |
+| `markdown-config.tsx` 분리 리팩터링 | 중간 (유지보수성) | 높음 (영향 범위 넓음) | **5순위 (추후)** |
+| 문서 구조 분리 | 낮음 | 높음 | **5순위 (추후)** |
+| `use-markdown-toolbar.tsx` handler 분리 | 낮음 (기능 없음) | 높음 | **6순위 (추후)** |
 
 ### 작업 순서 제안
 
@@ -1234,33 +741,21 @@ docs/release-checklist.md → 릴리즈 전 smoke test 절차 (maintainer용)
 Phase 1 — 버그 수정 (가장 먼저, 즉시 효과)
   1. markdown-gallery.panda.ts: 슬라이더 aspectRatio 16:9 + maxHeight + 반응형 너비
 
-Phase 2 — Storybook 리디자인 (가장 작업량 많음, 순차적으로)
-  2a. preview.ts + storybook-support.tsx: 스타일 시스템 전체 교체
-       (pageClass, StorybookSectionCard, MetaTable, StatusBadge, CheckList, codeBlockClass)
-  2b. storybook-support.tsx: 신규 컴포넌트 추가
-       (StorybookNavLink, StorybookNavGroup, StorybookDecisionCard, StorybookUseCaseBadge)
-  2c. introduction.stories.tsx: IntegrationPaths 신규 스토리 + NavGroup
-  2d. markdown-editor.stories.tsx: DecisionCard + UseCaseBadge + NavGroup
-  2e. markdown-renderer.stories.tsx: DecisionCard + "Renderer vs Editor" 안내 + NavGroup
-  2f. embed-workflows.stories.tsx: 빈 상태 개선 + helper 설명 + NavGroup
-  2g. styling-recipes.stories.tsx: DecisionCard 추가
-  2h. markdown-toolbar.stories.tsx: UseCaseBadge + standalone 안내
+Phase 2 — 영어 문서 개선
+  2. README.md: Quick Start 추가, CSS 섹션 중복 제거, 이슈 제보 섹션 추가, Primitive 예제 축소
+  3. CONTRIBUTING.md: Welcome 섹션, 명령어 설명, PR 템플릿 경로
 
-Phase 3 — 영어 문서 개선
-  3. README.md: Quick Start 추가, CSS 섹션 중복 제거, 이슈 제보 섹션 추가, Primitive 예제 축소
-  4. CONTRIBUTING.md: Welcome 섹션, 명령어 설명, Storybook 워크플로우, PR 템플릿 경로
+Phase 3 — 한국어 문서 개선
+  4. README.ko.md: 구조 동기화, 톤 개선, 기술 용어 설명 추가
+  5. CONTRIBUTING.ko.md: Welcome, 직역체 수정, 경어체 통일
 
-Phase 4 — 한국어 문서 개선
-  5. README.ko.md: 구조 동기화, 톤 개선, 기술 용어 설명 추가
-  6. CONTRIBUTING.ko.md: Welcome, 직역체 수정, 경어체 통일
+Phase 4 — 코드 품질 개선 (추후, 충분한 테스트 후)
+  6. imageIndex 뮤터블 카운터 → src 매칭 방식으로 교체
+  7. markdown-config.tsx 분리 (영향 범위 넓으므로 신중하게)
 
-Phase 5 — 코드 품질 개선 (추후, 충분한 테스트 후)
-  7. imageIndex 뮤터블 카운터 → src 매칭 방식으로 교체
-  8. markdown-config.tsx 분리 (영향 범위 넓으므로 신중하게)
-
-Phase 6 — 구조 분리 (추후 별도 논의 필요)
-  9. Primitive Shell Replacement 예제 → 위키로 이동
-  10. Release checklist → docs/ 분리
+Phase 5 — 구조 분리 (추후 별도 논의 필요)
+  8. Primitive Shell Replacement 예제 → 위키로 이동
+  9. Release checklist → docs/ 분리
 ```
 
 ---
@@ -1270,9 +765,7 @@ Phase 6 — 구조 분리 (추후 별도 논의 필요)
 | 파일 | Phase | 수정 내용 요약 |
 |---|---|---|
 | `src/shared/ui/markdown/markdown-gallery.panda.ts` | 1 | `aspectRatio` 16:9로 변경, `maxHeight` 추가, `gridAutoColumns` 반응형 |
-| `src/stories/fixtures/storybook-support.tsx` | 1 | `codeBlockClass` 배경/테두리, `storySectionCardClass` 카드화, `pageClass` 조정 |
-| `.storybook/preview.ts` | 1 | `previewCanvasClass` 패딩 재검토 |
 | `README.md` | 2 | 구조 개편, Quick Start, 이슈 제보, Primitive 예제 축소 |
-| `CONTRIBUTING.md` | 2 | Welcome, 명령어 설명, Storybook 워크플로우, PR 템플릿 경로 |
+| `CONTRIBUTING.md` | 2 | Welcome, 명령어 설명, PR 템플릿 경로 |
 | `README.ko.md` | 3 | 구조 동기화, 톤/용어 개선 |
 | `CONTRIBUTING.ko.md` | 3 | Welcome, 직역체 수정, 경어체 통일 |

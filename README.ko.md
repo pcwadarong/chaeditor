@@ -2,123 +2,51 @@
 
 [English](./README.md) | 한국어
 
-`chaeditor`는 React 애플리케이션을 위한 조합형 마크다운 에디터 툴킷입니다.
-작성 보조 도구, 임베드 워크플로우, 리치 마크다운 렌더링을 하나의 패키지 안에서 제공하면서도, host 통합, 스타일, primitive shell은 외부에서 주입하거나 교체할 수 있도록 설계되어 있습니다.
-
-## Features
-
-- 마크다운 작성 보조와 selection transform 유틸
-- preset 기반 toolbar 조합
-- attachment, gallery, math, Mermaid, spoiler, video를 포함한 리치 마크다운 렌더링
-- upload, href 해석, 이미지 렌더링, 링크 미리보기 메타데이터를 위한 host adapter
-- theme variable override와 primitive shell replacement
-
-## 가이드
-
-- [Next.js 통합 가이드](https://github.com/pcwadarong/chaeditor/wiki/KO-%3A-Next.js-%ED%86%B5%ED%95%A9-%EA%B0%80%EC%9D%B4%EB%93%9C)
-- [패키지 표면과 import 매트릭스](https://github.com/pcwadarong/chaeditor/wiki/KO-%3A-%ED%8C%A8%ED%82%A4%EC%A7%80-%ED%91%9C%EB%A9%B4%EA%B3%BC-import-%EB%A7%A4%ED%8A%B8%EB%A6%AD%EC%8A%A4)
-- [아키텍처와 폴더 책임](https://github.com/pcwadarong/chaeditor/wiki/KO-%3A--%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98%EC%99%80-%ED%8F%B4%EB%8D%94-%EC%B1%85%EC%9E%84)
-
-처음 붙이는 단계라면 `Next.js 통합 가이드`부터 보는 걸 추천합니다.
-업로드나 이미지 첨부, OG 카드, route 연결처럼 앱 쪽에서 같이 작업해야 하는 부분은 위 문서가 도움이 됩니다.
+`chaeditor`는 React 앱에서 조합형 마크다운 에디터를 만들 수 있게 돕는 툴킷입니다.
+작성 보조, 리치 임베드, 렌더링을 한 패키지에서 제공하면서도 스타일과 host 연결 방식은 앱 쪽에서 바꿔 끼울 수 있게 설계되어 있습니다.
 
 ## 링크
 
 - [npm 패키지](https://www.npmjs.com/package/chaeditor)
 - [스토리북(Chromatic)](https://www.chromatic.com/library?appId=69cd38a84da2f3f99e158f5c)
 
-## 설치
+## 가이드
 
-앱 코드에서는 `chaeditor/react`, `chaeditor/core` 같은 subpath import를 기본으로 생각하면 됩니다.
-루트 `chaeditor` entrypoint도 남아 있지만, 그 경로는 React surface와 core 유틸이 한곳에 섞인 호환용 경로에 가깝습니다.
+아래 링크는 저장소 안 문서 경로입니다.
+나중에 위키를 웹으로 공개한다면 여기 링크를 공개 주소로 바꿔 붙이면 됩니다.
 
-```bash
-npm install react react-dom chaeditor
-pnpm add react react-dom chaeditor
-yarn add react react-dom chaeditor
-bun add react react-dom chaeditor
-```
+- [Next.js 통합 가이드](./docs/wiki/ko/nextjs-integration.md)
+- [패키지 표면과 import 매트릭스](./docs/wiki/ko/package-surface-and-import-matrix.md)
+- [CSS 설정 가이드](./docs/wiki/ko/css-setup.md)
+- [Primitive Shell Replacement](./docs/wiki/ko/primitive-shell-replacement.md)
+- [아키텍처와 폴더 책임](./docs/wiki/ko/architecture-and-folder-ownership.md)
 
-CSS entrypoint는 math 스타일 포함 여부에 따라 고르면 됩니다.
+처음 붙이는 단계라면 Next.js 통합 가이드부터 보는 편이 가장 빠릅니다.
+업로드, 이미지 첨부, OG 카드, route 연결이 들어가는 순간부터는 README보다 위 문서가 더 직접적으로 도움이 됩니다.
+
+## 빠르게 시작하기
+
+지금 필요한 경로 하나만 먼저 고르면 덜 헷갈립니다.
+
+### renderer만 필요할 때
 
 ```tsx
 import 'chaeditor/styles.css';
+
+import { MarkdownRenderer } from 'chaeditor/react';
+
+const Example = async () => {
+  return <MarkdownRenderer markdown="# Hello chaeditor" />;
+};
 ```
 
-`chaeditor/styles.css`는 full bundle입니다. Panda 기반 기본 스타일, theme token, KaTeX 스타일, KaTeX 폰트까지 포함합니다.
-
-KaTeX 런타임 스타일을 뺀 더 가벼운 번들이 필요하면 아래처럼 사용합니다.
+### host adapter 없이 editor부터 붙일 때
 
 ```tsx
-import 'chaeditor/styles-lite.css';
-```
+'use client';
 
-`chaeditor/styles-lite.css`를 쓰면서 math까지 렌더링한다면, KaTeX CSS는 host app에서 별도로 불러와야 합니다.
+import { useState } from 'react';
 
-```tsx
-import 'chaeditor/styles-lite.css';
-import 'katex/dist/katex.min.css';
-```
-
-## 어디서 시작하면 좋은가
-
-처음 붙일 때는 아래처럼 생각하면 덜 헷갈립니다.
-
-- 마크다운 표시만 필요하다면: `MarkdownRenderer`와 `chaeditor/styles.css`부터 연결합니다.
-- 에디터 입력만 먼저 붙이고 싶다면: `MarkdownEditor`를 adapter 없이 먼저 띄웁니다.
-- 이미지 첨부, 파일 업로드, 비디오, OG 카드까지 필요하다면: `createDefaultHostAdapters()`와 Next.js 통합 가이드를 같이 봅니다.
-
-추천 순서는 아래입니다.
-
-1. `styles.css` 또는 `styles-lite.css`를 전역에 import합니다.
-2. `MarkdownRenderer`나 `MarkdownEditor`를 먼저 화면에 띄웁니다.
-3. 기본 입력이 되는지 확인한 뒤에만 host adapter를 붙입니다.
-4. 배포 직전에는 packed tarball 기준 smoke test까지 확인합니다.
-
-## 패키지 표면
-
-`chaeditor`는 하나의 패키지로 배포됩니다.
-subpath를 따로 설치하는 구조가 아니라, `chaeditor`를 한 번 설치한 뒤 필요한 entrypoint만 골라 import하는 방식으로 사용합니다.
-실제 앱 코드에서는 `from 'chaeditor'`보다 `chaeditor/react`, `chaeditor/core`를 먼저 떠올리는 편이 좋습니다.
-
-| Import 경로                  | 제공 내용                                                                                                | 사용할 때                                          |
-| ---------------------------- | -------------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
-| `chaeditor/react`            | `MarkdownEditor`, `MarkdownToolbar`, `MarkdownRenderer` 같은 React surface와 primitive registry contract | 대부분의 앱 통합                                   |
-| `chaeditor/core`             | 순수 유틸, 마크다운 helper, parser contract, `createChaeditorThemeVars()`                                | UI 없이 로직만 쓸 때, 서버 안전 유틸이 필요할 때   |
-| `chaeditor/default-host`     | 기본 upload adapter 구현                                                                                 | 번들된 기본 업로드 구현이 필요할 때만              |
-| `chaeditor/panda-primitives` | 패키지에 번들된 Panda 기반 primitive shell                                                               | 기본 primitive 구현을 재사용하거나 감쌀 때만       |
-| `chaeditor/styles.css`       | 기본 theme token, 컴포넌트 스타일, KaTeX 수식 스타일, KaTeX 폰트                                         | math까지 포함한 기본 스타일을 바로 쓰고 싶을 때    |
-| `chaeditor/styles-lite.css`  | KaTeX 런타임 스타일이 빠진 기본 theme token과 컴포넌트 스타일                                            | math를 안 쓰거나 KaTeX CSS를 host가 직접 관리할 때 |
-
-## CSS entrypoint 선택 기준
-
-`chaeditor/styles.css`를 쓰면 좋은 경우:
-
-- 기본 동작을 가장 안전하게 가져가고 싶을 때
-- math를 렌더링할 때
-- KaTeX CSS와 폰트를 따로 관리하고 싶지 않을 때
-
-`chaeditor/styles-lite.css`를 쓰면 좋은 경우:
-
-- 기본 CSS 번들을 조금 더 가볍게 가져가고 싶을 때
-- 앱에서 math를 렌더링하지 않을 때
-- 이미 app 전역에서 `katex/dist/katex.min.css`를 관리하고 있을 때
-
-정리하면:
-
-- `styles.css`: 가장 안전한 기본 선택
-- `styles-lite.css`: KaTeX 스타일을 의도적으로 host가 관리할 때만 선택
-
-## 선택적 import
-
-설치는 `chaeditor` 한 번만 하고, 사용은 필요한 subpath만 import하면 됩니다.
-`default-host`, `panda-primitives`는 opt-in surface입니다.
-
-대표 예시는 아래 정도면 충분합니다.
-
-### 기본 editor
-
-```tsx
 import 'chaeditor/styles.css';
 
 import { MarkdownEditor } from 'chaeditor/react';
@@ -130,28 +58,13 @@ const Example = () => {
 };
 ```
 
-### 더 가벼운 CSS로 editor 연결
+### 업로드와 preview까지 같이 붙일 때
 
 ```tsx
-import 'chaeditor/styles-lite.css';
-import 'katex/dist/katex.min.css';
+'use client';
 
-import { MarkdownEditor } from 'chaeditor/react';
-```
+import { useState } from 'react';
 
-### core 유틸만 사용
-
-```ts
-import {
-  createImageGalleryMarkdown,
-  createMathEmbedMarkdown,
-  parseRichMarkdownSegments,
-} from 'chaeditor/core';
-```
-
-### 기본 host adapter를 선택적으로 연결
-
-```tsx
 import 'chaeditor/styles.css';
 
 import { createDefaultHostAdapters } from 'chaeditor/default-host';
@@ -159,53 +72,91 @@ import { MarkdownEditor } from 'chaeditor/react';
 
 const adapters = createDefaultHostAdapters();
 
-const Example = () => (
-  <MarkdownEditor adapters={adapters} contentType="article" onChange={() => {}} value="" />
-);
-```
+const Example = () => {
+  const [value, setValue] = useState('');
 
-`createDefaultHostAdapters()`를 쓰면 앱 쪽에 아래 route가 있어야 합니다.
-
-- `/api/attachments`
-- `/api/images`
-- `/api/videos`
-- `/api/link-preview`
-
-처음 연결할 때는 아래 순서가 가장 안전합니다.
-
-1. `MarkdownEditor`를 adapter 없이 먼저 띄웁니다.
-2. 그 다음 `createDefaultHostAdapters()`를 추가합니다.
-3. `app/api/attachments/route.ts`, `app/api/images/route.ts`, `app/api/videos/route.ts`, `app/api/link-preview/route.ts`를 만듭니다.
-4. 이미지 업로드, 파일 첨부, 링크 붙여넣기를 각각 한 번씩 직접 눌러 봅니다.
-
-OG 카드나 preview 카드 메타데이터만 먼저 붙이고 싶다면 preview helper만 따로 연결해도 됩니다.
-
-```tsx
-import { createFetchLinkPreviewMeta } from 'chaeditor/default-host';
-
-const adapters = {
-  fetchLinkPreviewMeta: createFetchLinkPreviewMeta(),
+  return (
+    <MarkdownEditor adapters={adapters} contentType="article" onChange={setValue} value={value} />
+  );
 };
 ```
 
-실제 App Router 기준으로는 아래를 한 번에 따라갈 수 있도록 Next.js 통합 가이드를 더 자세히 적어 두었습니다.
+여기까지 띄운 뒤에는 [Next.js 통합 가이드](./docs/wiki/ko/nextjs-integration.md)를 따라 route 파일과 검증 순서를 맞추면 됩니다.
 
-- 어떤 파일을 어디에 만들어야 하는지
-- 각 route가 어떤 요청을 받고 어떤 JSON을 반환해야 하는지
-- `route.ts`를 어느 수준까지 복붙해서 시작할 수 있는지
-- 연결이 끝났는지 확인하는 smoke checklist
-- preview 카드가 안 뜨거나 upload URL이 깨질 때의 점검 포인트
+## 설치
 
-### Panda primitive를 선택적으로 재사용
+`chaeditor`는 한 번만 설치하고, 실제 앱 코드에서는 필요한 subpath만 import하면 됩니다.
+앱 코드에서는 `chaeditor/react`, `chaeditor/core`를 기본으로 생각하면 됩니다.
+루트 `chaeditor` entrypoint는 남아 있지만, React surface와 core 유틸이 한곳에 섞인 호환용 경로에 가깝습니다.
 
-```tsx
-import { Button, createPandaMarkdownPrimitiveRegistry } from 'chaeditor/panda-primitives';
+```bash
+npm install react react-dom chaeditor
+pnpm add react react-dom chaeditor
+yarn add react react-dom chaeditor
+bun add react react-dom chaeditor
 ```
 
-## Theme Override
+### CSS 선택 기준
 
-기본 스타일 구현은 Panda CSS를 사용하지만, 공개된 theme contract는 CSS variable 기반입니다.
-즉 패키지 기본값을 그대로 써도 되고, host app이 필요한 값만 override해도 됩니다.
+| 경로                        | 이런 경우에 사용                                        | 포함 내용                                           |
+| --------------------------- | ------------------------------------------------------- | --------------------------------------------------- |
+| `chaeditor/styles.css`      | 가장 안전한 기본값이 필요할 때, 또는 math를 렌더링할 때 | 기본 스타일, Panda 산출물, KaTeX 스타일, KaTeX 폰트 |
+| `chaeditor/styles-lite.css` | KaTeX CSS를 앱이 직접 관리할 때, 또는 math를 안 쓸 때   | KaTeX 런타임 스타일이 빠진 기본 스타일              |
+
+가장 안전한 기본 선택:
+
+```tsx
+import 'chaeditor/styles.css';
+```
+
+더 가벼운 선택:
+
+```tsx
+import 'chaeditor/styles-lite.css';
+```
+
+`styles-lite.css`를 쓰면서 math를 렌더링한다면 아래 import가 추가로 필요합니다.
+
+```tsx
+import 'chaeditor/styles-lite.css';
+import 'katex/dist/katex.min.css';
+```
+
+자세한 기준은 [CSS 설정 가이드](./docs/wiki/ko/css-setup.md)에 따로 정리했습니다.
+
+## 패키지 표면
+
+`chaeditor`는 하나의 npm 패키지입니다.
+subpath를 따로 설치하는 구조가 아니라, 한 번 설치한 뒤 필요한 entrypoint만 골라 import합니다.
+
+| Import 경로                  | 제공 내용                                                               | 사용할 때                                        |
+| ---------------------------- | ----------------------------------------------------------------------- | ------------------------------------------------ |
+| `chaeditor/react`            | `MarkdownEditor`, `MarkdownToolbar`, `MarkdownRenderer`, React registry | 대부분의 앱 통합                                 |
+| `chaeditor/core`             | 순수 유틸, markdown 계약, theme helper                                  | UI 없이 로직만 쓸 때, 서버 안전 유틸이 필요할 때 |
+| `chaeditor/default-host`     | 기본 upload/preview helper                                              | 빠르게 붙이거나 route 관례를 맞추고 싶을 때      |
+| `chaeditor/panda-primitives` | 기본 Panda primitive shell                                              | 패키지 기본 shell을 재사용하거나 감쌀 때         |
+| `chaeditor/styles.css`       | full CSS bundle                                                         | 가장 안전한 기본 스타일 경로                     |
+| `chaeditor/styles-lite.css`  | lighter CSS bundle                                                      | KaTeX 스타일을 host가 관리할 때                  |
+
+더 자세한 표와 조합 예시는 [패키지 표면과 import 매트릭스](./docs/wiki/ko/package-surface-and-import-matrix.md)에서 볼 수 있습니다.
+
+## 다음에 어디를 보면 좋은가
+
+- App Router 기준 실제 통합 순서가 필요하다면: [Next.js 통합 가이드](./docs/wiki/ko/nextjs-integration.md)
+- 어떤 import 경로를 써야 할지 헷갈린다면: [패키지 표면과 import 매트릭스](./docs/wiki/ko/package-surface-and-import-matrix.md)
+- `styles.css`와 `styles-lite.css` 중 무엇을 골라야 할지 애매하다면: [CSS 설정 가이드](./docs/wiki/ko/css-setup.md)
+- 패키지 기본 UI shell 대신 앱 디자인 시스템 컴포넌트를 쓰고 싶다면: [Primitive Shell Replacement](./docs/wiki/ko/primitive-shell-replacement.md)
+- Tailwind, Emotion, styled-components, vanilla-extract wrapper 예시가 필요하다면: [Host Preset Templates](./recipes/host-presets/README.md)
+
+## 테마와 host 커스터마이징
+
+`chaeditor`는 theme 값과 host 소유 로직을 분리해서 다룹니다.
+
+- semantic token만 바꾸고 싶다면 `createChaeditorThemeVars()`
+- 실제 `Button`, `Input`, `Textarea`, `Popover`, `Modal`, `Tooltip` shell을 바꾸고 싶다면 `primitiveRegistry`
+- 업로드, href 해석, 이미지 렌더링, preview metadata를 앱에서 소유하고 싶다면 host adapter
+
+가장 작은 theme override 예시는 아래 정도면 충분합니다.
 
 ```tsx
 import 'chaeditor/styles.css';
@@ -217,11 +168,8 @@ const themeVars = createChaeditorThemeVars({
   primary: '#0f766e',
   primarySubtle: '#ccfbf1',
   surface: '#f8fafc',
-  surfaceMuted: '#eff6ff',
   text: '#0f172a',
-  textSubtle: '#475569',
   sansFont: 'var(--app-font-sans), system-ui, sans-serif',
-  monoFont: "var(--font-d2coding), 'D2Coding', monospace",
 });
 
 const Example = () => (
@@ -231,95 +179,7 @@ const Example = () => (
 );
 ```
 
-폰트 정책은 아래처럼 가져가면 됩니다.
-
-- `sansFont`: host app의 기본 sans 폰트
-- `sansJaFont`: 다국어 fallback이 필요할 때만 override
-- `monoFont`: 필요하면 host mono를 넣고, 비워두면 D2Coding fallback chain이 기본으로 동작
-
-## Styling Runtime Recipes
-
-패키지 기본 스타일 런타임은 Panda CSS입니다.
-host 쪽 스타일링 레시피는 host app이 variable을 override하거나 primitive shell을 교체하고 싶을 때만 필요합니다.
-
-지원 예시는 아래 범위로 제공합니다.
-
-- Tailwind CSS
-- Emotion
-- styled-components
-- vanilla-extract
-- primitive shell replacement
-
-바로 가져다 쓸 수 있는 host wrapper 템플릿은 [recipes/host-presets](./recipes/host-presets/README.md)에 정리되어 있습니다.
-
-## Primitive Shell Replacement
-
-색상, 폰트, spacing 정도는 theme variable override로 충분하지만, 실제 `Button`, `Input`, `Textarea`, `Popover`, `Modal`, `Tooltip` shell 자체를 교체해야 할 수도 있습니다.
-그럴 때는 `primitiveRegistry`를 사용합니다.
-
-```tsx
-import 'chaeditor/styles.css';
-
-import { MarkdownEditor } from 'chaeditor/react';
-
-const HostButton = props => (
-  <button {...props} className={`host-button ${props.className ?? ''}`.trim()} />
-);
-
-const HostInput = props => (
-  <input {...props} className={`host-input ${props.className ?? ''}`.trim()} />
-);
-
-const HostTextarea = props => (
-  <textarea {...props} className={`host-textarea ${props.className ?? ''}`.trim()} />
-);
-
-const HostPopover = props => (
-  <Popover
-    {...props}
-    panelClassName={`host-popover-panel ${props.panelClassName ?? ''}`.trim()}
-    triggerClassName={`host-popover-trigger ${props.triggerClassName ?? ''}`.trim()}
-  />
-);
-
-const HostModal = props => (
-  <Modal
-    {...props}
-    backdropClassName={`host-modal-backdrop ${props.backdropClassName ?? ''}`.trim()}
-    closeButtonClassName={`host-modal-close ${props.closeButtonClassName ?? ''}`.trim()}
-    frameClassName={`host-modal-frame ${props.frameClassName ?? ''}`.trim()}
-  />
-);
-
-const HostTooltip = props => (
-  <Tooltip
-    {...props}
-    contentClassName={`host-tooltip ${props.contentClassName ?? ''}`.trim()}
-    portalClassName={`host-tooltip-portal ${props.portalClassName ?? ''}`.trim()}
-  />
-);
-
-const Example = () => (
-  <MarkdownEditor
-    contentType="article"
-    onChange={() => {}}
-    primitiveRegistry={{
-      Button: HostButton,
-      Input: HostInput,
-      Modal: HostModal,
-      Popover: HostPopover,
-      Textarea: HostTextarea,
-      Tooltip: HostTooltip,
-    }}
-    value=""
-  />
-);
-```
-
-기준을 정리하면:
-
-- `createChaeditorThemeVars()`는 semantic token을 바꿉니다.
-- `primitiveRegistry`는 실제 shell 컴포넌트를 바꿉니다.
+Primitive shell 교체 전체 예시는 [Primitive Shell Replacement](./docs/wiki/ko/primitive-shell-replacement.md)에 따로 정리했습니다.
 
 ## 로컬 개발
 
@@ -327,19 +187,27 @@ const Example = () => (
 pnpm install
 pnpm lint
 pnpm check-types
-pnpm build
 pnpm test
+pnpm build
+pnpm run verify:package-surface
+```
+
+시각적인 변경이나 docs-facing 예시를 같이 확인해야 하면 아래도 자주 사용합니다.
+
+```bash
+pnpm storybook
 ```
 
 ## 이슈 제보
 
 새 이슈를 열기 전에 같은 문제가 이미 등록되어 있는지 먼저 확인해 주세요.
-버그를 제보할 때는 아래 정보를 함께 적어 주세요.
+버그 제보에는 아래 정보가 있으면 훨씬 빠르게 확인할 수 있습니다.
 
 - 패키지 버전
-- 런타임 또는 프레임워크 버전
-- 에러 메시지나 스택 트레이스
-- 관련 설정
+- 프레임워크 또는 런타임 버전
+- 재현 순서
+- 에러 메시지나 스크린샷
+- 실제 앱에서만 나는지, Storybook에서도 나는지, pack 이후에만 나는지
 
 ## 기여하기
 
