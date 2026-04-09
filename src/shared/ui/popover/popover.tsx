@@ -104,20 +104,24 @@ export const Popover = ({
 
       const triggerRect = triggerRef.current.getBoundingClientRect();
       const baseTop = triggerRect.bottom + 9;
+      const baseStyle: React.CSSProperties = {
+        maxWidth: 'calc(100vw - 1rem)',
+        position: 'fixed',
+        top: baseTop,
+        width: 'max-content',
+      };
 
       if (portalPlacement === 'start') {
         setPortalStyle({
+          ...baseStyle,
           left: triggerRect.left,
-          position: 'fixed',
-          top: baseTop,
         });
         return;
       }
 
       setPortalStyle({
-        position: 'fixed',
+        ...baseStyle,
         right: Math.max(window.innerWidth - triggerRect.right, 0),
-        top: baseTop,
       });
     };
 
