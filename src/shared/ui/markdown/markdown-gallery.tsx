@@ -47,6 +47,16 @@ const createScopedViewerItems = ({
 const resolveActiveSlideIndex = (container: HTMLElement, totalCount: number) => {
   if (totalCount <= 1) return 0;
 
+  const maxScrollLeft = Math.max(container.scrollWidth - container.clientWidth, 0);
+
+  if (container.scrollLeft <= 1) {
+    return 0;
+  }
+
+  if (maxScrollLeft - container.scrollLeft <= 1) {
+    return totalCount - 1;
+  }
+
   const slideElements = Array.from(
     container.querySelectorAll<HTMLElement>('[data-markdown-gallery-slide="true"]'),
   );
