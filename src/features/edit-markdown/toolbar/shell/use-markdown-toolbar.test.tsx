@@ -47,6 +47,17 @@ const getToolbarTokenOptionByLabel = (
 };
 
 /**
+ * Checks whether a custom toolbar item exists in the rendered toolbar sections.
+ */
+const hasCustomToolbarItem = (
+  toolbarSections: ReturnType<typeof useMarkdownToolbar>['toolbarSections'],
+  key: string,
+) =>
+  toolbarSections.some(section =>
+    section.items.some(item => item.type === 'custom' && item.key === key),
+  );
+
+/**
  * Creates a markdown toolbar hook test harness with a textarea ref and onChange wiring.
  */
 const renderMarkdownToolbarHook = () => {
@@ -146,5 +157,40 @@ describe('useMarkdownToolbar', () => {
       expect(textarea.value).toContain(':::toggle #### ');
       expect(textarea.value).toContain('\n:::');
     });
+  });
+
+  it('Under missing or present upload adapters, the toolbar must hide or show the file embed item accordingly', () => {
+    const textarea = document.createElement('textarea');
+    document.body.append(textarea);
+
+    const baseArgs = {
+      contentType: 'article' as const,
+      onChange: vi.fn(),
+      popoverTriggerClassName: '',
+      textareaRef: { current: textarea },
+    };
+
+    const withoutUploadFile = renderHook(() =>
+      useMarkdownToolbar({
+        ...baseArgs,
+      }),
+    );
+
+    expect(
+      hasCustomToolbarItem(withoutUploadFile.result.current.toolbarSections, 'file-embed'),
+    ).toBe(false);
+
+    const withUploadFile = renderHook(() =>
+      useMarkdownToolbar({
+        ...baseArgs,
+        adapters: {
+          uploadFile: vi.fn(),
+        },
+      }),
+    );
+
+    expect(hasCustomToolbarItem(withUploadFile.result.current.toolbarSections, 'file-embed')).toBe(
+      true,
+    );
   });
 });

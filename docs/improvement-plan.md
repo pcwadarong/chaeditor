@@ -122,7 +122,7 @@ img: ({ alt, src }) => {
 
 ---
 
-### 2-3. `use-markdown-toolbar.tsx` 넓은 커플링 허브 (~400줄)
+### 2-3. `use-markdown-toolbar.tsx` 넓은 커플링 허브 (~400줄) [메모: 2026-04-09 handler 훅/registry helper 분리 완료]
 
 **파일 위치**: `src/features/edit-markdown/toolbar/shell/use-markdown-toolbar.tsx`
 
