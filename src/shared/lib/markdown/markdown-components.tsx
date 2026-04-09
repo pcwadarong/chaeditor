@@ -167,13 +167,41 @@ const renderMarkdownImage = ({
 };
 
 /**
+ * Resolves the matching viewer item index without relying on render-time mutation.
+ */
+const resolveMarkdownImageIndex = ({
+  sourceOffset,
+  src,
+  viewerItems,
+}: {
+  sourceOffset?: number;
+  src?: string;
+  viewerItems: MarkdownImageViewerItem[];
+}) => {
+  const resolvedSrc = typeof src === 'string' ? src.trim() : '';
+
+  if (!resolvedSrc) return undefined;
+
+  if (typeof sourceOffset === 'number') {
+    const sourceOffsetMatchIndex = viewerItems.findIndex(
+      item => item.src === resolvedSrc && item.sourceOffset === sourceOffset,
+    );
+
+    if (sourceOffsetMatchIndex >= 0) return sourceOffsetMatchIndex;
+  }
+
+  const firstSrcMatchIndex = viewerItems.findIndex(item => item.src === resolvedSrc);
+
+  return firstSrcMatchIndex >= 0 ? firstSrcMatchIndex : undefined;
+};
+
+/**
  * Maps Markdown AST nodes to the service-specific React components.
  */
 export const createMarkdownComponents = ({
   adapters,
   items = [],
 }: MarkdownViewerConfig = {}): Components => {
-  let imageIndex = 0;
   const viewerItems = items.filter(item => item.src.trim().length > 0);
 
   return {
@@ -319,23 +347,22 @@ export const createMarkdownComponents = ({
     h3: ({ children }) => <h3 className={markdownH3Class}>{children}</h3>,
     h4: ({ children }) => <h4 className={markdownH4Class}>{children}</h4>,
     hr: () => <hr className={markdownHorizontalRuleClass} />,
-    img: ({ alt, src, ...props }) => {
-      const hasViewerSource = typeof src === 'string' && src.trim().length > 0;
-      const currentImageIndex = hasViewerSource ? imageIndex : undefined;
-
-      if (hasViewerSource) {
-        imageIndex += 1;
-      }
-
-      return renderMarkdownImage({
+    img: ({ alt, node, src, ...props }) =>
+      renderMarkdownImage({
         ...props,
         alt,
-        imageIndex: currentImageIndex,
+        imageIndex: resolveMarkdownImageIndex({
+          sourceOffset:
+            typeof node?.position?.start?.offset === 'number'
+              ? node.position.start.offset
+              : undefined,
+          src,
+          viewerItems,
+        }),
         imageViewerLabels: adapters?.imageViewerLabels,
         src,
         viewerItems,
-      });
-    },
+      }),
     li: ({ children, className, ...props }) => (
       <li className={cx(markdownListItemClass, className)} {...props}>
         {children}

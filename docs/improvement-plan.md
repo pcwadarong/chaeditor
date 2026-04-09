@@ -90,7 +90,7 @@ markdown-config.tsx           → Components 맵 조립 (나머지)
 
 ---
 
-### 2-2. `imageIndex` 뮤터블 카운터 (취약 패턴)
+### 2-2. `imageIndex` 뮤터블 카운터 (취약 패턴) [메모: 2026-04-09 sourceOffset 기반 인덱스 해석으로 제거 완료]
 
 **파일 위치**: `src/shared/lib/markdown/markdown-config.tsx` 내 `createMarkdownComponents`
 

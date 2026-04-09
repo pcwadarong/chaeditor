@@ -13,11 +13,13 @@ describe('collectMarkdownImages', () => {
     expect(collectMarkdownImages(markdown)).toEqual([
       {
         alt: 'First',
+        sourceOffset: 0,
         src: 'https://example.com/one.png',
         viewerId: 'markdown-image-0',
       },
       {
         alt: 'Second',
+        sourceOffset: 45,
         src: 'https://example.com/two.png',
         viewerId: 'markdown-image-1',
       },
@@ -41,6 +43,7 @@ describe('collectMarkdownImages', () => {
     expect(collectMarkdownImages(markdown)).toEqual([
       {
         alt: 'Content Image',
+        sourceOffset: 125,
         src: 'https://example.com/standalone.png',
         viewerId: 'markdown-image-0',
       },
