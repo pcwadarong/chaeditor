@@ -1,5 +1,3 @@
-/** @vitest-environment node */
-
 import type { AnchorHTMLAttributes } from 'react';
 import React from 'react';
 

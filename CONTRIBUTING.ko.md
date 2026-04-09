@@ -42,7 +42,10 @@ pnpm install
 ```bash
 pnpm lint                    # ESLint 실행
 pnpm check-types             # TypeScript 타입 검사
-pnpm test                    # 테스트 전체 실행
+pnpm test                    # Vitest 전체 회귀 검증 진입점
+pnpm run test:node           # 순수 로직과 node 전용 계약
+pnpm run test:dom:ui         # jsdom UI 계약
+pnpm run test:coverage       # Vitest 커버리지 실행
 pnpm build                   # 패키지 빌드
 pnpm run verify:package-surface
 ```
@@ -60,7 +63,7 @@ pnpm run verify:package-surface
 
 ```bash
 pnpm vitest run path/to/file.test.ts
-pnpm test -- --watch
+pnpm run test:watch
 ```
 
 시각적인 변경이거나 브라우저에서 직접 보는 편이 빠른 변경이라면 Storybook도 같이 사용합니다.
@@ -134,6 +137,14 @@ pnpm build-storybook
 - Node: 순수 유틸과 transform
 - JSDOM: 컴포넌트 wiring과 DOM 동작
 - Storybook: 시각 확인과 상호작용 점검
+
+현재 Vitest 버킷은 아키텍처 레이어가 아니라 실행 비용 기준으로 나눕니다.
+
+- `test:node`: 순수 로직과 비 DOM 계약
+- `test:dom:ui`: 일반적인 jsdom 렌더링과 상호작용 계약
+- `test:coverage`: 두 Vitest 버킷 전체 커버리지 확인
+
+브라우저 흉내가 필요한 테스트가 늘어나기 전에, 먼저 순수 helper나 hook으로 분리할 수 있는지 확인해 주세요.
 
 가능하면 아래 순서를 따릅니다.
 

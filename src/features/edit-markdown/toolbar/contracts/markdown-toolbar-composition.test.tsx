@@ -1,5 +1,3 @@
-/** @vitest-environment node */
-
 import React from 'react';
 
 import { DEFAULT_MARKDOWN_TOOLBAR_PRESET } from '@/entities/editor-core/model/toolbar-preset';

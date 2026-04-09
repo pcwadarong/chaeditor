@@ -42,7 +42,10 @@ pnpm install
 ```bash
 pnpm lint                    # run ESLint
 pnpm check-types             # run TypeScript checks
-pnpm test                    # run the test suite
+pnpm test                    # run the full Vitest regression entrypoint
+pnpm run test:node           # pure logic and node-only contracts
+pnpm run test:dom:ui         # jsdom UI contracts
+pnpm run test:coverage       # Vitest coverage run
 pnpm build                   # build the package
 pnpm run verify:package-surface
 ```
@@ -60,7 +63,7 @@ Use the smallest relevant command first.
 
 ```bash
 pnpm vitest run path/to/file.test.ts
-pnpm test -- --watch
+pnpm run test:watch
 ```
 
 If a change is visual, docs-facing, or easier to validate in a browser, run Storybook as well:
@@ -134,6 +137,14 @@ Choose the lowest-cost environment that still validates the behavior:
 - Node for pure utilities and transforms
 - JSDOM for component wiring and DOM behavior
 - Storybook for visual or interaction review
+
+Current Vitest buckets are grouped by execution cost, not by architecture:
+
+- `test:node` for pure logic and non-DOM contracts
+- `test:dom:ui` for ordinary jsdom rendering and interaction contracts
+- `test:coverage` for coverage verification across both Vitest buckets
+
+Prefer extracting pure helpers or hook logic before promoting more files into heavier DOM-style tests.
 
 Prefer this order whenever possible:
 

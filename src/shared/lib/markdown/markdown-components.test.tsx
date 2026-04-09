@@ -1,5 +1,3 @@
-/** @vitest-environment node */
-
 import React from 'react';
 
 import type { MarkdownImageViewerItem } from '@/entities/editor-core/model/collect-markdown-images';

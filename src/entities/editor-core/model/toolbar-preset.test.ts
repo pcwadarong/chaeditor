@@ -1,5 +1,3 @@
-/** @vitest-environment node */
-
 import {
   DEFAULT_MARKDOWN_TOOLBAR_PRESET,
   resolveMarkdownToolbarPresetSections,

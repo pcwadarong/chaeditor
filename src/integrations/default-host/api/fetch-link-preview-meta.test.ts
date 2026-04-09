@@ -1,5 +1,3 @@
-/** @vitest-environment node */
-
 import { createDefaultHostAdapters, createFetchLinkPreviewMeta } from '@/default-host';
 
 describe('default-host link preview helpers', () => {
