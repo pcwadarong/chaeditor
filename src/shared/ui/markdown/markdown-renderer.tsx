@@ -3,11 +3,11 @@ import { MarkdownAsync } from 'react-markdown';
 
 import type { MarkdownRendererHostAdapters } from '@/entities/editor-core';
 import { collectMarkdownImages } from '@/shared/lib/markdown/collect-markdown-images';
+import { getMarkdownOptions } from '@/shared/lib/markdown/markdown-config';
 import {
-  getMarkdownOptions,
   markdownBodyClass,
   markdownEmptyTextClass,
-} from '@/shared/lib/markdown/markdown-config';
+} from '@/shared/lib/markdown/markdown-styles.panda';
 import { renderRichMarkdown } from '@/shared/lib/markdown/rich-markdown';
 import type { PartialRichMarkdownRendererRegistry } from '@/shared/lib/markdown/rich-markdown-renderers';
 

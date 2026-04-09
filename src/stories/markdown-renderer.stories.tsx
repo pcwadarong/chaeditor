@@ -5,7 +5,8 @@ import { css, cx } from 'styled-system/css';
 
 import type { PartialRichMarkdownRendererRegistry } from '@/react';
 import { collectMarkdownImages } from '@/shared/lib/markdown/collect-markdown-images';
-import { getMarkdownOptions, markdownBodyClass } from '@/shared/lib/markdown/markdown-config';
+import { getMarkdownOptions } from '@/shared/lib/markdown/markdown-config';
+import { markdownBodyClass } from '@/shared/lib/markdown/markdown-styles.panda';
 import { renderRichMarkdown } from '@/shared/lib/markdown/rich-markdown';
 import { RenderImage } from '@/shared/ui/image/render-image';
 import { LinkEmbedCard } from '@/shared/ui/markdown';

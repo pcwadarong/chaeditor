@@ -18,7 +18,8 @@ import type { MarkdownToolbarUiRegistry } from '@/features/edit-markdown/toolbar
 import { MarkdownToolbar } from '@/features/edit-markdown/toolbar';
 import { mediaQueryDown } from '@/shared/config/breakpoints';
 import { collectMarkdownImages } from '@/shared/lib/markdown/collect-markdown-images';
-import { getMarkdownOptions, markdownBodyClass } from '@/shared/lib/markdown/markdown-config';
+import { getMarkdownOptions } from '@/shared/lib/markdown/markdown-config';
+import { markdownBodyClass } from '@/shared/lib/markdown/markdown-styles.panda';
 import { renderRichMarkdown } from '@/shared/lib/markdown/rich-markdown';
 import type { PartialRichMarkdownRendererRegistry } from '@/shared/lib/markdown/rich-markdown-renderers';
 import { EditIcon, EyeIcon } from '@/shared/ui/icons/app-icons';

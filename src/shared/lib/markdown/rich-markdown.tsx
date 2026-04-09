@@ -15,7 +15,7 @@ import {
   markdownH2Class,
   markdownH3Class,
   markdownH4Class,
-} from '@/shared/lib/markdown/markdown-config';
+} from '@/shared/lib/markdown/markdown-styles.panda';
 import {
   createRichMarkdownRendererRegistry,
   type PartialRichMarkdownRendererRegistry,
