@@ -47,13 +47,17 @@
       "import": "./dist/panda-primitives.mjs",
       "require": "./dist/panda-primitives.cjs"
     },
-    "./styles.css": "./styled-system/styles.css",
+    "./styles.css": "./styles.css",
+    "./styles-lite.css": "./styles-lite.css",
     "./package.json": "./package.json"
   },
   "packageManager": "pnpm@10.18.3",
   "files": [
     "dist",
+    "fonts",
     "recipes/host-presets",
+    "styles.css",
+    "styles-lite.css",
     "styled-system/styles.css",
     "README.md"
   ],
@@ -66,7 +70,7 @@
     "lint": "eslint .",
     "postinstall": "husky",
     "prepack": "pnpm run build",
-    "prepare": "panda codegen && panda cssgen --outfile styled-system/styles.css",
+    "prepare": "panda codegen && panda cssgen --outfile styled-system/styles.css && node ./scripts/build-package-styles.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
     "check-types": "tsc --noEmit",

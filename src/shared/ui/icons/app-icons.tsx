@@ -48,6 +48,7 @@ import TrashSvg from '@/shared/assets/icons/trash.svg?raw';
 import YoutubeSvg from '@/shared/assets/icons/youtube.svg?raw';
 import ZoomInSvg from '@/shared/assets/icons/zoom-in.svg?raw';
 import ZoomOutSvg from '@/shared/assets/icons/zoom-out.svg?raw';
+import { normalizeSvgMarkup, scopeSvgMarkupIds } from '@/shared/ui/icons/lib/svg-markup';
 
 type AppIconColor =
   | 'black'
@@ -137,22 +138,6 @@ const resolveRawSvgMarkup = (svgSource: RawSvgModule | string): string | null =>
 };
 
 /**
- * Normalizes raw SVG markup so it behaves like a lightweight icon primitive.
- */
-const normalizeSvgMarkup = (svgMarkup: string): string =>
-  svgMarkup
-    .replace(/\s(width|height)="[^"]*"/gi, '')
-    .replace(/\s(fill|stroke)="(?!none|currentColor)[^"]*"/gi, '')
-    .replace(
-      /<svg\b([^>]*)\sstyle="([^"]*)"/i,
-      '<svg$1 style="$2; color: inherit; display: block;" width="100%" height="100%" preserveAspectRatio="xMidYMid meet"',
-    )
-    .replace(
-      /<svg\b([^>]*)>/i,
-      '<svg$1 style="color: inherit; display: block;" width="100%" height="100%" preserveAspectRatio="xMidYMid meet">',
-    );
-
-/**
  * Resolves an asset URL when the bundler exposes the SVG as a file reference.
  */
 const resolveSvgAssetUrl = (svgSource: RawSvgModule | string): string | null => {
@@ -238,9 +223,13 @@ const createAppIcon = (
     const [assetSvgMarkup, setAssetSvgMarkup] = React.useState<string | null>(null);
     const resolvedSize = resolveIconSize(size);
     const resolvedColor = resolveIconColor({ color, customColor });
+    const iconScopeId = React.useId();
     const svgMarkup = React.useMemo(
-      () => (rawSvgMarkup ? normalizeSvgMarkup(rawSvgMarkup) : assetSvgMarkup),
-      [assetSvgMarkup],
+      () =>
+        rawSvgMarkup
+          ? scopeSvgMarkupIds(normalizeSvgMarkup(rawSvgMarkup), iconScopeId)
+          : assetSvgMarkup,
+      [assetSvgMarkup, iconScopeId],
     );
     const iconStyle: React.CSSProperties = {
       ...baseIconStyle,
@@ -269,7 +258,7 @@ const createAppIcon = (
         })
         .then(markup => {
           if (!isActive) return;
-          setAssetSvgMarkup(normalizeSvgMarkup(markup));
+          setAssetSvgMarkup(scopeSvgMarkupIds(normalizeSvgMarkup(markup), iconScopeId));
         })
         .catch(() => {
           if (!isActive) return;
@@ -279,7 +268,7 @@ const createAppIcon = (
       return () => {
         isActive = false;
       };
-    }, []);
+    }, [iconScopeId]);
 
     if (ComponentIcon) {
       return (
