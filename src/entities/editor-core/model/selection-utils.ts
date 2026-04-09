@@ -3,6 +3,10 @@ const pendingSelectionEndKey = 'selectionUtilsPendingEnd';
 
 type TextareaValueChangeHandler = (value: string) => void;
 type TextareaValueTransform = (textarea: HTMLTextAreaElement) => string;
+type TextareaScrollPosition = {
+  left: number;
+  top: number;
+};
 
 /**
  * Stores the selection range on the textarea dataset for restoration after render.
@@ -155,6 +159,25 @@ export const focusTextarea = (textarea: HTMLTextAreaElement) => {
 };
 
 /**
+ * Reads the current textarea scroll position before a programmatic transform.
+ */
+const getTextareaScrollPosition = (textarea: HTMLTextAreaElement): TextareaScrollPosition => ({
+  left: textarea.scrollLeft,
+  top: textarea.scrollTop,
+});
+
+/**
+ * Restores the textarea scroll position after focus and selection updates.
+ */
+const restoreTextareaScrollPosition = (
+  textarea: HTMLTextAreaElement,
+  scrollPosition: TextareaScrollPosition,
+) => {
+  textarea.scrollLeft = scrollPosition.left;
+  textarea.scrollTop = scrollPosition.top;
+};
+
+/**
  * Reads the pending selection range stored for the next render cycle.
  */
 export const getPendingSelection = (textarea: HTMLTextAreaElement) => {
@@ -172,7 +195,13 @@ export const getPendingSelection = (textarea: HTMLTextAreaElement) => {
 };
 
 /**
- * Runs a textarea transform and restores focus and selection after `onChange`.
+ * Runs a textarea transform and restores focus, scroll position, and selection after `onChange`.
+ *
+ * Uses `document.execCommand('insertText')` to register the change in the
+ * browser's native undo history. When that succeeds, React receives the
+ * resulting input event and updates state through the existing textarea
+ * `onChange` handler, so this helper must not call `onChange` a second time.
+ * Falls back to the direct `onChange` path when `execCommand` is unavailable.
  */
 export const applyTextareaTransform = (
   textarea: HTMLTextAreaElement,
@@ -180,12 +209,27 @@ export const applyTextareaTransform = (
   transform: TextareaValueTransform,
 ) => {
   const nextValue = transform(textarea);
+  const scrollPosition = getTextareaScrollPosition(textarea);
+  const canUseExecCommand = typeof document.execCommand === 'function';
 
-  onChange(nextValue);
+  textarea.focus({ preventScroll: true });
+  const inserted = canUseExecCommand
+    ? (() => {
+        textarea.setSelectionRange(0, textarea.value.length);
+        // execCommand is deprecated, but it is still the most reliable way to push
+        // a programmatic textarea edit into the native undo stack.
+        return document.execCommand('insertText', false, nextValue);
+      })()
+    : false;
+
+  if (!inserted) {
+    onChange(nextValue);
+  }
 
   queueMicrotask(() => {
     const pendingSelection = getPendingSelection(textarea);
     focusTextarea(textarea);
+    restoreTextareaScrollPosition(textarea, scrollPosition);
     restoreCursor(textarea, pendingSelection.start, pendingSelection.end);
   });
 
