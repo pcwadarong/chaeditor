@@ -5,6 +5,8 @@
  * main package root so consumers can opt into the network-coupled defaults explicitly.
  */
 export {
+  createDefaultHostAdapters,
+  createFetchLinkPreviewMeta,
   uploadEditorFile,
   uploadEditorImage,
   uploadEditorVideo,

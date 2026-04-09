@@ -64,7 +64,7 @@ const prepareTempWorkspace = async () => {
 };
 
 /**
- * Verifies the ESM surface and exported CSS path.
+ * Verifies the ESM surface and exported CSS paths.
  */
 const verifyEsmSurface = async () => {
   const filePath = path.join(tempDir, 'verify-imports.mjs');
@@ -85,11 +85,16 @@ assert.equal(typeof react.MarkdownEditor, 'function');
 assert.equal(typeof react.MarkdownToolbar, 'function');
 assert.equal(typeof core.createChaeditorThemeVars, 'function');
 assert.equal(typeof core.parseRichMarkdownSegments, 'function');
+assert.equal(typeof core.extractEmbedMetaFromHtml, 'function');
+assert.equal(typeof defaultHost.createDefaultHostAdapters, 'function');
+assert.equal(typeof defaultHost.createFetchLinkPreviewMeta, 'function');
 assert.equal(typeof defaultHost.uploadEditorImage, 'function');
 assert.equal(typeof pandaPrimitives.createPandaMarkdownPrimitiveRegistry, 'function');
 
 const cssPath = require.resolve('chaeditor/styles.css');
+const liteCssPath = require.resolve('chaeditor/styles-lite.css');
 assert.equal(cssPath.endsWith('styles.css'), true);
+assert.equal(liteCssPath.endsWith('styles-lite.css'), true);
 `;
 
   await fs.writeFile(filePath, contents);
@@ -112,7 +117,10 @@ const pandaPrimitives = require('chaeditor/panda-primitives');
 assert.equal(typeof root.MarkdownEditor, 'function');
 assert.equal(typeof react.MarkdownRenderer, 'function');
 assert.equal(typeof core.createChaeditorThemeVars, 'function');
+assert.equal(typeof core.extractEmbedMetaFromHtml, 'function');
 assert.equal(typeof defaultHost.uploadEditorFile, 'function');
+assert.equal(typeof defaultHost.createDefaultHostAdapters, 'function');
+assert.equal(typeof defaultHost.createFetchLinkPreviewMeta, 'function');
 assert.equal(
   typeof pandaPrimitives.Button === 'function' || typeof pandaPrimitives.Button === 'object',
   true,
@@ -139,7 +147,7 @@ const main = async () => {
   await fs.rm(tarballPath, { force: true });
 
   console.log(
-    'Verified packed package entrypoints: root, react, core, default-host, panda-primitives, and styles.css',
+    'Verified packed package entrypoints: root, react, core, default-host, panda-primitives, styles.css, and styles-lite.css',
   );
 };
 

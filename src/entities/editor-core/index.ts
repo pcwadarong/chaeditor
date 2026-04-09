@@ -97,3 +97,5 @@ export type {
   VideoProvider,
   YoutubeVideoEmbedReference,
 } from '@/entities/editor-core/model/video-embed';
+export type { LinkEmbedData } from '@/shared/lib/markdown/link-embed';
+export { extractEmbedMetaFromHtml } from '@/shared/lib/markdown/link-embed';
