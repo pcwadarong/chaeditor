@@ -1,24 +1,33 @@
-import { Description, Stories, Title } from '@storybook/addon-docs/blocks';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { css, cx } from 'styled-system/css';
+import { useState } from 'react';
+import { css } from 'styled-system/css';
 
 import {
   emotionPrimitiveUsageSnippet,
   emotionThemeUsageSnippet,
-  pageClass,
   primitiveRegistryUsageSnippet,
-  StorybookCodeBlock,
-  StorybookPrimitiveRegistryShowcase,
-  StorybookRuntimePrimitiveRegistryShowcase,
   styledComponentsPrimitiveUsageSnippet,
   styledComponentsThemeUsageSnippet,
   tailwindPrimitiveUsageSnippet,
   tailwindThemeUsageSnippet,
   vanillaExtractPrimitiveUsageSnippet,
   vanillaExtractThemeUsageSnippet,
-} from '@/stories/storybook-fixtures';
+} from '@/stories/support/storybook-code-snippets';
+import {
+  storybookDocsHeaderDescriptionFullWidthClass,
+  storybookDocsPageClass,
+  storybookDocsSectionClass,
+  StorybookDocsSectionHeader,
+  StorybookDocsTabBar,
+  StorybookPageHeader,
+} from '@/stories/support/storybook-docs';
+import { StorybookCodeBlock } from '@/stories/support/storybook-reference-ui';
+import {
+  StorybookPrimitiveRegistryShowcase,
+  StorybookRuntimePrimitiveRegistryShowcase,
+} from '@/stories/support/storybook-runtime-primitives';
 
-type RuntimeRecipePageProps = {
+type RuntimeRecipeProps = {
   description: string;
   eyebrow: string;
   primitiveSnippet: string;
@@ -28,179 +37,246 @@ type RuntimeRecipePageProps = {
   title: string;
 };
 
-type PrimitiveRegistryPageProps = {
+type PrimitiveRegistryRecipeProps = {
   description: string;
   eyebrow: string;
-  snippetLabel?: string;
+  snippetLabel: string;
   title: string;
 };
 
-const RECIPE_INDEX = [
-  'Tailwind CSS',
-  'Emotion',
-  'styled-components',
-  'vanilla-extract',
-  'Primitive shell replacement',
-];
+type RecipeId =
+  | 'tailwind'
+  | 'emotion'
+  | 'styled-components'
+  | 'vanilla-extract'
+  | 'primitive-shell-replacement';
 
-const RecipeIndexBar = ({ current }: { current: string }) => (
-  <div className={recipeIndexBarClass}>
-    {RECIPE_INDEX.map(name => (
-      <span
-        key={name}
-        className={name === current ? recipeIndexItemActiveClass : recipeIndexItemClass}
-      >
-        {name}
-      </span>
-    ))}
-  </div>
-);
+type RecipeDefinition =
+  | ({ id: RecipeId; label: string; kind: 'runtime' } & RuntimeRecipeProps)
+  | ({ id: RecipeId; label: string; kind: 'primitive' } & PrimitiveRegistryRecipeProps);
 
-const StylingRecipesOverviewPage = () => (
-  <main className={pageClass}>
-    <section className={sectionClass}>
-      <div className={overviewHeaderClass}>
-        <h1 className={overviewTitleClass}>Host-side styling recipes</h1>
-        <p className={recipeDescriptionClass}>
-          The package ships with Panda-based default primitives and theme tokens. Use the recipes
-          below only when the host app wants to override variables or replace primitive shells.
-        </p>
-        <ul className={overviewLibraryListClass}>
-          <li>Tailwind</li>
-          <li>Emotion</li>
-          <li>styled-components</li>
-          <li>vanilla-extract</li>
-          <li>Primitive shell replacement</li>
-        </ul>
-      </div>
-    </section>
-  </main>
-);
+const RECIPE_DEFINITIONS = [
+  {
+    description:
+      'Use this when your app already uses Tailwind and you want to scope chaeditor tokens inside an existing utility-driven design system.',
+    eyebrow: 'Tailwind CSS',
+    id: 'tailwind',
+    kind: 'runtime',
+    label: 'Tailwind CSS',
+    primitiveSnippet: tailwindPrimitiveUsageSnippet,
+    runtime: 'tailwind',
+    subheading: 'Optional primitive overrides',
+    themeSnippet: tailwindThemeUsageSnippet,
+    title: 'Tailwind CSS',
+  },
+  {
+    description:
+      'Use this when your app already relies on Emotion for wrapper scopes and component-level overrides.',
+    eyebrow: 'Emotion',
+    id: 'emotion',
+    kind: 'runtime',
+    label: 'Emotion',
+    primitiveSnippet: emotionPrimitiveUsageSnippet,
+    runtime: 'emotion',
+    subheading: 'Optional primitive overrides',
+    themeSnippet: emotionThemeUsageSnippet,
+    title: 'Emotion',
+  },
+  {
+    description:
+      'Use this when your app already uses styled-components and you want the editor to inherit that runtime instead of introducing a second override style.',
+    eyebrow: 'styled-components',
+    id: 'styled-components',
+    kind: 'runtime',
+    label: 'styled-components',
+    primitiveSnippet: styledComponentsPrimitiveUsageSnippet,
+    runtime: 'styled-components',
+    subheading: 'Optional primitive overrides',
+    themeSnippet: styledComponentsThemeUsageSnippet,
+    title: 'styled-components',
+  },
+  {
+    description:
+      'Use this when your app already uses vanilla-extract contracts and you want editor theming to stay type-safe and file-scoped.',
+    eyebrow: 'vanilla-extract',
+    id: 'vanilla-extract',
+    kind: 'runtime',
+    label: 'vanilla-extract',
+    primitiveSnippet: vanillaExtractPrimitiveUsageSnippet,
+    runtime: 'vanilla-extract',
+    subheading: 'Optional primitive overrides',
+    themeSnippet: vanillaExtractThemeUsageSnippet,
+    title: 'vanilla-extract',
+  },
+  {
+    description:
+      'Use this when tokens are already acceptable but the host must replace button, input, popover, modal, or tooltip shells with product-owned primitives.',
+    eyebrow: 'Primitive shell replacement',
+    id: 'primitive-shell-replacement',
+    kind: 'primitive',
+    label: 'Primitive shell replacement',
+    snippetLabel: 'Shell override',
+    title: 'Primitive shell replacement',
+  },
+] as const satisfies readonly RecipeDefinition[];
 
-const RuntimeRecipePage = ({
-  description,
-  eyebrow,
-  primitiveSnippet,
-  runtime,
-  subheading,
-  themeSnippet,
-  title,
-}: RuntimeRecipePageProps) => (
-  <main className={pageClass}>
-    <section className={sectionClass}>
-      <RecipeIndexBar current={eyebrow} />
-      <article className={recipeCardClass}>
-        <div className={recipeHeaderClass}>
-          <p className={recipeEyebrowClass}>{eyebrow}</p>
-          <h2 className={recipeTitleClass}>{title}</h2>
+const recipeOverviewRows = [
+  {
+    approach: 'Tailwind CSS',
+    primitiveShells: 'Optional',
+    themeVariables: 'Override with wrapper class',
+    when: 'Your app already uses Tailwind for layout and color tokens',
+  },
+  {
+    approach: 'Emotion',
+    primitiveShells: 'Optional',
+    themeVariables: 'Override via css prop or styled()',
+    when: 'Your app uses Emotion for CSS-in-JS',
+  },
+  {
+    approach: 'styled-components',
+    primitiveShells: 'Optional',
+    themeVariables: 'Override via styled() wrapper',
+    when: 'Your app uses styled-components',
+  },
+  {
+    approach: 'vanilla-extract',
+    primitiveShells: 'Optional',
+    themeVariables: 'Override with contract or style scope',
+    when: 'Your app uses vanilla-extract for type-safe styles',
+  },
+  {
+    approach: 'Primitive shell replacement',
+    primitiveShells: 'Replace via registry',
+    themeVariables: 'Keep current values',
+    when: 'You want to swap button, input, or modal shells without changing the theme runtime',
+  },
+] as const;
+
+/**
+ * 선택한 recipe에 맞는 가이드 패널을 반환합니다.
+ */
+const getRecipeDefinition = (id: RecipeId) =>
+  RECIPE_DEFINITIONS.find(recipe => recipe.id === id) ?? RECIPE_DEFINITIONS[0];
+
+/**
+ * 선택한 recipe의 코드와 미리보기를 렌더링합니다.
+ */
+const StylingRecipePanel = ({ recipe }: { recipe: RecipeDefinition }) => {
+  if (recipe.kind === 'primitive') {
+    return (
+      <>
+        <div className={recipeBlockClass}>
+          <p className={recipeSubheadingClass}>When to use this recipe</p>
+          <p className={recipeBodyClass}>{recipe.description}</p>
         </div>
-        <p className={recipeDescriptionClass}>{description}</p>
-        <p className={recipeSubheadingClass}>{subheading}</p>
-        <StorybookCodeBlock code={themeSnippet} label="Theme scope" />
-        <StorybookCodeBlock code={primitiveSnippet} label="Primitive registry" />
-        <div className={runtimePreviewClass}>
-          <StorybookRuntimePrimitiveRegistryShowcase runtime={runtime} />
+        <div className={recipeBlockClass}>
+          <p className={recipeSubheadingClass}>Primitive registry override</p>
+          <StorybookCodeBlock code={primitiveRegistryUsageSnippet} label={recipe.snippetLabel} />
         </div>
-      </article>
-    </section>
-  </main>
-);
-
-const PrimitiveRegistryPage = ({
-  description,
-  eyebrow,
-  snippetLabel = 'Primitive registry',
-  title,
-}: PrimitiveRegistryPageProps) => (
-  <main className={pageClass}>
-    <section className={sectionClass}>
-      <RecipeIndexBar current={eyebrow} />
-      <article className={recipeCardClass}>
-        <div className={recipeHeaderClass}>
-          <p className={recipeEyebrowClass}>{eyebrow}</p>
-          <h2 className={recipeTitleClass}>{title}</h2>
-        </div>
-        <p className={recipeDescriptionClass}>{description}</p>
-        <StorybookCodeBlock code={primitiveRegistryUsageSnippet} label={snippetLabel} />
-        <div className={showcaseClass}>
+        <div className={recipeBlockClass}>
+          <p className={recipeSubheadingClass}>Live preview</p>
           <StorybookPrimitiveRegistryShowcase />
         </div>
-      </article>
-    </section>
-  </main>
-);
+      </>
+    );
+  }
 
-const StylingRecipesDocsSummary = () => (
-  <section className={docsSummaryClass}>
-    <table className={docsSummaryTableClass}>
-      <thead>
-        <tr>
-          <th>Recipe</th>
-          <th>Theme variables</th>
-          <th>Primitive shells</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Panda CSS</td>
-          <td>Default package runtime</td>
-          <td>Default package shells</td>
-        </tr>
-        <tr>
-          <td>Tailwind</td>
-          <td>Override</td>
-          <td>Optional</td>
-        </tr>
-        <tr>
-          <td>Emotion</td>
-          <td>Override</td>
-          <td>Optional</td>
-        </tr>
-        <tr>
-          <td>styled-components</td>
-          <td>Override</td>
-          <td>Optional</td>
-        </tr>
-        <tr>
-          <td>vanilla-extract</td>
-          <td>Override</td>
-          <td>Optional</td>
-        </tr>
-        <tr>
-          <td>Primitive shell replacement</td>
-          <td>Keep current values</td>
-          <td>Replace</td>
-        </tr>
-      </tbody>
-    </table>
-  </section>
-);
+  return (
+    <>
+      <div className={recipeBlockClass}>
+        <p className={recipeSubheadingClass}>When to use this runtime</p>
+        <p className={recipeBodyClass}>{recipe.description}</p>
+      </div>
+      <div className={recipeBlockClass}>
+        <p className={recipeSubheadingClass}>Theme token override</p>
+        <StorybookCodeBlock code={recipe.themeSnippet} label="Theme scope" />
+      </div>
+      <div className={recipeBlockClass}>
+        <p className={recipeSubheadingClass}>{recipe.subheading}</p>
+        <StorybookCodeBlock code={recipe.primitiveSnippet} label="Primitive registry" />
+      </div>
+      <div className={recipeBlockClass}>
+        <p className={recipeSubheadingClass}>Live preview</p>
+        <StorybookRuntimePrimitiveRegistryShowcase runtime={recipe.runtime} />
+      </div>
+    </>
+  );
+};
 
-const StylingRecipesDocsPage = () => (
-  <>
-    <Title />
-    <Description />
-    <StylingRecipesDocsSummary />
-    <Stories />
-  </>
-);
+const StylingRecipesOverviewPage = () => {
+  const [activeRecipeId, setActiveRecipeId] = useState<RecipeId>('tailwind');
+  const activeRecipe = getRecipeDefinition(activeRecipeId);
+
+  return (
+    <main className={storybookDocsPageClass}>
+      <StorybookPageHeader
+        title="Override theme tokens or replace primitive shells for your CSS runtime"
+        description="chaeditor ships with Panda CSS as its default styling runtime. The recipes on this page cover host-side overrides only. Read this guide when you need to scope your app's theme variables or replace a primitive shell like a button, input, or modal."
+        descriptionClassName={storybookDocsHeaderDescriptionFullWidthClass}
+      />
+
+      <section className={storybookDocsSectionClass}>
+        <StorybookDocsSectionHeader
+          description="Each recipe covers a different CSS runtime. Pick the one that matches your app stack. Theme token overrides and primitive shell replacement are independent decisions, so you can keep one side as-is while customizing the other."
+          eyebrow="When to use a recipe"
+          title="Choose the override path that matches your styling runtime"
+        />
+        <table className={overviewTableClass}>
+          <thead>
+            <tr>
+              <th>Recipe</th>
+              <th>When it fits</th>
+              <th>Theme variables</th>
+              <th>Primitive shells</th>
+            </tr>
+          </thead>
+          <tbody>
+            {recipeOverviewRows.map(row => (
+              <tr key={row.approach}>
+                <td>{row.approach}</td>
+                <td>{row.when}</td>
+                <td>{row.themeVariables}</td>
+                <td>{row.primitiveShells}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </section>
+
+      <section className={storybookDocsSectionClass}>
+        <StorybookDocsSectionHeader
+          description="Use the tab bar to switch between runtime-specific recipes without leaving this page."
+          eyebrow="Recipe guide"
+          title={activeRecipe.title}
+          titleAs="h2"
+        />
+        <div className={recipeTabRegionClass}>
+          <StorybookDocsTabBar
+            current={activeRecipeId}
+            onSelect={setActiveRecipeId}
+            options={RECIPE_DEFINITIONS.map(recipe => ({ id: recipe.id, label: recipe.label }))}
+          />
+        </div>
+        <div className={recipePanelClass}>
+          <StylingRecipePanel recipe={activeRecipe} />
+        </div>
+      </section>
+    </main>
+  );
+};
 
 const meta = {
   component: StylingRecipesOverviewPage,
   parameters: {
     docs: {
-      description: {
-        component:
-          'The package uses Panda CSS by default. These docs only cover host-side overrides for Tailwind CSS, Emotion, styled-components, vanilla-extract, and primitive shell replacement.',
-      },
-      page: StylingRecipesDocsPage,
       source: {
         code: tailwindThemeUsageSnippet,
       },
     },
     layout: 'fullscreen',
   },
-  tags: ['autodocs'],
+  tags: ['autodocs', '!dev'],
   title: 'Introduction/Styling Recipes',
 } satisfies Meta<typeof StylingRecipesOverviewPage>;
 
@@ -208,239 +284,17 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-export const Tailwind: Story = {
-  args: {
-    description:
-      'Provides a Tailwind theme scope example and an optional primitive registry example.',
-    eyebrow: 'Tailwind CSS',
-    primitiveSnippet: tailwindPrimitiveUsageSnippet,
-    runtime: 'tailwind',
-    subheading: 'Optional primitive overrides',
-    themeSnippet: tailwindThemeUsageSnippet,
-    title: 'Tailwind CSS',
-  },
-  parameters: {
-    docs: {
-      description: {
-        story: 'Shows the Tailwind wrapper pattern for theme variables and primitive overrides.',
-      },
-      source: {
-        code: tailwindPrimitiveUsageSnippet,
-      },
-    },
-  },
-  render: args => <RuntimeRecipePage {...(args as RuntimeRecipePageProps)} />,
-};
+export const Default: Story = {};
 
-export const Emotion: Story = {
-  args: {
-    description: 'Provides an Emotion wrapper example for theme variables and primitive overrides.',
-    eyebrow: 'Emotion',
-    primitiveSnippet: emotionPrimitiveUsageSnippet,
-    runtime: 'emotion',
-    subheading: 'Optional primitive overrides',
-    themeSnippet: emotionThemeUsageSnippet,
-    title: 'Emotion',
-  },
-  parameters: {
-    docs: {
-      description: {
-        story: 'Shows the Emotion wrapper pattern for theme variables and primitive overrides.',
-      },
-      source: {
-        code: emotionPrimitiveUsageSnippet,
-      },
-    },
-  },
-  render: args => <RuntimeRecipePage {...(args as RuntimeRecipePageProps)} />,
-};
-
-export const StyledComponents: Story = {
-  args: {
-    description:
-      'Provides a styled-components wrapper example for theme variables and primitive overrides.',
-    eyebrow: 'styled-components',
-    primitiveSnippet: styledComponentsPrimitiveUsageSnippet,
-    runtime: 'styled-components',
-    subheading: 'Optional primitive overrides',
-    themeSnippet: styledComponentsThemeUsageSnippet,
-    title: 'styled-components',
-  },
-  parameters: {
-    docs: {
-      description: {
-        story:
-          'Shows the styled-components wrapper pattern for theme variables and primitive overrides.',
-      },
-      source: {
-        code: styledComponentsPrimitiveUsageSnippet,
-      },
-    },
-  },
-  render: args => <RuntimeRecipePage {...(args as RuntimeRecipePageProps)} />,
-};
-
-export const VanillaExtract: Story = {
-  args: {
-    description:
-      'Provides a vanilla-extract scope example for theme variables and primitive overrides.',
-    eyebrow: 'vanilla-extract',
-    primitiveSnippet: vanillaExtractPrimitiveUsageSnippet,
-    runtime: 'vanilla-extract',
-    subheading: 'Optional primitive overrides',
-    themeSnippet: vanillaExtractThemeUsageSnippet,
-    title: 'vanilla-extract',
-  },
-  parameters: {
-    docs: {
-      description: {
-        story:
-          'Shows the vanilla-extract scope pattern for theme variables and primitive overrides.',
-      },
-      source: {
-        code: vanillaExtractPrimitiveUsageSnippet,
-      },
-    },
-  },
-  render: args => <RuntimeRecipePage {...(args as RuntimeRecipePageProps)} />,
-};
-
-export const PrimitiveRegistry: Story = {
-  args: {
-    description:
-      'Swaps the actual button, input, textarea, popover, modal, and tooltip shells without changing editor logic. This sits on top of the default Panda implementation instead of replacing the theme runtime itself.',
-    eyebrow: 'Primitive shell replacement',
-    snippetLabel: 'Shell override',
-    title: 'Primitive shell replacement',
-  },
-  parameters: {
-    docs: {
-      description: {
-        story:
-          'Shows how to replace the built-in Panda-backed button, input, popover, modal, and tooltip shells while keeping the editor feature logic unchanged.',
-      },
-      source: {
-        code: primitiveRegistryUsageSnippet,
-      },
-    },
-  },
-  render: args => <PrimitiveRegistryPage {...(args as PrimitiveRegistryPageProps)} />,
-};
-
-const sectionClass = css({
-  display: 'grid',
-  gap: '6',
-  marginInline: 'auto',
-  maxWidth: '6xl',
-});
-
-const overviewHeaderClass = css({
-  display: 'grid',
-  gap: '3',
-});
-
-const overviewTitleClass = css({
-  fontFamily: "['Manrope',system-ui,sans-serif]",
-  fontSize: '2xl',
-  fontWeight: 'semibold',
-  lineHeight: 'tight',
-  color: 'text',
-});
-
-const overviewLibraryListClass = css({
-  display: 'grid',
-  gap: '2',
-  listStyle: 'disc',
-  paddingInlineStart: '5',
-  fontSize: 'sm',
-  color: 'textSubtle',
-  lineHeight: 'relaxed',
-});
-
-const recipeCardClass = css({
-  display: 'grid',
-  gap: '4',
-  paddingBlock: '1',
-});
-
-const recipeHeaderClass = css({
-  display: 'grid',
-  gap: '2',
-});
-
-const recipeEyebrowClass = css({
-  color: 'primary',
-  fontFamily: "['Manrope',system-ui,sans-serif]",
-  fontSize: 'xs',
-  fontWeight: 'semibold',
-  letterSpacing: 'widest',
-  textTransform: 'uppercase',
-});
-
-const recipeTitleClass = css({
-  fontFamily: "['Manrope',system-ui,sans-serif]",
-  fontSize: 'xl',
-  fontWeight: 'semibold',
-  lineHeight: 'tight',
-});
-
-const recipeDescriptionClass = css({
-  color: 'textSubtle',
-  lineHeight: 'relaxed',
-});
-
-const recipeSubheadingClass = css({
-  color: 'primary',
-  fontSize: 'sm',
-  fontWeight: 'semibold',
-});
-
-const showcaseClass = css({
-  paddingBlockStart: '1',
-});
-
-const runtimePreviewClass = css({
-  paddingBlockStart: '1',
-});
-
-const docsSummaryClass = css({
-  marginBlock: '6',
-});
-
-const recipeIndexBarClass = css({
-  alignItems: 'center',
-  display: 'flex',
-  flexWrap: 'wrap',
-  gap: '1',
-});
-
-const recipeIndexItemBaseClass = css({
-  borderRadius: 'full',
-  fontFamily: "['Manrope',system-ui,sans-serif]",
-  fontSize: 'xs',
-  fontWeight: 'semibold',
-  letterSpacing: 'wide',
-  px: '3',
-  py: '1',
-  textTransform: 'uppercase',
-});
-
-const recipeIndexItemClass = cx(recipeIndexItemBaseClass, css({ color: 'muted' }));
-
-const recipeIndexItemActiveClass = cx(
-  recipeIndexItemBaseClass,
-  css({
-    backgroundColor: 'primarySubtle',
-    color: 'primary',
-  }),
-);
-
-const docsSummaryTableClass = css({
+const overviewTableClass = css({
+  tableLayout: 'fixed',
   borderCollapse: 'collapse',
+  marginTop: '6',
   width: 'full',
   '& th': {
     borderBottom: '[1px solid var(--colors-border)]',
     color: 'text',
+    fontFamily: "['Manrope',system-ui,sans-serif]",
     fontSize: 'xs',
     fontWeight: 'semibold',
     letterSpacing: 'wide',
@@ -448,21 +302,54 @@ const docsSummaryTableClass = css({
     paddingInline: '3',
     textAlign: 'left',
     textTransform: 'uppercase',
+    verticalAlign: 'top',
   },
   '& td': {
     borderBottom: '[1px solid var(--colors-border)]',
     color: 'textSubtle',
     fontSize: 'sm',
-    lineHeight: 'relaxed',
-    paddingBlock: '3',
+    lineHeight: 'loose',
+    paddingBlock: '4',
     paddingInline: '3',
+    textAlign: 'left',
     verticalAlign: 'top',
   },
   '& td:first-child': {
     color: 'text',
     fontWeight: 'medium',
+    whiteSpace: 'normal',
   },
   '& tbody tr:last-child td': {
     borderBottomWidth: '0',
   },
+});
+
+const recipeTabRegionClass = css({
+  marginTop: '3',
+});
+
+const recipePanelClass = css({
+  display: 'grid',
+  gap: '0',
+  marginTop: '4',
+});
+
+const recipeBlockClass = css({
+  display: 'grid',
+  gap: '4',
+  paddingBottom: '10',
+});
+
+const recipeSubheadingClass = css({
+  color: 'text',
+  fontFamily: "['Manrope',system-ui,sans-serif]",
+  fontSize: 'sm',
+  fontWeight: 'semibold',
+  letterSpacing: 'wide',
+});
+
+const recipeBodyClass = css({
+  color: 'textSubtle',
+  fontSize: 'md',
+  lineHeight: 'loose',
 });

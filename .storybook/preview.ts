@@ -76,7 +76,11 @@ const preview: Preview = {
     },
     options: {
       storySort: {
-        order: ['Introduction', 'Reference'],
+        order: [
+          'Introduction',
+          ['Overview', 'Host Adapters', 'Complex Surfaces', 'Styling Recipes', 'Theme Contract'],
+          'Reference',
+        ],
       },
     },
     viewport: {

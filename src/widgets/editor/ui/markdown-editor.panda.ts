@@ -33,6 +33,10 @@ export const editorPaneClass = css({
   backgroundColor: 'surface',
   overflow: 'hidden',
   p: '4',
+  _focusWithin: {
+    outline: '[2px solid var(--colors-primary)]',
+    outlineOffset: '[2px]',
+  },
 });
 
 export const previewPaneClass = css({
@@ -52,10 +56,21 @@ export const editorTextareaClass = css({
   width: 'full',
   minHeight: '80',
   height: 'full',
+  borderWidth: '0',
+  borderRadius: '[0px]',
+  backgroundColor: 'transparent',
+  px: '0',
+  py: '0',
   resize: 'none',
   overflowY: 'auto',
   overscrollBehaviorY: 'contain',
   fontFamily: 'mono',
+  _hover: {
+    borderColor: 'transparent',
+  },
+  _focusVisible: {
+    outline: 'none',
+  },
 });
 
 export const emptyPreviewClass = css({

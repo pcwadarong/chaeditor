@@ -15,6 +15,10 @@ import { Popover, type PopoverProps } from '@/shared/ui/popover';
 import { Textarea, type TextareaProps } from '@/shared/ui/textarea';
 import { Tooltip, type TooltipProps } from '@/shared/ui/tooltip';
 
+/**
+ * Styling Recipes에서 사용하는 runtime/primitive showcase와 host theme preset 모음입니다.
+ */
+
 export type StorybookPrimitiveMode = 'custom' | 'default';
 export type StorybookRuntimePreset =
   | 'emotion'

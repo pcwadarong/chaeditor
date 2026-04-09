@@ -1,3 +1,7 @@
+/**
+ * Storybook 문서와 reference 스토리에서 사용하는 예제 코드 문자열 모음입니다.
+ */
+
 export const editorPackageUsageSnippet = [
   "import 'chaeditor/styles.css';",
   '',

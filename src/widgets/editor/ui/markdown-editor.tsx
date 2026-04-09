@@ -160,8 +160,8 @@ export const MarkdownEditor = ({
     );
 
   const editorNode = (
-    <section className={cx(rootClass, className)}>
-      <div className={toolbarWrapClass}>
+    <section className={cx(rootClass, className)} data-slot="root">
+      <div className={toolbarWrapClass} data-slot="toolbar-wrap">
         <MarkdownToolbar
           adapters={adapters}
           contentType={contentType}
@@ -202,10 +202,11 @@ export const MarkdownEditor = ({
         </div>
       ) : null}
 
-      <div className={bodyClass}>
+      <div className={bodyClass} data-slot="body">
         <section
           aria-label="Editor input"
           className={editorPaneClass}
+          data-slot="editor-pane"
           hidden={isMobileLayout && mobilePane !== 'edit'}
           id={isMobileLayout ? 'markdown-editor-pane-edit' : undefined}
         >
@@ -226,6 +227,7 @@ export const MarkdownEditor = ({
         <section
           aria-label="Markdown preview"
           className={previewPaneClass}
+          data-slot="preview-pane"
           hidden={isMobileLayout && mobilePane !== 'preview'}
           id={isMobileLayout ? 'markdown-editor-pane-preview' : undefined}
           lang={locale}
