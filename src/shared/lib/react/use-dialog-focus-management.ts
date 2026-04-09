@@ -11,6 +11,17 @@ type UseDialogFocusManagementParams = {
 };
 
 /**
+ * Focuses an element without forcing the viewport to scroll when the browser supports it.
+ */
+const focusElementWithoutScroll = (element: HTMLElement) => {
+  try {
+    element.focus({ preventScroll: true });
+  } catch {
+    element.focus();
+  }
+};
+
+/**
  * Manages focus entry, focus trapping, and focus restoration for dialogs.
  */
 export const useDialogFocusManagement = ({
@@ -42,7 +53,7 @@ export const useDialogFocusManagement = ({
       // Fall back to the first focusable element inside the dialog.
       const fallbackTarget =
         initialFocusRef?.current ?? getFocusableElements(container)[0] ?? container;
-      fallbackTarget.focus();
+      focusElementWithoutScroll(fallbackTarget);
     };
 
     const rafId = window.requestAnimationFrame(requestFocus);
@@ -66,7 +77,7 @@ export const useDialogFocusManagement = ({
       // Keep focus on the dialog itself when no focusable children exist.
       if (focusableElements.length === 0) {
         event.preventDefault();
-        container.focus();
+        focusElementWithoutScroll(container);
         return;
       }
 
@@ -77,14 +88,20 @@ export const useDialogFocusManagement = ({
       // Shift+Tab: loop from the first item back to the last item.
       if (event.shiftKey && (activeIndex <= 0 || activeIndex === -1)) {
         event.preventDefault();
-        focusableElements[focusableElements.length - 1]?.focus();
+        const lastFocusableElement = focusableElements[focusableElements.length - 1];
+        if (lastFocusableElement) {
+          focusElementWithoutScroll(lastFocusableElement);
+        }
         return;
       }
 
       // Tab: loop from the last item back to the first item.
       if (!event.shiftKey && (activeIndex === -1 || activeIndex === focusableElements.length - 1)) {
         event.preventDefault();
-        focusableElements[0]?.focus();
+        const firstFocusableElement = focusableElements[0];
+        if (firstFocusableElement) {
+          focusElementWithoutScroll(firstFocusableElement);
+        }
       }
     };
 
@@ -95,7 +112,10 @@ export const useDialogFocusManagement = ({
       window.removeEventListener('keydown', handleKeydown);
       // Restore focus to the previous active element when the dialog closes.
       if (restoreFocusRef?.current !== false) {
-        previousActiveElementRef.current?.focus();
+        const previousActiveElement = previousActiveElementRef.current;
+        if (previousActiveElement) {
+          focusElementWithoutScroll(previousActiveElement);
+        }
       }
       if (restoreFocusRef) {
         restoreFocusRef.current = true;
