@@ -3,7 +3,7 @@
 English | [한국어](./README.ko.md)
 
 Build composable markdown editors for React with authoring helpers, rich embeds, and overridable styling.
-`chaeditor` ships as one package and is intended to be consumed through subpath imports such as `chaeditor/react` and `chaeditor/core`.
+`chaeditor` ships as one package. Use subpath imports like `chaeditor/react` and `chaeditor/core` to pull in only what you need.
 
 ## Links
 
@@ -45,7 +45,7 @@ const Example = async () => {
 
 ### Editor without host adapters
 
-Use this when you want to validate basic typing, toolbar behavior, and preview first.
+Use this to try out text input, toolbar actions, and preview before wiring up any upload logic.
 
 ```tsx
 'use client';
@@ -92,10 +92,10 @@ Then follow [Integrating chaeditor in Next.js](https://github.com/pcwadarong/cha
 
 ## Host Adapter Checklist
 
-`chaeditor` intentionally keeps product wiring outside the package.
-That design stays reusable only if the host app owns uploads, preview metadata, attachment routing, and framework-specific image rendering.
+`chaeditor` keeps upload logic, preview metadata, and framework-specific rendering out of the package — those belong to your app.
+This is what makes the package reusable across different products without modifications.
 
-For most real React apps, a practically complete editor integration means wiring these adapters:
+For most React apps, a solid editor integration covers these adapters:
 
 | Adapter                 | Unlocks                                     | If omitted                                                                        | Typical decision                                                                                  |
 | ----------------------- | ------------------------------------------- | --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
@@ -149,13 +149,13 @@ const adapters = {
 };
 ```
 
-For the longer contract explanation, read `Introduction / Host Adapters` in Storybook.
+For a deeper look at the adapter contract, read `Introduction / Host Adapters` in Storybook.
 
 ## Installation
 
 Install `chaeditor` once, then import only the subpaths you need.
-For application code, prefer `chaeditor/react` and `chaeditor/core`.
-The root `chaeditor` entrypoint remains available for compatibility, but it exposes React and core exports through one mixed surface.
+For most app code, `chaeditor/react` and `chaeditor/core` are the right starting points.
+The root `chaeditor` entrypoint still works, but it mixes React and core exports into one surface — use the subpaths above instead.
 
 ```bash
 npm install react react-dom chaeditor
@@ -206,7 +206,7 @@ You do not install subpaths separately.
 | `chaeditor/styles.css`       | full default CSS bundle                                                       | safest styling path                                    |
 | `chaeditor/styles-lite.css`  | lighter default CSS bundle                                                    | when your app owns KaTeX styling                       |
 
-If you want the longer decision matrix, read [Choosing import paths](https://github.com/pcwadarong/chaeditor/wiki/무엇을-어디서-import하면-되나).
+For the full breakdown, read [Choosing import paths](https://github.com/pcwadarong/chaeditor/wiki/무엇을-어디서-import하면-되나).
 
 ## What To Read Next
 
@@ -220,7 +220,7 @@ If you want the longer decision matrix, read [Choosing import paths](https://git
 
 ## Theme And Host Customization
 
-`chaeditor` treats theme values and host-owned integration logic as separate contracts.
+`chaeditor` separates theme overrides from host-owned integration logic.
 
 - Use `createChaeditorThemeVars()` when you want to override semantic tokens such as `primary`, `surface`, `text`, or font stacks.
 - Use `primitiveRegistry` when you need to replace the actual `Button`, `Input`, `Textarea`, `Popover`, `Modal`, or `Tooltip` shells.

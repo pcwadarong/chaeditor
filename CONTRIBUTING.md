@@ -132,19 +132,19 @@ If you add or change a public function, hook, prop, or package entrypoint:
 
 ## Testing
 
-Choose the lowest-cost environment that still validates the behavior:
+Use the lightest test environment that covers the behavior:
 
 - Node for pure utilities and transforms
 - JSDOM for component wiring and DOM behavior
 - Storybook for visual or interaction review
 
-Current Vitest buckets are grouped by execution cost, not by architecture:
+Tests are split by how heavy they are to run, not by architecture layer:
 
-- `test:node` for pure logic and non-DOM contracts
-- `test:dom:ui` for ordinary jsdom rendering and interaction contracts
-- `test:coverage` for coverage verification across both Vitest buckets
+- `test:node` — pure logic and non-DOM contracts
+- `test:dom:ui` — jsdom rendering and interaction contracts
+- `test:coverage` — coverage check across both
 
-Prefer extracting pure helpers or hook logic before promoting more files into heavier DOM-style tests.
+Before writing DOM-heavy tests, check whether the logic can live in a pure helper or hook and be tested more cheaply.
 
 Preferred order:
 

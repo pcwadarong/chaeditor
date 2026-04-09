@@ -77,7 +77,7 @@ pnpm build-storybook
 
 ### 패키지 표면
 
-`chaeditor`는 하나의 패키지로 배포되고, subpath import를 통해 선택적으로 소비됩니다.
+`chaeditor`는 하나의 패키지로 배포되고, subpath import로 필요한 부분만 가져다 씁니다.
 공개 범위는 의도적으로 관리합니다.
 
 - `chaeditor/react`
@@ -132,19 +132,19 @@ pnpm build-storybook
 
 ## 테스트
 
-검증하려는 동작을 만족하는 가장 가벼운 환경을 선택합니다.
+검증할 동작을 커버할 수 있는 가장 가벼운 환경을 씁니다.
 
 - Node: 순수 유틸과 transform
 - JSDOM: 컴포넌트 wiring과 DOM 동작
 - Storybook: 시각 확인과 상호작용 점검
 
-현재 Vitest 버킷은 아키텍처 레이어가 아니라 실행 비용 기준으로 나눕니다.
+Vitest 테스트 그룹은 아키텍처 구조가 아니라 실행 무게 기준으로 나눕니다.
 
-- `test:node`: 순수 로직과 비 DOM 계약
-- `test:dom:ui`: 일반적인 jsdom 렌더링과 상호작용 계약
-- `test:coverage`: 두 Vitest 버킷 전체 커버리지 확인
+- `test:node` — 순수 로직과 DOM 없는 계약
+- `test:dom:ui` — jsdom 렌더링과 상호작용 계약
+- `test:coverage` — 두 그룹 전체 커버리지 확인
 
-브라우저 흉내가 필요한 테스트가 늘어나기 전에, 먼저 순수 helper나 hook으로 분리할 수 있는지 확인해 주세요.
+jsdom 기반 테스트를 늘리기 전에, 순수 함수나 hook으로 분리해서 더 가볍게 검증할 수 있는지 먼저 확인해 주세요.
 
 가능하면 아래 순서를 따릅니다.
 

@@ -27,7 +27,7 @@ React를 사용하지만 Next.js 전용 설명이 아직 필요하지 않다면,
 
 ## 빠르게 시작하기
 
-먼저 필요한 사용 경로를 선택하면 통합 범위를 빠르게 좁힐 수 있습니다.
+필요한 경로를 먼저 고르면 바로 시작할 수 있습니다.
 
 ### renderer만 필요할 때
 
@@ -86,8 +86,8 @@ const Example = () => {
 
 ## Host Adapter 체크리스트
 
-`chaeditor`는 제품별 연결 코드를 패키지 안에 숨기지 않습니다.
-그래서 업로드, preview metadata, attachment 라우팅, 프레임워크별 이미지 렌더링은 host 앱이 직접 소유해야 재사용성이 유지됩니다.
+`chaeditor`는 업로드, preview metadata, 이미지 렌더링 같은 연결 코드를 패키지 안에 두지 않습니다.
+각 앱마다 다를 수 있는 부분은 host 앱이 직접 소유하는 것이 더 유연하기 때문입니다.
 
 실제 React 앱에서 편집 경험을 완성도 있게 제공하려면 보통 아래 adapter들을 함께 검토해야 합니다.
 
@@ -186,10 +186,10 @@ import 'katex/dist/katex.min.css';
 
 자세한 기준은 [스타일 붙이기](https://github.com/pcwadarong/chaeditor/wiki/스타일-붙이기)에 따로 정리했습니다.
 
-## 패키지 표면
+## 패키지 구조
 
 `chaeditor`는 하나의 npm 패키지로 배포됩니다.
-subpath를 별도로 설치하는 구조가 아니라, 한 번 설치한 뒤 필요한 entrypoint만 선택해 import합니다.
+subpath는 따로 설치하지 않고, 한 번 설치한 다음 필요한 경로만 골라 import합니다.
 
 | Import 경로                  | 제공 내용                                                               | 사용할 때                                        |
 | ---------------------------- | ----------------------------------------------------------------------- | ------------------------------------------------ |
@@ -200,9 +200,9 @@ subpath를 별도로 설치하는 구조가 아니라, 한 번 설치한 뒤 필
 | `chaeditor/styles.css`       | full CSS bundle                                                         | 가장 안전한 기본 스타일 경로                     |
 | `chaeditor/styles-lite.css`  | lighter CSS bundle                                                      | KaTeX 스타일을 host가 관리할 때                  |
 
-더 자세한 표와 조합 예시는 [무엇을 어디서 import하면 되나](https://github.com/pcwadarong/chaeditor/wiki/무엇을-어디서-import하면-되나)에서 볼 수 있습니다.
+import 경로 선택이 헷갈릴 때는 [무엇을 어디서 import하면 되나](https://github.com/pcwadarong/chaeditor/wiki/무엇을-어디서-import하면-되나)에서 볼 수 있습니다.
 
-## 다음에 어디를 보면 좋은가
+## 다음 단계
 
 - App Router 기준 실제 통합 순서가 필요하다면: [Next.js에서 chaeditor 붙이기](https://github.com/pcwadarong/chaeditor/wiki/Next.js에서-chaeditor-붙이기)
 - `styles.css`와 `styles-lite.css` 중 무엇을 골라야 할지 애매하다면: [스타일 붙이기](https://github.com/pcwadarong/chaeditor/wiki/스타일-붙이기)
@@ -214,7 +214,7 @@ subpath를 별도로 설치하는 구조가 아니라, 한 번 설치한 뒤 필
 
 ## 테마와 host 커스터마이징
 
-`chaeditor`는 theme 값과 host 소유 로직을 별도의 계약으로 다룹니다.
+`chaeditor`는 theme 값과 host 연결 로직을 별도로 분리합니다.
 
 - semantic token만 조정하려면 `createChaeditorThemeVars()`
 - `Button`, `Input`, `Textarea`, `Popover`, `Modal`, `Tooltip` 같은 기본 shell을 교체하려면 `primitiveRegistry`

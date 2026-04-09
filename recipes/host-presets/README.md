@@ -28,11 +28,11 @@ Every template shows these two steps together:
 1. Inject semantic theme variables through `createChaeditorThemeVars()`.
 2. Replace primitive shells through `primitiveRegistry` for `Button`, `Input`, `Textarea`, `Popover`, `Modal`, and `Tooltip`.
 
-These files are not simple color demos. They are intended to show:
+These are not simple color demos. Each template shows:
 
 - where the host theme scope lives
 - which primitives the host wraps
-- how the result is mounted into `MarkdownEditor`
+- how the result connects to `MarkdownEditor`
 
 ## Recommended workflow
 
@@ -69,8 +69,8 @@ They intentionally do not solve:
 
 ## 한국어
 
-이 폴더는 `chaeditor`를 host app 디자인 시스템에 연결할 때 참고하거나 복사해 시작할 수 있는 host wrapper preset을 모아둔 곳입니다.
-특정 스타일 런타임에서 theme override와 primitive 교체를 어디서부터 시작해야 하는지 바로 보고 싶을 때 참고합니다.
+이 폴더는 `chaeditor`를 host app 디자인 시스템에 연결할 때 복사해서 쓸 수 있는 wrapper preset을 모아둔 곳입니다.
+스타일 런타임에 따라 theme override와 primitive 교체를 어디서부터 시작하면 좋을지 바로 확인할 수 있습니다.
 
 ## 포함된 템플릿
 
@@ -95,7 +95,7 @@ They intentionally do not solve:
 1. `createChaeditorThemeVars()`로 semantic theme variables를 먼저 주입합니다.
 2. `primitiveRegistry`로 `Button`, `Input`, `Textarea`, `Popover`, `Modal`, `Tooltip` shell을 교체합니다.
 
-이 템플릿은 단순한 색상 예제가 아니라, 아래 내용을 보여주기 위한 예시입니다.
+이 템플릿은 색상만 바꾸는 예시가 아닙니다.
 
 - host theme scope를 어디에 두는지
 - 어떤 primitive를 감싸는지
@@ -127,7 +127,7 @@ They intentionally do not solve:
 - analytics
 - 제품 라우팅
 
-## 시각 레퍼런스
+## 참고 링크
 
 - npm package: https://www.npmjs.com/package/chaeditor
 - Storybook / Chromatic: https://www.chromatic.com/library?appId=69cd38a84da2f3f99e158f5c

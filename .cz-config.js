@@ -1,3 +1,5 @@
+/* global module */
+
 module.exports = {
   types: [
     { value: '✨ feat', name: '✨ feat:     Add a new feature' },
