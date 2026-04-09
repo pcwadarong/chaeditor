@@ -90,7 +90,6 @@ export default preview;
 
 const previewCanvasClass = css({
   minHeight: '100dvh',
-  padding: '6',
-  backgroundColor: 'appBackdrop',
+  backgroundColor: 'surface',
   color: 'text',
 });

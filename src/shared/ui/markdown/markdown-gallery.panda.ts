@@ -24,7 +24,12 @@ export const galleryViewportClass = css({
 export const galleryTrackClass = css({
   display: 'grid',
   gridAutoFlow: 'column',
-  gridAutoColumns: '[78%]',
+  gridAutoColumns: {
+    base: '[88%]',
+    md: '[72%]',
+    lg: '[60%]',
+    xl: '[52%]',
+  },
   gap: '2',
   overflowX: 'auto',
   overscrollBehaviorX: 'contain',
@@ -35,16 +40,24 @@ export const galleryTrackClass = css({
   },
 });
 
+export const galleryTrackNoScrollbarClass = css({
+  scrollbarWidth: '[none]',
+  '&::-webkit-scrollbar': {
+    display: 'none',
+  },
+});
+
 export const gallerySlideClass = css({
   position: 'relative',
   display: 'block',
   minWidth: '0',
   margin: '0',
   width: 'full',
-  aspectRatio: '[4 / 5]',
+  aspectRatio: '[16 / 9]',
+  maxHeight: '[520px]',
   minHeight: {
-    base: '48',
-    md: '64',
+    base: '44',
+    md: '56',
   },
   borderRadius: 'lg',
   backgroundColor: 'surfaceMuted',
