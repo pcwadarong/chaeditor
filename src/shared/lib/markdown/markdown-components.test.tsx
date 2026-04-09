@@ -25,7 +25,23 @@ describe('markdown-components', () => {
       items,
     }).img;
 
-    const firstElement = imageRenderer?.({
+    if (!imageRenderer || typeof imageRenderer === 'string') {
+      throw new Error('Image renderer must be a function component');
+    }
+
+    const renderImage = imageRenderer as (props: {
+      alt?: string;
+      node?: {
+        position?: {
+          start?: {
+            offset?: number;
+          };
+        };
+      };
+      src?: string;
+    }) => React.ReactElement;
+
+    const firstElement = renderImage({
       alt: 'First',
       node: {
         position: {
@@ -36,7 +52,7 @@ describe('markdown-components', () => {
       },
       src: 'https://example.com/repeated.png',
     } as never);
-    const secondElement = imageRenderer?.({
+    const secondElement = renderImage({
       alt: 'Second',
       node: {
         position: {
@@ -57,7 +73,15 @@ describe('markdown-components', () => {
 
     expect(firstElement.type).toBe(MarkdownImage);
     expect(secondElement.type).toBe(MarkdownImage);
-    expect(firstElement.props.imageIndex).toBe(0);
-    expect(secondElement.props.imageIndex).toBe(1);
+
+    const firstMarkdownImage = firstElement as React.ReactElement<
+      React.ComponentProps<typeof MarkdownImage>
+    >;
+    const secondMarkdownImage = secondElement as React.ReactElement<
+      React.ComponentProps<typeof MarkdownImage>
+    >;
+
+    expect(firstMarkdownImage.props.imageIndex).toBe(0);
+    expect(secondMarkdownImage.props.imageIndex).toBe(1);
   });
 });

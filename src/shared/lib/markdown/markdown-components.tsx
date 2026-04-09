@@ -152,6 +152,7 @@ const renderMarkdownImage = ({
 }) => {
   const resolvedAlt = alt ?? '';
   const resolvedImageIndex = imageIndex ?? 0;
+  const resolvedSrc = typeof src === 'string' ? src : undefined;
 
   return (
     <MarkdownImage
@@ -159,7 +160,7 @@ const renderMarkdownImage = ({
       className={markdownImageClass}
       imageIndex={resolvedImageIndex}
       imageViewerLabels={imageViewerLabels}
-      src={src}
+      src={resolvedSrc}
       viewerItems={viewerItems}
       {...props}
     />
@@ -347,8 +348,10 @@ export const createMarkdownComponents = ({
     h3: ({ children }) => <h3 className={markdownH3Class}>{children}</h3>,
     h4: ({ children }) => <h4 className={markdownH4Class}>{children}</h4>,
     hr: () => <hr className={markdownHorizontalRuleClass} />,
-    img: ({ alt, node, src, ...props }) =>
-      renderMarkdownImage({
+    img: ({ alt, node, src, ...props }) => {
+      const resolvedSrc = typeof src === 'string' ? src : undefined;
+
+      return renderMarkdownImage({
         ...props,
         alt,
         imageIndex: resolveMarkdownImageIndex({
@@ -356,13 +359,14 @@ export const createMarkdownComponents = ({
             typeof node?.position?.start?.offset === 'number'
               ? node.position.start.offset
               : undefined,
-          src,
+          src: resolvedSrc,
           viewerItems,
         }),
         imageViewerLabels: adapters?.imageViewerLabels,
-        src,
+        src: resolvedSrc,
         viewerItems,
-      }),
+      });
+    },
     li: ({ children, className, ...props }) => (
       <li className={cx(markdownListItemClass, className)} {...props}>
         {children}
