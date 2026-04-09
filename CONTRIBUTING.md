@@ -3,7 +3,7 @@
 English | [한국어](./CONTRIBUTING.ko.md)
 
 Thanks for taking the time to contribute to `chaeditor`.
-This guide is for day-to-day contributor workflow. It explains how to make changes, how to verify them, and which docs need to stay aligned.
+This guide describes the day-to-day contributor workflow. It explains how to make changes, how to verify them, and which docs need to stay aligned.
 
 ## Welcome
 
@@ -15,7 +15,7 @@ We welcome:
 - focused bug fixes
 - feature work that has already been discussed in an issue
 
-If this is your first contribution, start with a small documentation fix, a focused bug fix, or an issue labeled `good first issue`.
+If this is your first contribution, start with a small documentation update, a focused bug fix, or an issue labeled `good first issue`.
 
 ## Communication
 
@@ -59,14 +59,14 @@ What `verify:package-surface` checks:
 
 ### Targeted commands
 
-Use the smallest relevant command first.
+Run the smallest relevant command first.
 
 ```bash
 pnpm vitest run path/to/file.test.ts
 pnpm run test:watch
 ```
 
-If a change is visual, docs-facing, or easier to validate in a browser, run Storybook as well:
+If a change is visual, documentation-facing, or easier to validate in a browser, run Storybook as well:
 
 ```bash
 pnpm storybook
@@ -146,7 +146,7 @@ Current Vitest buckets are grouped by execution cost, not by architecture:
 
 Prefer extracting pure helpers or hook logic before promoting more files into heavier DOM-style tests.
 
-Prefer this order whenever possible:
+Preferred order:
 
 1. write or update the test first
 2. change the implementation

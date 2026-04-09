@@ -2,8 +2,8 @@
 
 English | [한국어](./README.ko.md)
 
-Build composable markdown editors for React with authoring helpers, rich embeds, and styling that stays overridable.
-`chaeditor` ships as one package, but the recommended way to consume it is through subpath imports such as `chaeditor/react` and `chaeditor/core`.
+Build composable markdown editors for React with authoring helpers, rich embeds, and overridable styling.
+`chaeditor` ships as one package and is intended to be consumed through subpath imports such as `chaeditor/react` and `chaeditor/core`.
 
 ## Links
 
@@ -23,10 +23,11 @@ Recommended order:
 
 If you are integrating for the first time, start with the Next.js guide.
 If uploads, image insertion, preview cards, or route wiring are part of the job, the wiki is more useful than the README alone.
+If you are using React but do not need a Next.js-specific walkthrough, open `Introduction / Host Adapters` in Storybook first.
 
 ## Quick Start
 
-Pick the path that matches what you need right now.
+Choose the integration path that matches your current scope.
 
 ### Renderer only
 
@@ -89,11 +90,72 @@ const Example = () => {
 
 Then follow [Integrating chaeditor in Next.js](https://github.com/pcwadarong/chaeditor/wiki/Next.js에서-chaeditor-붙이기) to create the expected host routes and verify the real app flow.
 
+## Host Adapter Checklist
+
+`chaeditor` intentionally keeps product wiring outside the package.
+That design stays reusable only if the host app owns uploads, preview metadata, attachment routing, and framework-specific image rendering.
+
+For most real React apps, a practically complete editor integration means wiring these adapters:
+
+| Adapter                 | Unlocks                                     | If omitted                                                                        | Typical decision                                                                                  |
+| ----------------------- | ------------------------------------------- | --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `uploadImage`           | file-backed image insertion in editor flows | image upload UI can render, but file-backed insertion needs a host implementation | add this if users should upload images from the editor                                            |
+| `uploadFile`            | attachment upload                           | attachment UI can still appear, but upload-specific actions should stay disabled  | add this if attachments are part of your content model                                            |
+| `uploadVideo`           | video file upload                           | video helpers can fall back to URL-based insertion                                | add this only when your product supports video uploads                                            |
+| `fetchLinkPreviewMeta`  | rich link preview cards                     | preview cards fall back to plain links                                            | add this if OG-style previews matter                                                              |
+| `resolveAttachmentHref` | host-aware attachment URLs                  | renderer uses markdown href as-is                                                 | add this when stored files resolve through your app routing or CDN rules                          |
+| `renderImage`           | framework-specific image primitive          | package uses its default image renderer                                           | optional, but recommended when your app standardizes on `next/image` or a branded media primitive |
+| `imageViewerLabels`     | built-in viewer copy override               | package uses built-in labels                                                      | optional label override only                                                                      |
+
+For most products, the following combination covers the baseline host integration:
+
+- `uploadImage`
+- `uploadFile`
+- `uploadVideo` if your product supports uploaded video
+- `fetchLinkPreviewMeta`
+- `resolveAttachmentHref`
+- `renderImage` if image rendering consistency matters in your app
+
+A React-first adapter example:
+
+```tsx
+import 'chaeditor/styles.css';
+
+import { MarkdownEditor } from 'chaeditor/react';
+
+const adapters = {
+  uploadImage: async ({ contentType, file, imageKind }) => {
+    return uploadImageToYourApi({ contentType, file, imageKind });
+  },
+  uploadFile: async ({ contentType, file }) => {
+    return uploadFileToYourApi({ contentType, file });
+  },
+  uploadVideo: async ({ contentType, file, onProgress, signal }) => {
+    return uploadVideoToYourApi({ contentType, file, onProgress, signal });
+  },
+  fetchLinkPreviewMeta: async (url, signal) => {
+    return fetchPreviewMetaFromYourApi(url, signal);
+  },
+  resolveAttachmentHref: ({ href }) => href,
+  renderImage: ({ alt, className, fill, sizes, src }) => (
+    <img
+      alt={alt}
+      className={className}
+      sizes={sizes}
+      src={typeof src === 'string' ? src : src.src}
+      style={fill ? { inset: 0, position: 'absolute' } : undefined}
+    />
+  ),
+};
+```
+
+For the longer contract explanation, read `Introduction / Host Adapters` in Storybook.
+
 ## Installation
 
 Install `chaeditor` once, then import only the subpaths you need.
-Prefer `chaeditor/react` and `chaeditor/core` in app code.
-The root `chaeditor` entrypoint remains available for compatibility, but it mixes React and core exports into one surface.
+For application code, prefer `chaeditor/react` and `chaeditor/core`.
+The root `chaeditor` entrypoint remains available for compatibility, but it exposes React and core exports through one mixed surface.
 
 ```bash
 npm install react react-dom chaeditor
@@ -109,13 +171,13 @@ bun add react react-dom chaeditor
 | `chaeditor/styles.css`      | you want the safest default, or you render math            | package styles, Panda output, KaTeX styles, KaTeX fonts |
 | `chaeditor/styles-lite.css` | you intentionally own KaTeX CSS, or you do not render math | package styles without KaTeX runtime styles             |
 
-Safe default:
+Recommended default:
 
 ```tsx
 import 'chaeditor/styles.css';
 ```
 
-Lighter bundle:
+Lighter option:
 
 ```tsx
 import 'chaeditor/styles-lite.css';
@@ -154,10 +216,11 @@ If you want the longer decision matrix, read [Choosing import paths](https://git
 - Need to choose imports or entrypoints: [Choosing import paths](https://github.com/pcwadarong/chaeditor/wiki/무엇을-어디서-import하면-되나)
 - Need the pre-release smoke-test flow: [Release checklist](https://github.com/pcwadarong/chaeditor/wiki/릴리즈-전-체크리스트)
 - Need ready-to-adapt wrappers for Tailwind, Emotion, styled-components, or vanilla-extract: [Host Preset Templates](./recipes/host-presets/README.md)
+- Need a React-first explanation of adapters before you open framework-specific docs: `Introduction / Host Adapters` in Storybook
 
 ## Theme And Host Customization
 
-`chaeditor` keeps theme values and host ownership separate on purpose.
+`chaeditor` treats theme values and host-owned integration logic as separate contracts.
 
 - Use `createChaeditorThemeVars()` when you want to override semantic tokens such as `primary`, `surface`, `text`, or font stacks.
 - Use `primitiveRegistry` when you need to replace the actual `Button`, `Input`, `Textarea`, `Popover`, `Modal`, or `Tooltip` shells.
