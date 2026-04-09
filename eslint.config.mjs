@@ -15,6 +15,11 @@ const compat = new FlatCompat({
   baseDirectory: import.meta.dirname,
 });
 
+const nextCoreWebVitalsConfig = compat.extends('next/core-web-vitals').map(config => ({
+  ...config,
+  files: ['src/**/*.{ts,tsx,js,jsx}', 'next.config.ts', 'next-env.d.ts'],
+}));
+
 const eslintConfig = [
   {
     ignores: [
@@ -35,7 +40,7 @@ const eslintConfig = [
   },
   js.configs.recommended,
   ...tseslint.configs.recommended,
-  ...compat.extends('next/core-web-vitals'),
+  ...nextCoreWebVitalsConfig,
   eslintConfigPrettier,
   {
     files: ['**/*.ts', '**/*.tsx'],

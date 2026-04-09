@@ -2,8 +2,7 @@ import type { Preview } from '@storybook/nextjs-vite';
 import React from 'react';
 import { css } from 'styled-system/css';
 
-import '../styled-system/styles.css';
-import 'katex/dist/katex.min.css';
+import '../styles.css';
 
 const viewportOptions = {
   desktop: {
