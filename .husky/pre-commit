@@ -5,9 +5,18 @@ pnpm exec lint-staged
 RESULT=$?
 
 if [ $RESULT -ne 0 ]; then
-  echo "❌ lint-staged failed. Commit aborted."
+  echo "❌ Format failed. Commit aborted."
   exit 1
 fi
 
-echo "✅ lint-staged passed. Commit allowed."
+echo "▶ Running staged tests..."
+pnpm run test:staged
+RESULT=$?
+
+if [ $RESULT -ne 0 ]; then
+  echo "❌ Staged tests failed. Commit aborted."
+  exit 1
+fi
+
+echo "✅ Format and staged tests passed. Commit allowed."
 exit 0

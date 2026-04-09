@@ -76,6 +76,7 @@
     "test:node": "vitest run --project node",
     "test:dom:ui": "vitest run --project dom-ui",
     "test:coverage": "vitest run --coverage --project node --project dom-ui",
+    "test:staged": "node ./scripts/run-staged-tests.mjs",
     "test:watch": "vitest --project node --project dom-ui",
     "check-types": "tsc --noEmit",
     "typecheck": "tsc --noEmit",
