@@ -11,6 +11,7 @@ import {
   panelClass,
   sampleMarkdown,
   type StorybookAdapterMode,
+  StorybookBoundaryZone,
   StorybookCheckList,
   StorybookMetaTable,
   StorybookSectionCard,
@@ -93,6 +94,7 @@ const MarkdownEditorReference = ({
 
   return (
     <main className={pageClass}>
+      <StorybookBoundaryZone mode={adapterMode} />
       <StorybookSectionCard description={summary.description} title={summary.title}>
         <StorybookMetaTable items={summary.items} />
       </StorybookSectionCard>

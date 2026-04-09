@@ -363,7 +363,7 @@ export const StorybookSectionCard = ({
 }: StorybookSectionCardProps) => (
   <section className={storySectionCardClass}>
     <header className={storySectionCardHeaderClass}>
-      <h3 className={storySectionCardTitleClass}>{title}</h3>
+      <p className={storySectionCardLabelClass}>{title}</p>
       {description ? <p className={storySectionCardDescriptionClass}>{description}</p> : null}
     </header>
     {children}
@@ -371,11 +371,11 @@ export const StorybookSectionCard = ({
 );
 
 export const StorybookMetaTable = ({ items }: StorybookMetaTableProps) => (
-  <dl className={storyMetaTableClass}>
+  <dl className={storyMetaListClass}>
     {items.map(item => (
-      <div className={storyMetaTableRowClass} key={item.label}>
-        <dt className={storyMetaTableLabelClass}>{item.label}</dt>
-        <dd className={storyMetaTableValueClass}>{item.value}</dd>
+      <div className={storyMetaItemClass} key={item.label}>
+        <dt className={storyMetaLabelClass}>{item.label}</dt>
+        <dd className={storyMetaValueClass}>{item.value}</dd>
       </div>
     ))}
   </dl>
@@ -385,8 +385,8 @@ export const StorybookCheckList = ({ items }: StorybookCheckListProps) => (
   <ul className={storyCheckListClass}>
     {items.map(item => (
       <li className={storyCheckListItemClass} key={item}>
-        <span aria-hidden="true" className={storyCheckListIconClass}>
-          ✓
+        <span aria-hidden="true" className={storyCheckListDashClass}>
+          —
         </span>
         <span>{item}</span>
       </li>
@@ -404,7 +404,16 @@ export const StorybookStatusBadge = ({ children, tone = 'info' }: StorybookStatu
           : storyStatusBadgeInfoClass
     }
   >
-    <span aria-hidden="true" className={storyStatusBadgeDotClass} />
+    <span
+      aria-hidden="true"
+      className={
+        tone === 'positive'
+          ? storyStatusBadgeDotPositiveClass
+          : tone === 'muted'
+            ? storyStatusBadgeDotMutedClass
+            : storyStatusBadgeDotInfoClass
+      }
+    />
     {children}
   </span>
 );
@@ -447,8 +456,12 @@ export const panelClass = css({
 
 export const pageClass = css({
   display: 'grid',
-  gap: '6',
-  padding: '8',
+  gap: '0',
+  maxWidth: '4xl',
+  marginInline: 'auto',
+  paddingInline: { base: '5', md: '8' },
+  paddingTop: { base: '8', md: '12' },
+  paddingBottom: { base: '12', md: '16' },
   bg: 'surface',
 });
 
@@ -462,9 +475,11 @@ export const splitLayoutClass = css({
 });
 
 export const sectionTitleClass = css({
-  fontSize: 'xl',
+  fontSize: 'xs',
   fontWeight: 'semibold',
-  color: 'text',
+  letterSpacing: 'widest',
+  textTransform: 'uppercase',
+  color: 'textSubtle',
 });
 
 export const sectionDescriptionClass = css({
@@ -483,21 +498,21 @@ export const valuePanelClass = css({
 const storySectionCardClass = css({
   display: 'grid',
   gap: '4',
-  paddingY: '5',
-  borderTopWidth: '1px',
-  borderTopStyle: 'solid',
-  borderTopColor: 'border',
+  paddingTop: '8',
 });
 
 const storySectionCardHeaderClass = css({
   display: 'grid',
-  gap: '2',
+  gap: '1',
 });
 
-const storySectionCardTitleClass = css({
-  fontSize: 'lg',
+const storySectionCardLabelClass = css({
+  fontSize: 'xs',
+  fontFamily: "['Manrope',system-ui,sans-serif]",
   fontWeight: 'semibold',
-  color: 'text',
+  letterSpacing: 'widest',
+  textTransform: 'uppercase',
+  color: 'textSubtle',
 });
 
 const storySectionCardDescriptionClass = css({
@@ -507,51 +522,35 @@ const storySectionCardDescriptionClass = css({
   maxWidth: '3xl',
 });
 
-const storyMetaTableClass = css({
-  display: 'grid',
-  gap: '0',
-  borderWidth: '1px',
-  borderStyle: 'solid',
-  borderColor: 'border',
-  borderRadius: 'lg',
-  overflow: 'hidden',
-  maxWidth: '3xl',
-  backgroundColor: 'surface',
+const storyMetaListClass = css({
+  display: 'flex',
+  flexWrap: 'wrap',
+  columnGap: '8',
+  rowGap: '2',
+  listStyle: 'none',
+  padding: '0',
+  margin: '0',
 });
 
-const storyMetaTableRowClass = css({
-  display: 'grid',
-  gridTemplateColumns: {
-    base: 'minmax(6rem, 7.5rem) minmax(0, 1fr)',
-    md: 'minmax(7rem, 8.5rem) minmax(0, 1fr)',
-  },
-  gap: '0',
-  borderTopWidth: '1px',
-  borderTopStyle: 'solid',
-  borderTopColor: 'border',
-  '&:first-of-type': {
-    borderTopWidth: '0',
-  },
+const storyMetaItemClass = css({
+  display: 'inline-flex',
+  alignItems: 'baseline',
+  gap: '2',
 });
 
-const storyMetaTableLabelClass = css({
-  paddingX: '4',
-  paddingY: '3',
+const storyMetaLabelClass = css({
   fontSize: 'xs',
+  fontFamily: "['Manrope',system-ui,sans-serif]",
   fontWeight: 'semibold',
   letterSpacing: 'wide',
   textTransform: 'uppercase',
   color: 'textSubtle',
-  backgroundColor: 'surfaceMuted',
 });
 
-const storyMetaTableValueClass = css({
-  paddingX: '4',
-  paddingY: '3',
+const storyMetaValueClass = css({
   fontSize: 'sm',
   fontWeight: 'medium',
   color: 'text',
-  lineHeight: 'relaxed',
 });
 
 const storyCheckListClass = css({
@@ -565,52 +564,37 @@ const storyCheckListClass = css({
 const storyCheckListItemClass = css({
   display: 'flex',
   alignItems: 'flex-start',
-  gap: '3',
+  gap: '2',
   fontSize: 'sm',
   lineHeight: 'relaxed',
   color: 'text',
 });
 
-const storyCheckListIconClass = css({
-  display: 'inline-flex',
-  alignItems: 'center',
-  justifyContent: 'center',
+const storyCheckListDashClass = css({
   flex: 'none',
-  width: '5',
-  height: '5',
-  marginTop: '[0.1rem]',
-  borderRadius: 'full',
-  backgroundColor: 'primarySubtle',
-  color: 'primary',
-  fontSize: 'xs',
-  fontWeight: 'bold',
+  color: 'textSubtle',
+  userSelect: 'none',
 });
 
 const storyStatusBadgeBaseClass = css({
   display: 'inline-flex',
   alignItems: 'center',
   gap: '2',
-  minHeight: '8',
-  paddingX: '3',
-  borderRadius: 'full',
+  paddingX: '2',
+  paddingY: '0.5',
+  borderRadius: 'md',
+  borderWidth: '1px',
+  borderStyle: 'solid',
+  fontFamily: "['Manrope',system-ui,sans-serif]",
   fontSize: 'xs',
   fontWeight: 'semibold',
   letterSpacing: 'wide',
-  textTransform: 'uppercase',
-});
-
-const storyStatusBadgeDotClass = css({
-  width: '2',
-  height: '2',
-  borderRadius: 'full',
-  backgroundColor: '[currentColor]',
-  flex: 'none',
 });
 
 const storyStatusBadgeInfoClass = cx(
   storyStatusBadgeBaseClass,
   css({
-    backgroundColor: 'primarySubtle',
+    borderColor: 'primary',
     color: 'primary',
   }),
 );
@@ -618,18 +602,42 @@ const storyStatusBadgeInfoClass = cx(
 const storyStatusBadgePositiveClass = cx(
   storyStatusBadgeBaseClass,
   css({
-    backgroundColor: '[rgba(22,163,74,0.12)]',
-    color: '[#15803d]',
+    borderColor: 'success',
+    color: 'success',
   }),
 );
 
 const storyStatusBadgeMutedClass = cx(
   storyStatusBadgeBaseClass,
   css({
-    backgroundColor: 'surfaceStrong',
+    borderColor: 'border',
     color: 'textSubtle',
   }),
 );
+
+const storyStatusBadgeDotInfoClass = css({
+  width: '1.5',
+  height: '1.5',
+  borderRadius: 'full',
+  backgroundColor: 'primary',
+  flex: 'none',
+});
+
+const storyStatusBadgeDotPositiveClass = css({
+  width: '1.5',
+  height: '1.5',
+  borderRadius: 'full',
+  backgroundColor: 'success',
+  flex: 'none',
+});
+
+const storyStatusBadgeDotMutedClass = css({
+  width: '1.5',
+  height: '1.5',
+  borderRadius: 'full',
+  backgroundColor: 'textSubtle',
+  flex: 'none',
+});
 
 const storybookCodeBlockClass = css({
   display: 'grid',
@@ -711,6 +719,7 @@ const compactSummaryClass = css({
 });
 
 const compactSummaryTitleClass = css({
+  fontFamily: "['Manrope',system-ui,sans-serif]",
   fontSize: 'sm',
   fontWeight: 'semibold',
   color: 'text',
@@ -736,6 +745,7 @@ const compactSummaryMetaItemClass = css({
 });
 
 const compactSummaryMetaLabelClass = css({
+  fontFamily: "['Manrope',system-ui,sans-serif]",
   fontSize: 'xs',
   fontWeight: 'semibold',
   color: 'primary',
@@ -754,4 +764,84 @@ export const codeBlockClass = css({
   fontFamily: 'mono',
   fontSize: 'sm',
   lineHeight: 'relaxed',
+  backgroundColor: 'surfaceMuted',
+  borderWidth: '1px',
+  borderStyle: 'solid',
+  borderColor: 'border',
+  borderRadius: 'md',
+  padding: '4',
+  overflowX: 'auto',
 });
+
+type StorybookBoundaryZoneProps = {
+  mode: StorybookAdapterMode;
+};
+
+export const StorybookBoundaryZone = ({ mode }: StorybookBoundaryZoneProps) => {
+  if (mode === 'none') {
+    return (
+      <div className={boundaryZoneMutedClass}>
+        <span className={boundaryZoneDotMutedClass} />
+        Package surface only — host adapters off
+      </div>
+    );
+  }
+
+  if (mode === 'custom') {
+    return (
+      <div className={boundaryZoneInfoClass}>
+        <span className={boundaryZoneDotInfoClass} />
+        Custom host integration active
+      </div>
+    );
+  }
+
+  return (
+    <div className={boundaryZonePositiveClass}>
+      <span className={boundaryZoneDotPositiveClass} />
+      Default host adapters connected
+    </div>
+  );
+};
+
+const boundaryZoneBaseClass = css({
+  display: 'inline-flex',
+  alignItems: 'center',
+  gap: '2',
+  px: '3',
+  py: '1.5',
+  borderRadius: 'full',
+  fontFamily: "['Manrope',system-ui,sans-serif]",
+  fontSize: 'xs',
+  fontWeight: 'semibold',
+  letterSpacing: 'wide',
+  textTransform: 'uppercase',
+});
+
+const boundaryZoneDotBaseClass = css({
+  width: '1.5',
+  height: '1.5',
+  borderRadius: 'full',
+  flex: 'none',
+});
+
+const boundaryZoneMutedClass = cx(
+  boundaryZoneBaseClass,
+  css({ backgroundColor: 'surfaceMuted', color: 'muted' }),
+);
+const boundaryZoneDotMutedClass = cx(boundaryZoneDotBaseClass, css({ backgroundColor: 'muted' }));
+
+const boundaryZonePositiveClass = cx(
+  boundaryZoneBaseClass,
+  css({ backgroundColor: '[rgba(34,197,94,0.10)]', color: 'success' }),
+);
+const boundaryZoneDotPositiveClass = cx(
+  boundaryZoneDotBaseClass,
+  css({ backgroundColor: 'success' }),
+);
+
+const boundaryZoneInfoClass = cx(
+  boundaryZoneBaseClass,
+  css({ backgroundColor: 'primarySubtle', color: 'primary' }),
+);
+const boundaryZoneDotInfoClass = cx(boundaryZoneDotBaseClass, css({ backgroundColor: 'primary' }));

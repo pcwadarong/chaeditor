@@ -1,6 +1,6 @@
 import { Description, Stories, Title } from '@storybook/addon-docs/blocks';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { css } from 'styled-system/css';
+import { css, cx } from 'styled-system/css';
 
 import {
   emotionPrimitiveUsageSnippet,
@@ -35,6 +35,27 @@ type PrimitiveRegistryPageProps = {
   title: string;
 };
 
+const RECIPE_INDEX = [
+  'Tailwind CSS',
+  'Emotion',
+  'styled-components',
+  'vanilla-extract',
+  'Primitive shell replacement',
+];
+
+const RecipeIndexBar = ({ current }: { current: string }) => (
+  <div className={recipeIndexBarClass}>
+    {RECIPE_INDEX.map(name => (
+      <span
+        key={name}
+        className={name === current ? recipeIndexItemActiveClass : recipeIndexItemClass}
+      >
+        {name}
+      </span>
+    ))}
+  </div>
+);
+
 const StylingRecipesOverviewPage = () => (
   <main className={pageClass}>
     <section className={sectionClass}>
@@ -67,6 +88,7 @@ const RuntimeRecipePage = ({
 }: RuntimeRecipePageProps) => (
   <main className={pageClass}>
     <section className={sectionClass}>
+      <RecipeIndexBar current={eyebrow} />
       <article className={recipeCardClass}>
         <div className={recipeHeaderClass}>
           <p className={recipeEyebrowClass}>{eyebrow}</p>
@@ -92,6 +114,7 @@ const PrimitiveRegistryPage = ({
 }: PrimitiveRegistryPageProps) => (
   <main className={pageClass}>
     <section className={sectionClass}>
+      <RecipeIndexBar current={eyebrow} />
       <article className={recipeCardClass}>
         <div className={recipeHeaderClass}>
           <p className={recipeEyebrowClass}>{eyebrow}</p>
@@ -317,6 +340,7 @@ const overviewHeaderClass = css({
 });
 
 const overviewTitleClass = css({
+  fontFamily: "['Manrope',system-ui,sans-serif]",
   fontSize: '2xl',
   fontWeight: 'semibold',
   lineHeight: 'tight',
@@ -346,13 +370,15 @@ const recipeHeaderClass = css({
 
 const recipeEyebrowClass = css({
   color: 'primary',
+  fontFamily: "['Manrope',system-ui,sans-serif]",
   fontSize: 'xs',
   fontWeight: 'semibold',
-  letterSpacing: 'wide',
+  letterSpacing: 'widest',
   textTransform: 'uppercase',
 });
 
 const recipeTitleClass = css({
+  fontFamily: "['Manrope',system-ui,sans-serif]",
   fontSize: 'xl',
   fontWeight: 'semibold',
   lineHeight: 'tight',
@@ -380,6 +406,34 @@ const runtimePreviewClass = css({
 const docsSummaryClass = css({
   marginBlock: '6',
 });
+
+const recipeIndexBarClass = css({
+  alignItems: 'center',
+  display: 'flex',
+  flexWrap: 'wrap',
+  gap: '1',
+});
+
+const recipeIndexItemBaseClass = css({
+  borderRadius: 'full',
+  fontFamily: "['Manrope',system-ui,sans-serif]",
+  fontSize: 'xs',
+  fontWeight: 'semibold',
+  letterSpacing: 'wide',
+  px: '3',
+  py: '1',
+  textTransform: 'uppercase',
+});
+
+const recipeIndexItemClass = cx(recipeIndexItemBaseClass, css({ color: 'muted' }));
+
+const recipeIndexItemActiveClass = cx(
+  recipeIndexItemBaseClass,
+  css({
+    backgroundColor: 'primarySubtle',
+    color: 'primary',
+  }),
+);
 
 const docsSummaryTableClass = css({
   borderCollapse: 'collapse',

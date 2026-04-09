@@ -4,16 +4,85 @@ import { css, cx } from 'styled-system/css';
 
 import { themeOverrideUsageSnippet } from '@/stories/storybook-fixtures';
 
+const HeroSpecimen = () => (
+  <div className={heroSpecimenClass}>
+    <div className={heroSpecimenHeaderClass}>
+      <span className={heroSpecimenTabLabelClass}>Write</span>
+      <div className={heroSpecimenToolbarClass}>
+        {['B', 'I', '≈', '⌘'].map(icon => (
+          <span key={icon} className={heroSpecimenToolIconClass}>
+            {icon}
+          </span>
+        ))}
+        <span className={heroSpecimenToolSepClass} />
+        {['⊞', '🔗'].map(icon => (
+          <span key={icon} className={heroSpecimenToolIconClass}>
+            {icon}
+          </span>
+        ))}
+      </div>
+      <span className={heroSpecimenTabLabelClass}>Preview</span>
+    </div>
+    <div className={heroSpecimenBodyClass}>
+      <div className={heroSpecimenSourceClass}>
+        <p className={heroSpecimenSourceLineClass}>
+          <span className={heroSpecimenMdSyntaxClass}>##</span>
+          {' Getting started'}
+        </p>
+        <p className={heroSpecimenSourceLineClass}>&nbsp;</p>
+        <p className={heroSpecimenSourceLineClass}>
+          {'Install '}
+          <span className={heroSpecimenMdCodeClass}>`chaeditor`</span>
+          {', then mount'}
+        </p>
+        <p className={heroSpecimenSourceLineClass}>
+          <span className={heroSpecimenMdCodeClass}>{'<MarkdownEditor />'}</span>
+          {'.'}
+        </p>
+        <p className={heroSpecimenSourceLineClass}>&nbsp;</p>
+        <p className={heroSpecimenSourceLineClass}>
+          <span className={heroSpecimenMdSyntaxClass}>{'['}</span>
+          {'Read the guide'}
+          <span className={heroSpecimenMdSyntaxClass}>{']'}</span>
+          {'(https://...)'}
+        </p>
+        <p className={heroSpecimenSourceMutedLineClass}>{'<Attachment href="ref.pdf" />'}</p>
+      </div>
+      <div className={heroSpecimenDividerClass} />
+      <div className={heroSpecimenPreviewClass}>
+        <h3 className={heroSpecimenPreviewHeadingClass}>Getting started</h3>
+        <p className={heroSpecimenPreviewTextClass}>
+          {'Install '}
+          <code className={heroSpecimenPreviewCodeClass}>chaeditor</code>
+          {', then mount '}
+          <code className={heroSpecimenPreviewCodeClass}>{'<MarkdownEditor />'}</code>
+          {'.'}
+        </p>
+        <a className={heroSpecimenPreviewLinkClass}>Read the guide →</a>
+        <div className={heroSpecimenAttachClass}>
+          <span className={heroSpecimenAttachDotClass} />
+          <span className={heroSpecimenAttachTextClass}>ref.pdf — 24 KB</span>
+        </div>
+      </div>
+    </div>
+  </div>
+);
+
 const IntroPage = () => (
   <main className={pageClass}>
     <div className={heroClass}>
-      <p className={eyebrowClass}>chaeditor</p>
-      <h1 className={titleClass}>Composable markdown editing for modern React apps</h1>
-      <p className={descriptionClass}>
-        chaeditor combines authoring helpers, media embed flows, and markdown rendering into a
-        single toolkit. It is designed for teams that want a flexible editor surface without locking
-        themselves into one styling system or app framework.
-      </p>
+      <div className={heroTextClass}>
+        <p className={eyebrowClass}>chaeditor</p>
+        <h1 className={titleClass}>Composable markdown editing for modern React apps</h1>
+        <p className={descriptionClass}>
+          chaeditor combines authoring helpers, media embed flows, and markdown rendering into a
+          single toolkit. It is designed for teams that want a flexible editor surface without
+          locking themselves into one styling system or app framework.
+        </p>
+      </div>
+      <div className={heroSpecimenWrapClass}>
+        <HeroSpecimen />
+      </div>
     </div>
 
     <section className={sectionClass}>
@@ -209,14 +278,27 @@ const pageClass = css({
 });
 
 const heroClass = css({
+  alignItems: 'start',
   display: 'grid',
-  gap: '5',
+  gap: { base: '8', lg: '12' },
+  gridTemplateColumns: { base: '1fr', lg: '[minmax(0,1fr)_minmax(0,1fr)]' },
   marginInline: 'auto',
   maxWidth: '5xl',
 });
 
+const heroTextClass = css({
+  display: 'grid',
+  gap: '5',
+});
+
+const heroSpecimenWrapClass = css({
+  display: { base: 'none', lg: 'block' },
+  paddingTop: '2',
+});
+
 const eyebrowClass = css({
   color: 'primary',
+  fontFamily: "['Manrope',system-ui,sans-serif]",
   fontSize: 'sm',
   fontWeight: 'semibold',
   letterSpacing: 'widest',
@@ -224,7 +306,8 @@ const eyebrowClass = css({
 });
 
 const titleClass = css({
-  fontSize: { base: '4xl', md: '6xl' },
+  fontFamily: "['Manrope',system-ui,sans-serif]",
+  fontSize: { base: '4xl', md: '5xl' },
   fontWeight: 'bold',
   lineHeight: 'tight',
   maxWidth: '4xl',
@@ -246,6 +329,7 @@ const sectionClass = css({
 });
 
 const sectionTitleClass = css({
+  fontFamily: "['Manrope',system-ui,sans-serif]",
   fontSize: '2xl',
   fontWeight: 'semibold',
 });
@@ -268,6 +352,7 @@ const cardClass = css({
 });
 
 const cardTitleClass = css({
+  fontFamily: "['Manrope',system-ui,sans-serif]",
   fontSize: 'xl',
   fontWeight: 'semibold',
 });
@@ -304,6 +389,7 @@ const themeCardHeaderClass = css({
 
 const mutedTokenEyebrowClass = css({
   color: 'textSubtle',
+  fontFamily: "['Manrope',system-ui,sans-serif]",
   fontSize: 'xs',
   fontWeight: 'semibold',
   letterSpacing: 'wide',
@@ -315,6 +401,7 @@ const overrideTokenEyebrowClass = css({
 });
 
 const themeCardTitleClass = css({
+  fontFamily: "['Manrope',system-ui,sans-serif]",
   fontSize: '2xl',
   fontWeight: 'semibold',
   lineHeight: 'tight',
@@ -432,4 +519,170 @@ const themeSpecimenCodeClass = css({
   fontSize: 'xs',
   px: '2.5',
   py: '1.5',
+});
+
+// Hero specimen classes
+const heroSpecimenClass = css({
+  borderRadius: '2xl',
+  border: '[1px solid var(--colors-border)]',
+  overflow: 'hidden',
+  bg: 'surface',
+  boxShadow: '[0 24px 48px rgb(15 23 42 / 0.08)]',
+  display: 'grid',
+});
+
+const heroSpecimenHeaderClass = css({
+  alignItems: 'center',
+  bg: 'surfaceMuted',
+  borderBottom: '[1px solid var(--colors-border)]',
+  display: 'flex',
+  gap: '3',
+  justifyContent: 'space-between',
+  px: '4',
+  py: '3',
+});
+
+const heroSpecimenTabLabelClass = css({
+  color: 'textSubtle',
+  fontFamily: "['Manrope',system-ui,sans-serif]",
+  fontSize: 'xs',
+  fontWeight: 'semibold',
+  letterSpacing: 'wide',
+  textTransform: 'uppercase',
+});
+
+const heroSpecimenToolbarClass = css({
+  alignItems: 'center',
+  display: 'flex',
+  gap: '1.5',
+});
+
+const heroSpecimenToolIconClass = css({
+  alignItems: 'center',
+  borderRadius: 'md',
+  color: 'textSubtle',
+  display: 'inline-flex',
+  fontSize: 'xs',
+  fontWeight: 'bold',
+  height: '6',
+  justifyContent: 'center',
+  width: '6',
+});
+
+const heroSpecimenToolSepClass = css({
+  backgroundColor: 'border',
+  height: '4',
+  mx: '1',
+  width: '[1px]',
+});
+
+const heroSpecimenBodyClass = css({
+  display: 'grid',
+  gridTemplateColumns: '[1fr_1px_1fr]',
+  minHeight: '[220px]',
+});
+
+const heroSpecimenSourceClass = css({
+  alignContent: 'start',
+  bg: 'surfaceMuted',
+  display: 'grid',
+  fontFamily: 'mono',
+  fontSize: 'xs',
+  gap: '0.5',
+  lineHeight: '[1.7]',
+  p: '4',
+  color: 'textSubtle',
+});
+
+const heroSpecimenSourceLineClass = css({
+  display: 'block',
+});
+
+const heroSpecimenSourceMutedLineClass = css({
+  color: 'muted',
+  display: 'block',
+  opacity: '[0.6]',
+});
+
+const heroSpecimenMdSyntaxClass = css({
+  color: 'primary',
+  fontWeight: 'semibold',
+});
+
+const heroSpecimenMdCodeClass = css({
+  bg: 'surfaceStrong',
+  borderRadius: 'sm',
+  color: 'text',
+  px: '0.5',
+});
+
+const heroSpecimenDividerClass = css({
+  backgroundColor: 'border',
+  width: '[1px]',
+});
+
+const heroSpecimenPreviewClass = css({
+  alignContent: 'start',
+  bg: 'surface',
+  display: 'grid',
+  gap: '3',
+  p: '4',
+});
+
+const heroSpecimenPreviewHeadingClass = css({
+  color: 'text',
+  fontFamily: "['Manrope',system-ui,sans-serif]",
+  fontSize: 'sm',
+  fontWeight: 'bold',
+  lineHeight: 'tight',
+});
+
+const heroSpecimenPreviewTextClass = css({
+  color: 'textSubtle',
+  fontSize: 'xs',
+  lineHeight: '[1.6]',
+});
+
+const heroSpecimenPreviewCodeClass = css({
+  bg: 'surfaceMuted',
+  borderRadius: 'sm',
+  color: 'text',
+  fontFamily: 'mono',
+  fontSize: '[0.7rem]',
+  px: '0.5',
+});
+
+const heroSpecimenPreviewLinkClass = css({
+  color: 'primary',
+  cursor: 'pointer',
+  fontSize: 'xs',
+  fontWeight: 'medium',
+  textDecoration: 'underline',
+  textUnderlineOffset: '[0.18em]',
+});
+
+const heroSpecimenAttachClass = css({
+  alignItems: 'center',
+  bg: 'surfaceMuted',
+  border: '[1px solid var(--colors-border)]',
+  borderRadius: 'md',
+  display: 'flex',
+  gap: '2',
+  px: '2.5',
+  py: '2',
+});
+
+const heroSpecimenAttachDotClass = css({
+  backgroundColor: 'primary',
+  borderRadius: 'full',
+  flex: 'none',
+  height: '2',
+  opacity: '[0.5]',
+  width: '2',
+});
+
+const heroSpecimenAttachTextClass = css({
+  color: 'textSubtle',
+  fontFamily: 'mono',
+  fontSize: 'xs',
 });

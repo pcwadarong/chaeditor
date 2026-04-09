@@ -21,6 +21,7 @@ import {
   panelClass,
   sectionTitleClass,
   type StorybookAdapterMode,
+  StorybookBoundaryZone,
   StorybookCheckList,
   StorybookMetaTable,
   StorybookSectionCard,
@@ -89,6 +90,7 @@ const EmbedWorkflowsReference = ({ adapterMode, contentType }: EmbedWorkflowsRef
 
   return (
     <main className={pageClass}>
+      <StorybookBoundaryZone mode={adapterMode} />
       <StorybookSectionCard description={summary.description} title={summary.title}>
         <StorybookMetaTable items={summary.items} />
       </StorybookSectionCard>

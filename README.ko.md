@@ -12,16 +12,16 @@
 
 ## 가이드
 
-아래 링크는 저장소 안 문서 경로입니다.
-나중에 위키를 웹으로 공개한다면 여기 링크를 공개 주소로 바꿔 붙이면 됩니다.
+추천 순서는 아래와 같습니다.
 
-- [Next.js 통합 가이드](./docs/wiki/ko/nextjs-integration.md)
-- [패키지 표면과 import 매트릭스](./docs/wiki/ko/package-surface-and-import-matrix.md)
-- [CSS 설정 가이드](./docs/wiki/ko/css-setup.md)
-- [Primitive Shell Replacement](./docs/wiki/ko/primitive-shell-replacement.md)
-- [아키텍처와 폴더 책임](./docs/wiki/ko/architecture-and-folder-ownership.md)
+- [Next.js에서 chaeditor 붙이기](https://github.com/pcwadarong/chaeditor/wiki/Next.js에서-chaeditor-붙이기)
+- [스타일 붙이기](https://github.com/pcwadarong/chaeditor/wiki/스타일-붙이기)
+- [기본 UI 컴포넌트 교체하기](https://github.com/pcwadarong/chaeditor/wiki/기본-UI-컴포넌트-교체하기)
+- [무엇을 어디서 import하면 되나](https://github.com/pcwadarong/chaeditor/wiki/무엇을-어디서-import하면-되나)
+- [릴리즈 전 체크리스트](https://github.com/pcwadarong/chaeditor/wiki/릴리즈-전-체크리스트)
+- [내부 구조와 폴더 역할](https://github.com/pcwadarong/chaeditor/wiki/내부-구조와-폴더-역할)
 
-처음 붙이는 단계라면 Next.js 통합 가이드부터 보는 편이 가장 빠릅니다.
+처음 붙이는 단계라면 Next.js에서 chaeditor 붙이기부터 보는 편이 가장 빠릅니다.
 업로드, 이미지 첨부, OG 카드, route 연결이 들어가는 순간부터는 README보다 위 문서가 더 직접적으로 도움이 됩니다.
 
 ## 빠르게 시작하기
@@ -81,7 +81,7 @@ const Example = () => {
 };
 ```
 
-여기까지 띄운 뒤에는 [Next.js 통합 가이드](./docs/wiki/ko/nextjs-integration.md)를 따라 route 파일과 검증 순서를 맞추면 됩니다.
+여기까지 띄운 뒤에는 [Next.js에서 chaeditor 붙이기](https://github.com/pcwadarong/chaeditor/wiki/Next.js에서-chaeditor-붙이기)를 따라 route 파일과 검증 순서를 맞추면 됩니다.
 
 ## 설치
 
@@ -122,7 +122,7 @@ import 'chaeditor/styles-lite.css';
 import 'katex/dist/katex.min.css';
 ```
 
-자세한 기준은 [CSS 설정 가이드](./docs/wiki/ko/css-setup.md)에 따로 정리했습니다.
+자세한 기준은 [스타일 붙이기](https://github.com/pcwadarong/chaeditor/wiki/스타일-붙이기)에 따로 정리했습니다.
 
 ## 패키지 표면
 
@@ -138,14 +138,15 @@ subpath를 따로 설치하는 구조가 아니라, 한 번 설치한 뒤 필요
 | `chaeditor/styles.css`       | full CSS bundle                                                         | 가장 안전한 기본 스타일 경로                     |
 | `chaeditor/styles-lite.css`  | lighter CSS bundle                                                      | KaTeX 스타일을 host가 관리할 때                  |
 
-더 자세한 표와 조합 예시는 [패키지 표면과 import 매트릭스](./docs/wiki/ko/package-surface-and-import-matrix.md)에서 볼 수 있습니다.
+더 자세한 표와 조합 예시는 [무엇을 어디서 import하면 되나](https://github.com/pcwadarong/chaeditor/wiki/무엇을-어디서-import하면-되나)에서 볼 수 있습니다.
 
 ## 다음에 어디를 보면 좋은가
 
-- App Router 기준 실제 통합 순서가 필요하다면: [Next.js 통합 가이드](./docs/wiki/ko/nextjs-integration.md)
-- 어떤 import 경로를 써야 할지 헷갈린다면: [패키지 표면과 import 매트릭스](./docs/wiki/ko/package-surface-and-import-matrix.md)
-- `styles.css`와 `styles-lite.css` 중 무엇을 골라야 할지 애매하다면: [CSS 설정 가이드](./docs/wiki/ko/css-setup.md)
-- 패키지 기본 UI shell 대신 앱 디자인 시스템 컴포넌트를 쓰고 싶다면: [Primitive Shell Replacement](./docs/wiki/ko/primitive-shell-replacement.md)
+- App Router 기준 실제 통합 순서가 필요하다면: [Next.js에서 chaeditor 붙이기](https://github.com/pcwadarong/chaeditor/wiki/Next.js에서-chaeditor-붙이기)
+- `styles.css`와 `styles-lite.css` 중 무엇을 골라야 할지 애매하다면: [스타일 붙이기](https://github.com/pcwadarong/chaeditor/wiki/스타일-붙이기)
+- 패키지 기본 UI shell 대신 앱 디자인 시스템 컴포넌트를 쓰고 싶다면: [기본 UI 컴포넌트 교체하기](https://github.com/pcwadarong/chaeditor/wiki/기본-UI-컴포넌트-교체하기)
+- 어떤 import 경로를 써야 할지 헷갈린다면: [무엇을 어디서 import하면 되나](https://github.com/pcwadarong/chaeditor/wiki/무엇을-어디서-import하면-되나)
+- 릴리즈 전에 packed tarball 기준으로 다시 확인하고 싶다면: [릴리즈 전 체크리스트](https://github.com/pcwadarong/chaeditor/wiki/릴리즈-전-체크리스트)
 - Tailwind, Emotion, styled-components, vanilla-extract wrapper 예시가 필요하다면: [Host Preset Templates](./recipes/host-presets/README.md)
 
 ## 테마와 host 커스터마이징
@@ -179,7 +180,7 @@ const Example = () => (
 );
 ```
 
-Primitive shell 교체 전체 예시는 [Primitive Shell Replacement](./docs/wiki/ko/primitive-shell-replacement.md)에 따로 정리했습니다.
+Primitive shell 교체 전체 예시는 [기본 UI 컴포넌트 교체하기](https://github.com/pcwadarong/chaeditor/wiki/기본-UI-컴포넌트-교체하기)에 따로 정리했습니다.
 
 ## 로컬 개발
 

@@ -12,14 +12,14 @@ Build composable markdown editors for React with authoring helpers, rich embeds,
 
 ## Guides
 
-The links below use repository paths.
-If you publish these docs as a web wiki, replace them with your public wiki URLs.
+Recommended order:
 
-- [Next.js Integration](./docs/wiki/nextjs-integration.md)
-- [Package Surface and Import Matrix](./docs/wiki/package-surface-and-import-matrix.md)
-- [CSS Setup](./docs/wiki/css-setup.md)
-- [Primitive Shell Replacement](./docs/wiki/primitive-shell-replacement.md)
-- [Architecture and Folder Ownership](./docs/wiki/architecture-and-folder-ownership.md)
+- [Integrating chaeditor in Next.js](https://github.com/pcwadarong/chaeditor/wiki/Next.js에서-chaeditor-붙이기)
+- [Styling and CSS setup](https://github.com/pcwadarong/chaeditor/wiki/스타일-붙이기)
+- [Replacing default UI primitives](https://github.com/pcwadarong/chaeditor/wiki/기본-UI-컴포넌트-교체하기)
+- [Choosing import paths](https://github.com/pcwadarong/chaeditor/wiki/무엇을-어디서-import하면-되나)
+- [Release checklist](https://github.com/pcwadarong/chaeditor/wiki/릴리즈-전-체크리스트)
+- [Internal structure and folder ownership](https://github.com/pcwadarong/chaeditor/wiki/내부-구조와-폴더-역할)
 
 If you are integrating for the first time, start with the Next.js guide.
 If uploads, image insertion, preview cards, or route wiring are part of the job, the wiki is more useful than the README alone.
@@ -87,7 +87,7 @@ const Example = () => {
 };
 ```
 
-Then follow [Next.js Integration](./docs/wiki/nextjs-integration.md) to create the expected host routes and verify the real app flow.
+Then follow [Integrating chaeditor in Next.js](https://github.com/pcwadarong/chaeditor/wiki/Next.js에서-chaeditor-붙이기) to create the expected host routes and verify the real app flow.
 
 ## Installation
 
@@ -128,7 +128,7 @@ import 'chaeditor/styles-lite.css';
 import 'katex/dist/katex.min.css';
 ```
 
-See [CSS Setup](./docs/wiki/css-setup.md) for a fuller decision guide and consumer-side checklists.
+See [Styling and CSS setup](https://github.com/pcwadarong/chaeditor/wiki/스타일-붙이기) for a fuller decision guide and consumer-side checklists.
 
 ## Package Surface
 
@@ -144,14 +144,15 @@ You do not install subpaths separately.
 | `chaeditor/styles.css`       | full default CSS bundle                                                       | safest styling path                                    |
 | `chaeditor/styles-lite.css`  | lighter default CSS bundle                                                    | when your app owns KaTeX styling                       |
 
-If you want the longer decision matrix, read [Package Surface and Import Matrix](./docs/wiki/package-surface-and-import-matrix.md).
+If you want the longer decision matrix, read [Choosing import paths](https://github.com/pcwadarong/chaeditor/wiki/무엇을-어디서-import하면-되나).
 
 ## What To Read Next
 
-- Need a practical app-router walkthrough: [Next.js Integration](./docs/wiki/nextjs-integration.md)
-- Need to choose imports or entrypoints: [Package Surface and Import Matrix](./docs/wiki/package-surface-and-import-matrix.md)
-- Need help choosing `styles.css` vs `styles-lite.css`: [CSS Setup](./docs/wiki/css-setup.md)
-- Need to replace package UI shells with your own design system: [Primitive Shell Replacement](./docs/wiki/primitive-shell-replacement.md)
+- Need a practical app-router walkthrough: [Integrating chaeditor in Next.js](https://github.com/pcwadarong/chaeditor/wiki/Next.js에서-chaeditor-붙이기)
+- Need help choosing `styles.css` vs `styles-lite.css`: [Styling and CSS setup](https://github.com/pcwadarong/chaeditor/wiki/스타일-붙이기)
+- Need to replace package UI shells with your own design system: [Replacing default UI primitives](https://github.com/pcwadarong/chaeditor/wiki/기본-UI-컴포넌트-교체하기)
+- Need to choose imports or entrypoints: [Choosing import paths](https://github.com/pcwadarong/chaeditor/wiki/무엇을-어디서-import하면-되나)
+- Need the pre-release smoke-test flow: [Release checklist](https://github.com/pcwadarong/chaeditor/wiki/릴리즈-전-체크리스트)
 - Need ready-to-adapt wrappers for Tailwind, Emotion, styled-components, or vanilla-extract: [Host Preset Templates](./recipes/host-presets/README.md)
 
 ## Theme And Host Customization
@@ -185,7 +186,7 @@ const Example = () => (
 );
 ```
 
-The full primitive replacement walkthrough lives in [Primitive Shell Replacement](./docs/wiki/primitive-shell-replacement.md).
+The full primitive replacement walkthrough lives in [Replacing default UI primitives](https://github.com/pcwadarong/chaeditor/wiki/기본-UI-컴포넌트-교체하기).
 
 ## Local Development
 
