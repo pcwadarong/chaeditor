@@ -19,6 +19,9 @@ It combines authoring helpers, embed workflows, and rich markdown rendering in a
 - [Package Surface and Import Matrix](https://github.com/pcwadarong/chaeditor/wiki/EN-%3A-Package-Surface-and-Import-Matrix)
 - [Architecture and Folder Ownership](https://github.com/pcwadarong/chaeditor/wiki/EN-%3A-Architecture-and-Folder-Ownership)
 
+If you are integrating for the first time, start with the Next.js guide.
+Once uploads, image insertion, OG cards, or route wiring enter the picture, the guide is more useful than the README alone.
+
 ## Links
 
 - [npm package](https://www.npmjs.com/package/chaeditor)
@@ -35,24 +38,74 @@ yarn add react react-dom chaeditor
 bun add react react-dom chaeditor
 ```
 
-If you want the bundled Panda-based default styles and theme tokens, import the package CSS as well.
+Choose one CSS entrypoint depending on whether you want the package to include KaTeX styling.
 
 ```tsx
 import 'chaeditor/styles.css';
 ```
+
+`chaeditor/styles.css` is the full bundle: Panda-based default styles, theme tokens, KaTeX styles, and KaTeX fonts.
+
+If you want the lighter bundle without KaTeX runtime styles, use:
+
+```tsx
+import 'chaeditor/styles-lite.css';
+```
+
+When you choose `chaeditor/styles-lite.css` and render math, your app must also load KaTeX CSS separately:
+
+```tsx
+import 'chaeditor/styles-lite.css';
+import 'katex/dist/katex.min.css';
+```
+
+## Where To Start
+
+The cleanest starting point depends on what you need right now.
+
+- If you only need markdown display, start with `MarkdownRenderer` and `chaeditor/styles.css`.
+- If you want basic authoring first, mount `MarkdownEditor` without adapters.
+- If you need image uploads, attachments, videos, and OG cards, use `createDefaultHostAdapters()` and follow the Next.js guide.
+
+Recommended order:
+
+1. Import `styles.css` or `styles-lite.css` globally.
+2. Render `MarkdownRenderer` or `MarkdownEditor` once.
+3. Add host adapters only after the basic authoring flow works.
+4. Before release, run a packed-tarball smoke test in a consumer app.
 
 ## Package Surface
 
 `chaeditor` is published as a single npm package.
 You do not install subpaths separately. Install `chaeditor` once, then selectively import the entrypoints you actually need.
 
-| Import path                  | Provides                                                                                                            | Use when                                                   |
-| ---------------------------- | ------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
-| `chaeditor/react`            | React surfaces such as `MarkdownEditor`, `MarkdownToolbar`, `MarkdownRenderer`, and the primitive registry contract | most app integrations                                      |
-| `chaeditor/core`             | pure utilities, markdown helpers, parser contracts, and `createChaeditorThemeVars()`                                | logic-only usage or server-safe helpers                    |
-| `chaeditor/default-host`     | bundled default upload adapters                                                                                     | only when you want the packaged upload implementations     |
-| `chaeditor/panda-primitives` | the bundled Panda-based primitive shells                                                                            | only when you want to reuse or wrap the default primitives |
-| `chaeditor/styles.css`       | bundled theme tokens and component styles                                                                           | when you want the default package styling                  |
+| Import path                  | Provides                                                                                                            | Use when                                                     |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| `chaeditor/react`            | React surfaces such as `MarkdownEditor`, `MarkdownToolbar`, `MarkdownRenderer`, and the primitive registry contract | most app integrations                                        |
+| `chaeditor/core`             | pure utilities, markdown helpers, parser contracts, and `createChaeditorThemeVars()`                                | logic-only usage or server-safe helpers                      |
+| `chaeditor/default-host`     | bundled default upload adapters                                                                                     | only when you want the packaged upload implementations       |
+| `chaeditor/panda-primitives` | the bundled Panda-based primitive shells                                                                            | only when you want to reuse or wrap the default primitives   |
+| `chaeditor/styles.css`       | bundled theme tokens, component styles, KaTeX math styles, and KaTeX fonts                                          | when you want the default package styling with math support  |
+| `chaeditor/styles-lite.css`  | bundled theme tokens and component styles without KaTeX runtime styles                                              | when your app already owns KaTeX CSS or does not render math |
+
+## CSS Entrypoints
+
+Use `chaeditor/styles.css` when:
+
+- you want the package defaults to work out of the box
+- your renderer uses math
+- you do not want to manage KaTeX CSS and fonts separately
+
+Use `chaeditor/styles-lite.css` when:
+
+- you want a lighter default CSS bundle
+- your app does not render math
+- your app already imports `katex/dist/katex.min.css` elsewhere
+
+Rule of thumb:
+
+- `styles.css`: safest default
+- `styles-lite.css`: opt in only when you intentionally own KaTeX styling
 
 ## Selective Imports
 
@@ -75,6 +128,15 @@ const Example = () => {
 };
 ```
 
+### Basic editor with lighter CSS
+
+```tsx
+import 'chaeditor/styles-lite.css';
+import 'katex/dist/katex.min.css';
+
+import { MarkdownEditor } from 'chaeditor/react';
+```
+
 ### Core utilities only
 
 ```ts
@@ -90,22 +152,47 @@ import {
 ```tsx
 import 'chaeditor/styles.css';
 
-import { uploadEditorFile, uploadEditorImage, uploadEditorVideo } from 'chaeditor/default-host';
+import { createDefaultHostAdapters } from 'chaeditor/default-host';
 import { MarkdownEditor } from 'chaeditor/react';
 
+const adapters = createDefaultHostAdapters();
+
 const Example = () => (
-  <MarkdownEditor
-    adapters={{
-      uploadFile: uploadEditorFile,
-      uploadImage: uploadEditorImage,
-      uploadVideo: uploadEditorVideo,
-    }}
-    contentType="article"
-    onChange={() => {}}
-    value=""
-  />
+  <MarkdownEditor adapters={adapters} contentType="article" onChange={() => {}} value="" />
 );
 ```
+
+`createDefaultHostAdapters()` expects these host routes:
+
+- `/api/attachments`
+- `/api/images`
+- `/api/videos`
+- `/api/link-preview`
+
+For a first setup, this order is the least confusing:
+
+1. Mount `MarkdownEditor` without adapters.
+2. Add `createDefaultHostAdapters()`.
+3. Create `app/api/attachments/route.ts`, `app/api/images/route.ts`, `app/api/videos/route.ts`, and `app/api/link-preview/route.ts`.
+4. Click through image upload, file attachment, and link paste once each.
+
+If you only need OG or preview-card metadata, you can wire just the preview helper:
+
+```tsx
+import { createFetchLinkPreviewMeta } from 'chaeditor/default-host';
+
+const adapters = {
+  fetchLinkPreviewMeta: createFetchLinkPreviewMeta(),
+};
+```
+
+The Next.js guide now covers the rest in one place:
+
+- which files to create and where
+- what each route should accept and return
+- copy-paste starter route handlers
+- a smoke checklist for confirming the integration is actually complete
+- troubleshooting for missing preview cards, broken upload URLs, and math styling issues
 
 ### Optional Panda primitive reuse
 

@@ -156,6 +156,38 @@ PR을 열 때는 저장소에 준비된 PR 템플릿을 사용해 주세요.
 - build 산출물 구조
 - 생성된 `dist` 타입 선언
 - `styled-system/styles.css`
+- `styles.css`, `styles-lite.css`
 - README 설치 / import 예제
 
 사용자 설치 방식이나 import 경로에 영향이 있으면, 리뷰를 요청하기 전에 packed tarball 기준 검증까지 끝내야 합니다.
+
+릴리즈 전에 한 번 더 확실히 확인하고 싶다면, packed tarball을 임시 소비자 앱에 설치해서 직접 smoke test를 해보세요.
+`pnpm link`보다 실제 배포 상태에 훨씬 가깝고, packed 파일, CSS, 폰트, export map까지 그대로 점검할 수 있습니다.
+
+권장 흐름:
+
+```bash
+pnpm run build
+pnpm run verify:package-surface
+pnpm pack --pack-destination .tmp
+
+mkdir -p ../chaeditor-consumer-smoke
+cd ../chaeditor-consumer-smoke
+pnpm create vite . --template react-ts
+pnpm add file:../chaeditor/.tmp/chaeditor-0.1.0.tgz
+```
+
+그 다음 소비자 앱처럼 그대로 import 해서 확인합니다.
+
+```tsx
+import 'chaeditor/styles.css';
+import { MarkdownRenderer } from 'chaeditor/react';
+```
+
+특히 아래 같은 문제를 눈으로 확인하고 싶을 때 유용합니다.
+
+- packed asset 누락
+- `styles.css` 산출물 깨짐
+- KaTeX 수식 스타일 또는 폰트 회귀
+- 실제 소비자 앱에서만 보이는 아이콘 렌더 차이
+- pack 이후에만 드러나는 export 조건 문제

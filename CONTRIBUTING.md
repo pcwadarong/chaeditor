@@ -157,6 +157,38 @@ Pay extra attention to:
 - build output shape
 - generated `dist` typings
 - `styled-system/styles.css`
+- `styles.css` and `styles-lite.css`
 - `README` install/import examples
 
 If your change affects how consumers install or import the package, verify the packed tarball before asking for review.
+
+If you need higher confidence before release, do a local consumer smoke test with the packed tarball.
+This is closer to the real published state than `pnpm link` because it validates the actual packed files, CSS, fonts, and export map.
+
+Suggested flow:
+
+```bash
+pnpm run build
+pnpm run verify:package-surface
+pnpm pack --pack-destination .tmp
+
+mkdir -p ../chaeditor-consumer-smoke
+cd ../chaeditor-consumer-smoke
+pnpm create vite . --template react-ts
+pnpm add file:../chaeditor/.tmp/chaeditor-0.1.0.tgz
+```
+
+Then import the package exactly as a consumer would:
+
+```tsx
+import 'chaeditor/styles.css';
+import { MarkdownRenderer } from 'chaeditor/react';
+```
+
+Use this when you want to visually verify issues such as:
+
+- missing packed assets
+- broken `styles.css` output
+- KaTeX math styling or font regressions
+- icon rendering differences in a real consumer app
+- export conditions that only fail after packing
