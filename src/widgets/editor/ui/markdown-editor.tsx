@@ -77,13 +77,14 @@ export const MarkdownEditor = ({
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const [mobilePane, setMobilePane] = useState<MobilePane>('edit');
   const isMobileLayout = useMobileEditorLayout();
+  const deferredValue = React.useDeferredValue(value);
   const markdownOptions = useMemo(
     () =>
       getMarkdownOptions({
         adapters,
-        items: collectMarkdownImages(value),
+        items: collectMarkdownImages(deferredValue),
       }),
-    [adapters, value],
+    [adapters, deferredValue],
   );
 
   /**
@@ -142,11 +143,11 @@ export const MarkdownEditor = ({
   };
 
   const previewNode =
-    value.trim().length > 0 ? (
+    deferredValue.trim().length > 0 ? (
       <div className={markdownBodyClass}>
         {renderRichMarkdown({
           adapters,
-          markdown: value,
+          markdown: deferredValue,
           renderMarkdownFragment: (fragmentMarkdown, key) => (
             <MarkdownHooks key={key} {...markdownOptions}>
               {fragmentMarkdown}
