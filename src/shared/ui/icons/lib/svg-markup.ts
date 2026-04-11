@@ -3,7 +3,7 @@
  */
 export const normalizeSvgMarkup = (svgMarkup: string): string =>
   svgMarkup
-    .replace(/\s(width|height)="[^"]*"/gi, '')
+    .replace(/<svg\b[^>]*>/, svgTag => svgTag.replace(/\s(width|height)="[^"]*"/gi, ''))
     .replace(/\s(fill|stroke)="(?!none|currentColor)[^"]*"/gi, '')
     .replace(
       /<svg\b([^>]*)\sstyle="([^"]*)"/i,

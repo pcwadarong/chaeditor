@@ -32,4 +32,21 @@ describe('svg markup helpers', () => {
     expect(normalizedMarkup).toContain('fill="currentColor"');
     expect(normalizedMarkup).not.toContain('stroke="#111"');
   });
+
+  it('Under raw SVG markup with a clipPath, normalizeSvgMarkup must preserve clipPath element dimensions', () => {
+    const input = [
+      '<svg width="24" height="24" viewBox="0 0 24 24">',
+      '<g clip-path="url(#clip0)"><path fill="currentColor" /></g>',
+      '<defs><clipPath id="clip0"><rect width="24" height="24" fill="white"/></clipPath></defs>',
+      '</svg>',
+    ].join('');
+
+    const normalizedMarkup = normalizeSvgMarkup(input);
+
+    // clipPath rect must keep its dimensions so the clip region is not 0×0
+    expect(normalizedMarkup).toContain('width="24" height="24"');
+    // SVG root dimensions are replaced with 100%
+    expect(normalizedMarkup).toContain('width="100%"');
+    expect(normalizedMarkup).toContain('height="100%"');
+  });
 });
