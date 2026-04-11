@@ -31,7 +31,9 @@ describe('applyTextareaTransform', () => {
 
     const onChange = vi.fn();
     const execCommand = vi.fn((_command: string, _showUi: boolean, value?: string) => {
-      textarea.value = typeof value === 'string' ? value : '';
+      const start = textarea.selectionStart;
+      const end = textarea.selectionEnd;
+      textarea.value = textarea.value.slice(0, start) + (value ?? '') + textarea.value.slice(end);
       return true;
     });
     const restoreExecCommand = installExecCommand(execCommand);
@@ -39,8 +41,7 @@ describe('applyTextareaTransform', () => {
     applyTextareaTransform(textarea, onChange, target => wrapSelection(target, '**', '**', 'Text'));
 
     await Promise.resolve();
-
-    expect(execCommand).toHaveBeenCalledWith('insertText', false, '**Hello** world');
+    expect(execCommand).toHaveBeenCalledWith('insertText', false, '**Hello**');
     expect(onChange).not.toHaveBeenCalled();
     expect(textarea.scrollTop).toBe(120);
     expect(textarea.scrollLeft).toBe(18);

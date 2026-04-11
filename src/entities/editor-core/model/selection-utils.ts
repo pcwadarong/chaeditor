@@ -215,10 +215,33 @@ export const applyTextareaTransform = (
   textarea.focus({ preventScroll: true });
   const inserted = canUseExecCommand
     ? (() => {
-        textarea.setSelectionRange(0, textarea.value.length);
+        const prevValue = textarea.value;
+        const minLength = Math.min(prevValue.length, nextValue.length);
+        let changeStart = 0;
+
+        while (changeStart < minLength && prevValue[changeStart] === nextValue[changeStart]) {
+          changeStart += 1;
+        }
+
+        let changeEndPrev = prevValue.length;
+        let changeEndNext = nextValue.length;
+
+        while (
+          changeEndPrev > changeStart &&
+          changeEndNext > changeStart &&
+          prevValue[changeEndPrev - 1] === nextValue[changeEndNext - 1]
+        ) {
+          changeEndPrev -= 1;
+          changeEndNext -= 1;
+        }
+
+        textarea.setSelectionRange(changeStart, changeEndPrev);
         // execCommand is deprecated, but it is still the most reliable way to push
-        // a programmatic textarea edit into the native undo stack.
-        return document.execCommand('insertText', false, nextValue);
+        return document.execCommand(
+          'insertText',
+          false,
+          nextValue.slice(changeStart, changeEndNext),
+        );
       })()
     : false;
 
