@@ -7,8 +7,9 @@ export const viewerBackdropClass = css({
   inset: '0',
   zIndex: '1200',
   backgroundColor: '[rgb(15 23 42 / 0.86)]',
-  display: 'grid',
-  placeItems: 'center',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
   p: '4',
 });
 
@@ -213,7 +214,6 @@ export const thumbnailRailTrackClass = css({
   gap: '2',
   justifyContent: 'center',
   minWidth: '[max-content]',
-  alignItems: 'stretch',
 });
 
 export const thumbnailButtonClass = css({
