@@ -1,7 +1,8 @@
 import { css } from 'styled-system/css';
 
 export const galleryFrameClass = css({
-  display: 'grid',
+  display: 'flex',
+  flexDirection: 'column',
   gap: '3',
 });
 

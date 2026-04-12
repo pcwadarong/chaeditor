@@ -169,7 +169,8 @@ const themeCardClass = css({
   bg: 'surface',
   border: '[1px solid var(--colors-border)]',
   borderRadius: '2xl',
-  display: 'grid',
+  display: 'flex',
+  flexDirection: 'column',
   overflow: 'hidden',
 });
 
@@ -179,7 +180,8 @@ const overrideThemeCardClass = css({
 });
 
 const themeCardHeaderClass = css({
-  display: 'grid',
+  display: 'flex',
+  flexDirection: 'column',
   gap: '3',
   p: '7',
 });
@@ -215,7 +217,8 @@ const themeSpecimenPanelClass = css({
   backgroundColor: `[var(--chaeditor-color-surface,${'#ffffff'})]`,
   border: `[1px solid var(--chaeditor-color-border,${'#d4d4d8'})]`,
   borderRadius: 'xl',
-  display: 'grid',
+  display: 'flex',
+  flexDirection: 'column',
   gap: '4',
   p: '5',
 });

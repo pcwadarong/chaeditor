@@ -50,13 +50,10 @@ const viewportClass = css({
   right: '3',
   bottom: '3',
   zIndex: '70',
-  display: 'grid',
+  display: 'flex',
+  flexDirection: 'column',
   gap: '3',
   width: '[min(24rem,calc(100vw-1.5rem))]',
-  md: {
-    right: '3',
-    bottom: '3',
-  },
   lg: {
     right: '4',
     bottom: '4',
@@ -138,9 +135,9 @@ const toneIconRecipe = cva({
 });
 
 const contentClass = css({
-  display: 'grid',
+  display: 'flex',
+  flexDirection: 'column',
   gap: '1',
-  alignItems: 'center',
 });
 
 const titleClass = css({

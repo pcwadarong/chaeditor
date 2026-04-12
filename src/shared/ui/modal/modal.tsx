@@ -93,8 +93,9 @@ const backdropClass = css({
   zIndex: '1200',
   backgroundColor: overlayBackdropColor,
   p: '4',
-  display: 'grid',
-  placeItems: 'center',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
   overflow: 'hidden',
 });
 

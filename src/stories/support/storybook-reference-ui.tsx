@@ -11,7 +11,7 @@ import {
 } from '@/stories/support/storybook-docs';
 
 /**
- * Reference 계열 스토리에서 재사용하는 레이아웃, 코드 패널, 상태 배지 같은 UI 조각 모음입니다.
+ * Shared layout, code panel, and status badge helpers used by reference stories.
  */
 
 const imageLibrary = [
@@ -91,7 +91,7 @@ type StorybookBoundaryZoneProps = {
 };
 
 /**
- * reference 스토리 변형의 핵심 상태를 짧게 요약하는 메타 블록을 렌더링합니다.
+ * Renders a compact summary block for the active reference variant.
  */
 export const StorybookCompactSummary = ({
   description,
@@ -113,7 +113,7 @@ export const StorybookCompactSummary = ({
 );
 
 /**
- * 코드 문자열을 syntax highlight 결과로 변환해 Storybook 안에 렌더링합니다.
+ * Converts raw source into highlighted HTML and renders it inside Storybook.
  */
 const HighlightedCode = ({ code, language }: HighlightedCodeProps) => {
   const [html, setHtml] = useState<string | null>(null);
@@ -164,7 +164,7 @@ const HighlightedCode = ({ code, language }: HighlightedCodeProps) => {
 };
 
 /**
- * reference 문서에서 재사용하는 코드 블록 패널을 렌더링합니다.
+ * Renders the shared code block shell used by reference docs pages.
  */
 export const StorybookCodeBlock = ({ code, label, language = 'tsx' }: StorybookCodeBlockProps) => (
   <section className={storybookCodeBlockClass}>
@@ -179,7 +179,7 @@ export const StorybookCodeBlock = ({ code, label, language = 'tsx' }: StorybookC
 );
 
 /**
- * reference 스토리의 본문 섹션을 일정한 제목/설명 구조로 감싸줍니다.
+ * Wraps a reference section with the shared title and description structure.
  */
 export const StorybookSectionCard = ({
   children,
@@ -198,7 +198,7 @@ export const StorybookSectionCard = ({
 );
 
 /**
- * reference 페이지의 현재 모드 요약 섹션을 공통 구조로 렌더링합니다.
+ * Renders the shared adapter mode summary section for reference pages.
  */
 export const StorybookReferenceModeSection = ({
   badge,
@@ -214,7 +214,7 @@ export const StorybookReferenceModeSection = ({
 );
 
 /**
- * reference 페이지의 불변 조건 체크리스트 섹션을 공통 구조로 렌더링합니다.
+ * Renders the shared invariant checklist section for reference pages.
  */
 export const StorybookReferenceInvariantSection = ({
   description,
@@ -228,7 +228,7 @@ export const StorybookReferenceInvariantSection = ({
 );
 
 /**
- * reference 페이지에서 비교용 surface 설명을 읽기 쉬운 리스트 구조로 렌더링합니다.
+ * Renders a readable callout list for comparing reference surfaces.
  */
 export const StorybookReferenceCalloutList = ({ items }: StorybookReferenceCalloutListProps) => (
   <div className={storyCalloutListClass}>
@@ -245,7 +245,7 @@ export const StorybookReferenceCalloutList = ({ items }: StorybookReferenceCallo
 );
 
 /**
- * Host adapter matrix처럼 key/본문/미디어를 함께 보여주는 reference row 목록입니다.
+ * Renders reference rows that pair a key label with body copy and optional media.
  */
 export const StorybookReferenceMatrix = ({ rows }: StorybookReferenceMatrixProps) => (
   <div className={storyReferenceMatrixClass}>
@@ -265,7 +265,7 @@ export const StorybookReferenceMatrix = ({ rows }: StorybookReferenceMatrixProps
 );
 
 /**
- * label/value 쌍을 짧은 메타 정보 테이블처럼 렌더링합니다.
+ * Renders a compact label/value meta table.
  */
 export const StorybookMetaTable = ({ items }: StorybookMetaTableProps) => (
   <dl className={storyMetaListClass}>
@@ -279,7 +279,7 @@ export const StorybookMetaTable = ({ items }: StorybookMetaTableProps) => (
 );
 
 /**
- * 상태 배지를 tone 기준으로 렌더링합니다.
+ * Renders a status badge using the requested tone.
  */
 export const StorybookStatusBadge = ({ children, tone = 'info' }: StorybookStatusBadgeProps) => (
   <span
@@ -306,7 +306,7 @@ export const StorybookStatusBadge = ({ children, tone = 'info' }: StorybookStatu
 );
 
 /**
- * reference 스토리 기본 markdown 샘플입니다.
+ * Shared markdown sample used by reference stories.
  */
 export const sampleMarkdown = [
   '# chaeditor Reference',
@@ -338,28 +338,23 @@ export const sampleMarkdown = [
 ].join('\n');
 
 /**
- * reference 스토리 본문 패널의 기본 grid 레이아웃입니다.
+ * Base layout for the main content stack inside reference stories.
  */
 export const panelClass = css({
   bg: 'transparent',
-  display: 'grid',
+  display: 'flex',
+  flexDirection: 'column',
   gap: '14',
   p: '0',
 });
 
 /**
- * reference 스토리 페이지 바깥 레이아웃입니다.
+ * Outer page layout wrapper for reference stories.
  */
-export const pageClass = cx(
-  storybookDocsPageClass,
-  css({
-    display: 'grid',
-    gap: '0',
-  }),
-);
+export const pageClass = storybookDocsPageClass;
 
 /**
- * 본문과 보조 패널을 나눠 보여줄 때 사용하는 2열 레이아웃입니다.
+ * Two-column layout used when a supporting side panel appears beside the main content.
  */
 export const splitLayoutClass = css({
   display: 'grid',
@@ -371,7 +366,7 @@ export const splitLayoutClass = css({
 });
 
 /**
- * 작은 섹션 제목 텍스트 스타일입니다.
+ * Small section-title text style used inside reference pages.
  */
 export const sectionTitleClass = css({
   color: 'primary',
@@ -382,7 +377,7 @@ export const sectionTitleClass = css({
 });
 
 /**
- * 작은 보조 설명 텍스트 스타일입니다.
+ * Small supporting description text style used inside reference pages.
  */
 export const sectionDescriptionClass = css({
   color: 'textSubtle',
@@ -391,17 +386,18 @@ export const sectionDescriptionClass = css({
 });
 
 /**
- * 오른쪽 보조 정보 패널의 grid 레이아웃입니다.
+ * Layout wrapper for the supporting value panel.
  */
 export const valuePanelClass = css({
   bg: 'transparent',
-  display: 'grid',
+  display: 'flex',
+  flexDirection: 'column',
   gap: '3',
   p: '0',
 });
 
 /**
- * reference 스토리에서 일반 텍스트 payload를 감싸는 mono 블록 스타일입니다.
+ * Mono block style used for plain text payload output in reference stories.
  */
 export const codeBlockClass = css({
   backgroundColor: 'surfaceMuted',
@@ -420,7 +416,7 @@ export const codeBlockClass = css({
 });
 
 /**
- * 현재 adapter 모드를 짧은 boundary badge로 렌더링합니다.
+ * Renders a short boundary badge for the active adapter mode.
  */
 export const StorybookBoundaryZone = ({ mode }: StorybookBoundaryZoneProps) => {
   if (mode === 'none') {
@@ -461,7 +457,8 @@ const storySectionCardClass = cx(
 );
 
 const storySectionCardHeaderClass = css({
-  display: 'grid',
+  display: 'flex',
+  flexDirection: 'column',
   gap: '4',
 });
 
@@ -485,7 +482,6 @@ const storySectionCardDescriptionClass = css({
   color: 'textSubtle',
   fontSize: 'lg',
   lineHeight: 'loose',
-  maxWidth: 'full',
 });
 
 const storyReferenceBadgeRowClass = css({
@@ -527,8 +523,8 @@ const storyMetaValueClass = css({
 });
 
 const storyCalloutListClass = css({
-  display: 'grid',
-  gap: '0',
+  display: 'flex',
+  flexDirection: 'column',
 });
 
 const storyCalloutItemClass = css({
@@ -542,7 +538,8 @@ const storyCalloutItemClass = css({
 });
 
 const storyCalloutCopyClass = css({
-  display: 'grid',
+  display: 'flex',
+  flexDirection: 'column',
   gap: '4',
 });
 
@@ -555,7 +552,8 @@ const storyCalloutTitleClass = css({
 });
 
 const storyCalloutMediaClass = css({
-  display: 'grid',
+  display: 'flex',
+  flexDirection: 'column',
   gap: '3',
 });
 
@@ -566,8 +564,8 @@ const storyCalloutDescriptionClass = css({
 });
 
 const storyReferenceMatrixClass = css({
-  display: 'grid',
-  gap: '0',
+  display: 'flex',
+  flexDirection: 'column',
 });
 
 const storyReferenceMatrixRowClass = css({
@@ -582,8 +580,9 @@ const storyReferenceMatrixRowClass = css({
 });
 
 const storyReferenceMatrixKeyCellClass = css({
-  alignContent: 'start',
-  display: 'grid',
+  alignItems: 'flex-start',
+  display: 'flex',
+  flexDirection: 'column',
   gap: '4',
 });
 
@@ -599,13 +598,14 @@ const storyReferenceMatrixKeyCodeClass = css({
 });
 
 const storyReferenceMatrixMediaClass = css({
-  display: 'grid',
+  display: 'flex',
+  flexDirection: 'column',
   gap: '3',
-  justifyItems: 'start',
 });
 
 const storyReferenceMatrixBodyClass = css({
-  display: 'grid',
+  display: 'flex',
+  flexDirection: 'column',
   gap: '2',
 });
 
@@ -692,7 +692,8 @@ const storybookCodeBlockClass = css({
   borderStyle: 'solid',
   borderWidth: '1px',
   boxShadow: '[0 1rem 1.75rem rgb(15 23 42 / 0.1)]',
-  display: 'grid',
+  display: 'flex',
+  flexDirection: 'column',
   overflow: 'hidden',
 });
 
@@ -758,7 +759,8 @@ const storybookCodeBlockFallbackClass = css({
 });
 
 const compactSummaryClass = css({
-  display: 'grid',
+  display: 'flex',
+  flexDirection: 'column',
   gap: '2',
 });
 

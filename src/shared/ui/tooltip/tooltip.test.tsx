@@ -76,7 +76,7 @@ describe('Tooltip', () => {
 
   it('Under a trigger near the top of the viewport, Tooltip must place itself below', async () => {
     render(
-      <Tooltip content="YouTube" preferredPlacement="auto">
+      <Tooltip content="YouTube" preferredPlacement="auto" viewportPadding={8}>
         <button type="button">Y</button>
       </Tooltip>,
     );
@@ -99,9 +99,24 @@ describe('Tooltip', () => {
     fireEvent.focus(trigger);
 
     const tooltip = await screen.findByRole('tooltip', { name: 'YouTube' });
+    vi.spyOn(tooltip, 'getBoundingClientRect').mockReturnValue({
+      bottom: 60,
+      height: 32,
+      left: 0,
+      right: 100,
+      toJSON: () => undefined,
+      top: 28,
+      width: 100,
+      x: 0,
+      y: 28,
+    });
 
-    expect(tooltip.style.top).toBe('28px');
-    expect(tooltip.style.transform).toBe('translate(-50%, 0)');
+    fireEvent(window, new Event('resize'));
+
+    await waitFor(() => {
+      expect(tooltip.style.top).toBe('28px');
+      expect(tooltip.style.left).toBe('8px');
+    });
   });
 
   it('Under openOnFocus false, Tooltip must not change state from focus and blur alone', () => {
@@ -143,7 +158,7 @@ describe('Tooltip', () => {
 
   it('Under preferredPlacement top, Tooltip must stay above even when the top margin is narrow', async () => {
     render(
-      <Tooltip content="Image action" preferredPlacement="top">
+      <Tooltip content="Image action" preferredPlacement="top" viewportPadding={8}>
         <button type="button">T</button>
       </Tooltip>,
     );
@@ -166,8 +181,72 @@ describe('Tooltip', () => {
     fireEvent.focus(trigger);
 
     const tooltip = await screen.findByRole('tooltip', { name: 'Image action' });
+    vi.spyOn(tooltip, 'getBoundingClientRect').mockReturnValue({
+      bottom: 28,
+      height: 28,
+      left: 0,
+      right: 120,
+      toJSON: () => undefined,
+      top: 0,
+      width: 120,
+      x: 0,
+      y: 0,
+    });
 
-    expect(tooltip.style.top).toBe('-4px');
-    expect(tooltip.style.transform).toBe('translate(-50%, -100%)');
+    fireEvent(window, new Event('resize'));
+
+    await waitFor(() => {
+      expect(tooltip.style.top).toBe('8px');
+    });
+  });
+
+  it('Under a trigger near the right edge, Tooltip must shift left to stay inside the viewport', async () => {
+    Object.defineProperty(window, 'innerWidth', {
+      configurable: true,
+      value: 320,
+      writable: true,
+    });
+
+    render(
+      <Tooltip content="Open helper" preferredPlacement="top" viewportPadding={12}>
+        <button type="button">H</button>
+      </Tooltip>,
+    );
+
+    const trigger = screen.getByRole('button', { name: 'H' });
+    const root = trigger.parentElement as HTMLSpanElement;
+
+    vi.spyOn(root, 'getBoundingClientRect').mockReturnValue({
+      bottom: 64,
+      height: 20,
+      left: 290,
+      right: 310,
+      toJSON: () => undefined,
+      top: 44,
+      width: 20,
+      x: 290,
+      y: 44,
+    });
+
+    fireEvent.focus(trigger);
+
+    const tooltip = await screen.findByRole('tooltip', { name: 'Open helper' });
+    vi.spyOn(tooltip, 'getBoundingClientRect').mockReturnValue({
+      bottom: 28,
+      height: 28,
+      left: 0,
+      right: 120,
+      toJSON: () => undefined,
+      top: 0,
+      width: 120,
+      x: 0,
+      y: 0,
+    });
+
+    fireEvent(window, new Event('resize'));
+
+    await waitFor(() => {
+      expect(tooltip.style.left).toBe('188px');
+    });
   });
 });

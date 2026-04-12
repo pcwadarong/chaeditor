@@ -203,7 +203,6 @@ const previewLinkClass = css({
   display: 'inline-flex',
   alignItems: 'center',
   gap: '2',
-  width: 'auto',
   maxWidth: '[min(100%,24rem)]',
   color: 'text',
   textDecoration: 'underline',
@@ -245,7 +244,8 @@ const cardClass = cx(
 );
 
 const cardTextBlockClass = css({
-  display: 'grid',
+  display: 'flex',
+  flexDirection: 'column',
   gap: '2',
   minWidth: '0',
 });

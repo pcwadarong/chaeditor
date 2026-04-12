@@ -135,6 +135,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {};
 
 const toolbarSurfaceClass = css({
-  display: 'grid',
+  display: 'flex',
+  flexDirection: 'column',
   gap: '4',
 });

@@ -1,5 +1,5 @@
 /**
- * Storybook 문서와 reference 스토리에서 사용하는 예제 코드 문자열 모음입니다.
+ * Example code snippets used by Storybook docs and reference stories.
  */
 
 export const editorPackageUsageSnippet = [
@@ -112,17 +112,27 @@ export const themeOverrideUsageSnippet = [
 export const primitiveRegistryUsageSnippet = [
   "import 'chaeditor/styles.css';",
   '',
-  "import { MarkdownEditor } from 'chaeditor/react';",
+  "import { MarkdownEditor, Popover, Tooltip } from 'chaeditor/react';",
   '',
   'const HostButton = props => (',
   "  <button {...props} className={`host-button ${props.className ?? ''}`.trim()} />",
   ');',
   '',
-  'const HostPopover = props => (',
+  'const HostPopover = ({ viewportPadding = 12, ...props }) => (',
   '  <Popover',
   '    {...props}',
+  '    viewportPadding={viewportPadding}',
   "    panelClassName={`host-popover-panel ${props.panelClassName ?? ''}`.trim()}",
   "    triggerClassName={`host-popover-trigger ${props.triggerClassName ?? ''}`.trim()}",
+  '  />',
+  ');',
+  '',
+  'const HostTooltip = ({ viewportPadding = 10, ...props }) => (',
+  '  <Tooltip',
+  '    {...props}',
+  "    preferredPlacement={props.preferredPlacement ?? 'auto'}",
+  '    viewportPadding={viewportPadding}',
+  "    contentClassName={`host-tooltip ${props.contentClassName ?? ''}`.trim()}",
   '  />',
   ');',
   '',

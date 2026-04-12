@@ -92,6 +92,23 @@ describe('MarkdownEditor', () => {
     });
   });
 
+  it('Under desktop rendering, MarkdownEditor must keep both panes mounted as independent scroll surfaces', async () => {
+    installMatchMediaMock(false);
+    const { container } = renderHarness('# Preview title');
+
+    await screen.findByRole('heading', { level: 1, name: 'Preview title' });
+
+    const body = container.querySelector('[data-slot="body"]');
+    const editorPane = container.querySelector('[data-slot="editor-pane"]');
+    const previewPane = container.querySelector('[data-slot="preview-pane"]');
+
+    expect(body).toBeTruthy();
+    expect(editorPane).toBeTruthy();
+    expect(previewPane).toBeTruthy();
+    expect(editorPane?.hasAttribute('hidden')).toBe(false);
+    expect(previewPane?.hasAttribute('hidden')).toBe(false);
+  });
+
   it('Under a mobile viewport, MarkdownEditor must switch between the Edit and Preview panes', async () => {
     installMatchMediaMock(true);
     renderHarness('# Preview title');

@@ -171,7 +171,8 @@ const editorDemoFrameClass = css({
   backgroundColor: 'surface',
   borderRadius: '2xl',
   boxShadow: '[0 24px 48px rgb(15 23 42 / 0.06)]',
-  display: 'grid',
+  display: 'flex',
+  flexDirection: 'column',
   overflow: 'hidden',
 });
 

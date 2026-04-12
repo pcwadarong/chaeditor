@@ -43,6 +43,7 @@ export type PopoverProps = {
   onTriggerMouseDown?: React.MouseEventHandler<HTMLButtonElement>;
   panelClassName?: string;
   panelLabel: string;
+  /** Preferred trigger edge alignment when the popover renders in a portal. */
   portalPlacement?: 'end' | 'start';
   renderInPortal?: boolean;
   rootClassName?: string;
@@ -56,6 +57,8 @@ export type PopoverProps = {
   triggerValueClassName?: string;
   triggerVariant?: ButtonVariant;
   value?: string;
+  /** Minimum viewport inset in pixels used to keep the panel on-screen. */
+  viewportPadding?: number;
 };
 
 export type TextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
@@ -74,5 +77,8 @@ export type TooltipProps = {
   forceOpen?: boolean;
   openOnFocus?: boolean;
   portalClassName?: string;
+  /** Preferred initial placement before viewport collision handling runs. */
   preferredPlacement?: 'auto' | 'bottom' | 'top';
+  /** Minimum viewport inset in pixels used to keep the tooltip on-screen. */
+  viewportPadding?: number;
 };
