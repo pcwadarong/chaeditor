@@ -22,7 +22,9 @@ Recommended order:
 - [Internal structure and folder ownership](https://github.com/pcwadarong/chaeditor/wiki/내부-구조와-폴더-역할)
 
 If you are integrating for the first time, start with the Next.js guide.
-If uploads, image insertion, preview cards, or route wiring are part of the job, the wiki is more useful than the README alone.
+
+If uploads, image insertion, link preview cards, or route wiring are part of the job, the wiki is more useful than the README alone.
+
 If you are using React but do not need a Next.js-specific walkthrough, open `Introduction / Host Adapters` in Storybook first.
 
 ## Quick Start
@@ -92,20 +94,20 @@ Then follow [Integrating chaeditor in Next.js](https://github.com/pcwadarong/cha
 
 ## Host Adapter Checklist
 
-`chaeditor` keeps upload logic, preview metadata, and framework-specific rendering out of the package — those belong to your app.
+`chaeditor` keeps upload logic, link preview data, and framework-specific rendering out of the package — those belong to your app.
 This is what makes the package reusable across different products without modifications.
 
 For most React apps, a solid editor integration covers these adapters:
 
-| Adapter                 | Unlocks                                     | If omitted                                                                        | Typical decision                                                                                  |
-| ----------------------- | ------------------------------------------- | --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| `uploadImage`           | file-backed image insertion in editor flows | image upload UI can render, but file-backed insertion needs a host implementation | add this if users should upload images from the editor                                            |
-| `uploadFile`            | attachment upload                           | attachment UI can still appear, but upload-specific actions should stay disabled  | add this if attachments are part of your content model                                            |
-| `uploadVideo`           | video file upload                           | video helpers can fall back to URL-based insertion                                | add this only when your product supports video uploads                                            |
-| `fetchLinkPreviewMeta`  | rich link preview cards                     | preview cards fall back to plain links                                            | add this if OG-style previews matter                                                              |
-| `resolveAttachmentHref` | host-aware attachment URLs                  | renderer uses markdown href as-is                                                 | add this when stored files resolve through your app routing or CDN rules                          |
-| `renderImage`           | framework-specific image primitive          | package uses its default image renderer                                           | optional, but recommended when your app standardizes on `next/image` or a branded media primitive |
-| `imageViewerLabels`     | built-in viewer copy override               | package uses built-in labels                                                      | optional label override only                                                                      |
+| Adapter                 | What it enables                                  | If omitted                                                                        | When teams usually add it                                                           |
+| ----------------------- | ------------------------------------------------ | --------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| `uploadImage`           | file-backed image insertion in editor flows      | image upload UI can render, but file-backed insertion needs a host implementation | add this if users should upload images from the editor                              |
+| `uploadFile`            | attachment upload                                | attachment UI can still appear, but upload-specific actions should stay disabled  | add this if attachments are part of your content model                              |
+| `uploadVideo`           | video file upload                                | video helpers can fall back to URL-based insertion                                | add this only when your product supports video uploads                              |
+| `fetchLinkPreviewMeta`  | preview cards with title, description, and image | preview cards fall back to plain links                                            | add this if pasted links should render as rich cards                                |
+| `resolveAttachmentHref` | host-aware attachment URLs                       | renderer uses markdown href as-is                                                 | add this when stored files resolve through your app routing or CDN rules            |
+| `renderImage`           | rendering through your app's image component     | package uses its default image renderer                                           | recommended when your app standardizes on `next/image` or a branded media component |
+| `imageViewerLabels`     | built-in viewer copy override                    | package uses built-in labels                                                      | optional, only for copy override                                                    |
 
 For most products, the following combination covers the baseline host integration:
 
@@ -149,7 +151,7 @@ const adapters = {
 };
 ```
 
-For a deeper look at the adapter contract, read `Introduction / Host Adapters` in Storybook.
+For a deeper look at the adapter contract and host/package ownership, read `Introduction / Host Adapters` in Storybook.
 
 ## Installation
 
@@ -208,13 +210,11 @@ You do not install subpaths separately.
 
 For the full breakdown, read [Choosing import paths](https://github.com/pcwadarong/chaeditor/wiki/무엇을-어디서-import하면-되나).
 
-## What To Read Next
+## Task-Based Shortcuts
 
 - Need a practical app-router walkthrough: [Integrating chaeditor in Next.js](https://github.com/pcwadarong/chaeditor/wiki/Next.js에서-chaeditor-붙이기)
 - Need help choosing `styles.css` vs `styles-lite.css`: [Styling and CSS setup](https://github.com/pcwadarong/chaeditor/wiki/스타일-붙이기)
 - Need to replace package UI shells with your own design system: [Replacing default UI primitives](https://github.com/pcwadarong/chaeditor/wiki/기본-UI-컴포넌트-교체하기)
-- Need to choose imports or entrypoints: [Choosing import paths](https://github.com/pcwadarong/chaeditor/wiki/무엇을-어디서-import하면-되나)
-- Need the pre-release smoke-test flow: [Release checklist](https://github.com/pcwadarong/chaeditor/wiki/릴리즈-전-체크리스트)
 - Need ready-to-adapt wrappers for Tailwind, Emotion, styled-components, or vanilla-extract: [Host Preset Templates](./recipes/host-presets/README.md)
 - Need a React-first explanation of adapters before you open framework-specific docs: `Introduction / Host Adapters` in Storybook
 
@@ -224,7 +224,7 @@ For the full breakdown, read [Choosing import paths](https://github.com/pcwadaro
 
 - Use `createChaeditorThemeVars()` when you want to override semantic tokens such as `primary`, `surface`, `text`, or font stacks.
 - Use `primitiveRegistry` when you need to replace the actual `Button`, `Input`, `Textarea`, `Popover`, `Modal`, or `Tooltip` shells.
-- Use `createDefaultHostAdapters()` or custom adapters when uploads, href resolution, image rendering, or link preview metadata belong to your app layer.
+- Use `createDefaultHostAdapters()` or custom adapters when uploads, href resolution, image rendering, or link preview data belong to your app layer.
 
 Minimal theme override example:
 

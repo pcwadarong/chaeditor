@@ -65,6 +65,7 @@
     "build": "pnpm run prepare && pnpm run clean && tsup",
     "clean": "rm -rf dist",
     "commit": "cz",
+    "release": "pnpm lint && pnpm check-types && pnpm test && pnpm build && pnpm run verify:package-surface && npm publish",
     "format": "prettier --check .",
     "format:write": "prettier --write .",
     "lint": "eslint .",
@@ -82,7 +83,8 @@
     "typecheck": "tsc --noEmit",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "chromatic": "npx chromatic --project-token=chpt_e7dfd62937e7687 --exit-zero-on-changes",
+    "chromatic": "node ./scripts/run-chromatic.mjs",
+    "version": "pnpm run build-storybook && pnpm run chromatic",
     "verify:package-surface": "node ./scripts/verify-package-surface.mjs"
   },
   "version": "0.1.4",
