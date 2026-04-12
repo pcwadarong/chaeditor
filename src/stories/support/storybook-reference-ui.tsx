@@ -342,7 +342,8 @@ export const sampleMarkdown = [
  */
 export const panelClass = css({
   bg: 'transparent',
-  display: 'grid',
+  display: 'flex',
+  flexDirection: 'column',
   gap: '14',
   p: '0',
 });
@@ -350,13 +351,7 @@ export const panelClass = css({
 /**
  * reference 스토리 페이지 바깥 레이아웃입니다.
  */
-export const pageClass = cx(
-  storybookDocsPageClass,
-  css({
-    display: 'grid',
-    gap: '0',
-  }),
-);
+export const pageClass = storybookDocsPageClass;
 
 /**
  * 본문과 보조 패널을 나눠 보여줄 때 사용하는 2열 레이아웃입니다.
@@ -395,7 +390,8 @@ export const sectionDescriptionClass = css({
  */
 export const valuePanelClass = css({
   bg: 'transparent',
-  display: 'grid',
+  display: 'flex',
+  flexDirection: 'column',
   gap: '3',
   p: '0',
 });
@@ -461,7 +457,8 @@ const storySectionCardClass = cx(
 );
 
 const storySectionCardHeaderClass = css({
-  display: 'grid',
+  display: 'flex',
+  flexDirection: 'column',
   gap: '4',
 });
 
@@ -485,7 +482,6 @@ const storySectionCardDescriptionClass = css({
   color: 'textSubtle',
   fontSize: 'lg',
   lineHeight: 'loose',
-  maxWidth: 'full',
 });
 
 const storyReferenceBadgeRowClass = css({
@@ -527,8 +523,8 @@ const storyMetaValueClass = css({
 });
 
 const storyCalloutListClass = css({
-  display: 'grid',
-  gap: '0',
+  display: 'flex',
+  flexDirection: 'column',
 });
 
 const storyCalloutItemClass = css({
@@ -542,7 +538,8 @@ const storyCalloutItemClass = css({
 });
 
 const storyCalloutCopyClass = css({
-  display: 'grid',
+  display: 'flex',
+  flexDirection: 'column',
   gap: '4',
 });
 
@@ -555,7 +552,8 @@ const storyCalloutTitleClass = css({
 });
 
 const storyCalloutMediaClass = css({
-  display: 'grid',
+  display: 'flex',
+  flexDirection: 'column',
   gap: '3',
 });
 
@@ -566,8 +564,8 @@ const storyCalloutDescriptionClass = css({
 });
 
 const storyReferenceMatrixClass = css({
-  display: 'grid',
-  gap: '0',
+  display: 'flex',
+  flexDirection: 'column',
 });
 
 const storyReferenceMatrixRowClass = css({
@@ -582,8 +580,9 @@ const storyReferenceMatrixRowClass = css({
 });
 
 const storyReferenceMatrixKeyCellClass = css({
-  alignContent: 'start',
-  display: 'grid',
+  alignItems: 'flex-start',
+  display: 'flex',
+  flexDirection: 'column',
   gap: '4',
 });
 
@@ -599,13 +598,14 @@ const storyReferenceMatrixKeyCodeClass = css({
 });
 
 const storyReferenceMatrixMediaClass = css({
-  display: 'grid',
+  display: 'flex',
+  flexDirection: 'column',
   gap: '3',
-  justifyItems: 'start',
 });
 
 const storyReferenceMatrixBodyClass = css({
-  display: 'grid',
+  display: 'flex',
+  flexDirection: 'column',
   gap: '2',
 });
 
@@ -692,7 +692,8 @@ const storybookCodeBlockClass = css({
   borderStyle: 'solid',
   borderWidth: '1px',
   boxShadow: '[0 1rem 1.75rem rgb(15 23 42 / 0.1)]',
-  display: 'grid',
+  display: 'flex',
+  flexDirection: 'column',
   overflow: 'hidden',
 });
 
@@ -758,7 +759,8 @@ const storybookCodeBlockFallbackClass = css({
 });
 
 const compactSummaryClass = css({
-  display: 'grid',
+  display: 'flex',
+  flexDirection: 'column',
   gap: '2',
 });
 

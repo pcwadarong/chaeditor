@@ -213,7 +213,8 @@ export const storybookDocsPageClass = css({
 });
 
 export const storybookDocsHeroClass = css({
-  display: 'grid',
+  display: 'flex',
+  flexDirection: 'column',
   gap: '6',
   paddingBottom: '8',
 });
@@ -235,16 +236,16 @@ export const storybookDocsHeroDescriptionClass = css({
 });
 
 export const storybookDocsSectionClass = css({
-  display: 'grid',
+  display: 'flex',
+  flexDirection: 'column',
   gap: '8',
   marginTop: '20',
 });
 
 export const storybookDocsSectionHeaderClass = css({
-  display: 'grid',
+  display: 'flex',
+  flexDirection: 'column',
   gap: '4',
-  textAlign: 'left',
-  width: 'full',
 });
 
 export const storybookDocsSectionEyebrowClass = css({
@@ -257,9 +258,9 @@ export const storybookDocsSectionEyebrowClass = css({
 });
 
 export const storybookDocsSectionHeaderCopyClass = css({
-  display: 'grid',
+  display: 'flex',
+  flexDirection: 'column',
   gap: '3',
-  maxWidth: 'full',
 });
 
 export const storybookDocsSectionTitleClass = css({
@@ -281,7 +282,8 @@ export const storybookDocsHeaderDescriptionFullWidthClass = css({
 });
 
 const storybookPageHeaderClass = css({
-  display: 'grid',
+  display: 'flex',
+  flexDirection: 'column',
   gap: '5',
   paddingBottom: '10',
 });
@@ -302,7 +304,8 @@ const storybookPageHeaderDescriptionClass = css({
 });
 
 const storybookDecisionCopyClass = css({
-  display: 'grid',
+  display: 'flex',
+  flexDirection: 'column',
   gap: '3',
   '& + &': {
     paddingTop: '4',
@@ -325,7 +328,8 @@ const storybookDecisionBodyClass = css({
 });
 
 const storybookBulletListClass = css({
-  display: 'grid',
+  display: 'flex',
+  flexDirection: 'column',
   gap: '3',
   listStyle: 'none',
   margin: '0',
@@ -386,8 +390,8 @@ const storybookDocsTabItemActiveClass = cx(
 );
 
 const storybookGuideListClass = css({
-  display: 'grid',
-  gap: '0',
+  display: 'flex',
+  flexDirection: 'column',
 });
 
 const storybookGuideArticleClass = css({
@@ -402,7 +406,8 @@ const storybookGuideArticleClass = css({
 });
 
 const storybookGuideCopyClass = css({
-  display: 'grid',
+  display: 'flex',
+  flexDirection: 'column',
   gap: '4',
 });
 
