@@ -247,7 +247,7 @@ const panelClass = css({
   top: '[calc(100% + 0.55rem)]',
   right: '0',
   minWidth: '48',
-  maxHeight: 'calc(100vh - 1rem)',
+  maxHeight: '[calc(100vh - 1rem)]',
   p: '2',
   borderRadius: '2xl',
   border: '[1px solid var(--colors-border)]',
