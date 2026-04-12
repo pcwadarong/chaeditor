@@ -14,6 +14,7 @@ import {
   vanillaExtractThemeUsageSnippet,
 } from '@/stories/support/storybook-code-snippets';
 import {
+  StorybookBulletList,
   storybookDocsHeaderDescriptionFullWidthClass,
   storybookDocsPageClass,
   storybookDocsSectionClass,
@@ -172,7 +173,33 @@ const StylingRecipePanel = ({ recipe }: { recipe: RecipeDefinition }) => {
         </div>
         <div className={recipeBlockClass}>
           <p className={recipeSubheadingClass}>Primitive registry override</p>
+          <p className={recipeBodyClass}>
+            Preserve overlay behavior as part of the replacement. The host primitive can restyle the
+            shell, but it should still honor placement, viewport safety, focus, and dismiss
+            contracts.
+          </p>
           <StorybookCodeBlock code={primitiveRegistryUsageSnippet} label={recipe.snippetLabel} />
+        </div>
+        <div className={recipeBlockClass}>
+          <p className={recipeSubheadingClass}>Overlay parameters to keep visible</p>
+          <StorybookBulletList
+            items={[
+              <>
+                <code>viewportPadding</code> keeps popovers and tooltips away from the viewport
+                edge. Use a host default like <code>8</code>, <code>10</code>, or <code>12</code> if
+                your shell needs a stable minimum inset.
+              </>,
+              <>
+                <code>portalPlacement</code> and <code>preferredPlacement</code> should be passed
+                through unless your host wrapper is intentionally forcing one direction.
+              </>,
+              <>
+                <code>Modal</code> wrappers should keep focus entry, close behavior, and scroll
+                locking intact even when the frame and backdrop are fully replaced.
+              </>,
+              'Verify overlays near viewport edges, not just centered examples, before shipping a custom primitive registry.',
+            ]}
+          />
         </div>
         <div className={recipeBlockClass}>
           <p className={recipeSubheadingClass}>Live preview</p>

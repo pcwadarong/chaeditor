@@ -50,6 +50,18 @@ These are not simple color demos. Each template shows:
 - retune modal backdrop, popover panel, and tooltip shell styling to your product tone
 - verify overlay behavior, not just styling, for `Popover`, `Tooltip`, and `Modal`
 
+## Overlay props worth carrying through
+
+When you replace `Popover`, `Tooltip`, or `Modal`, preserve behavior as well as styling.
+
+- `Popover.viewportPadding`: minimum viewport inset in pixels. Use this when your host shell needs a predictable edge gap such as `8`, `10`, or `12`.
+- `Popover.portalPlacement`: preserves whether the panel should favor the trigger start or end edge when rendered in a portal.
+- `Tooltip.preferredPlacement`: keeps the tooltip's first placement choice explicit instead of hard-coding one direction in the host wrapper.
+- `Tooltip.viewportPadding`: keeps the tooltip from touching the viewport edge when space is tight.
+- `Modal.initialFocusRef` and `Modal.onClose`: keep focus entry, dismissal, and escape / close-button behavior aligned with the package contract.
+
+If you override these primitives, validate the result with edge-position examples, not only centered screenshots.
+
 ## What these presets do not include
 
 These files are starter presets, not production-complete app code.
@@ -117,6 +129,18 @@ They intentionally do not solve:
 - host adapter가 필요하면 `adapters`도 함께 연결
 - 모달 배경, popover panel, tooltip shell 색을 제품 톤에 맞게 조정
 - `Popover`, `Tooltip`, `Modal`을 바꿨다면 overlay 동작도 함께 검증
+
+## 함께 넘겨야 하는 overlay prop
+
+`Popover`, `Tooltip`, `Modal`을 바꿀 때는 스타일뿐 아니라 동작 계약도 유지해야 합니다.
+
+- `Popover.viewportPadding`: viewport 가장자리와 panel 사이의 최소 여백(px)입니다. host shell에서 가장자리 여백을 `8`, `10`, `12`처럼 고정하고 싶을 때 사용합니다.
+- `Popover.portalPlacement`: portal로 렌더링될 때 trigger의 시작점/끝점 중 어느 쪽 정렬을 우선할지 유지합니다.
+- `Tooltip.preferredPlacement`: host wrapper가 한 방향으로 고정해버리지 않도록 tooltip의 기본 배치 우선순위를 그대로 전달합니다.
+- `Tooltip.viewportPadding`: 공간이 좁을 때 tooltip이 viewport 끝에 붙지 않도록 유지합니다.
+- `Modal.initialFocusRef`, `Modal.onClose`: focus 진입, dismiss, escape / close button 동작이 package 계약과 어긋나지 않도록 유지합니다.
+
+primitive를 바꿨다면 중앙에 놓인 예시만 보지 말고, viewport 가장자리에서 overlay가 어떻게 동작하는지도 같이 확인하는 편이 좋습니다.
 
 ## 포함하지 않는 범위
 
