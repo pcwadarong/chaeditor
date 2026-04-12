@@ -1,7 +1,8 @@
 import { css, cva } from 'styled-system/css';
 
 export const rootClass = css({
-  display: 'grid',
+  display: 'flex',
+  flexDirection: 'column',
   gap: '4',
   minWidth: '0',
 });
@@ -16,10 +17,6 @@ export const bodyClass = css({
   display: 'grid',
   gap: '4',
   minWidth: '0',
-  alignItems: {
-    base: 'stretch',
-    md: 'start',
-  },
   gridTemplateColumns: {
     base: '1fr',
     md: 'repeat(2, minmax(0, 1fr))',
@@ -30,7 +27,6 @@ export const editorPaneClass = css({
   display: 'flex',
   minWidth: '0',
   minHeight: '0',
-  width: 'full',
   height: '[min(70vh,36rem)]',
   borderWidth: '1px',
   borderStyle: 'solid',
@@ -53,7 +49,6 @@ export const editorPaneClass = css({
 export const previewPaneClass = css({
   minWidth: '0',
   minHeight: '0',
-  width: 'full',
   height: '[min(70vh,36rem)]',
   borderWidth: '1px',
   borderStyle: 'solid',

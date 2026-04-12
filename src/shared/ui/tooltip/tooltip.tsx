@@ -135,7 +135,6 @@ export const Tooltip = ({
 
 const rootClass = css({
   display: 'inline-flex',
-  flex: 'none',
 });
 
 const tooltipClass = css({
