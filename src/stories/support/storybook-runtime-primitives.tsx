@@ -16,7 +16,7 @@ import { Textarea, type TextareaProps } from '@/shared/ui/textarea';
 import { Tooltip, type TooltipProps } from '@/shared/ui/tooltip';
 
 /**
- * Styling Recipes에서 사용하는 runtime/primitive showcase와 host theme preset 모음입니다.
+ * Runtime and primitive showcases plus host theme presets used by Styling Recipes stories.
  */
 
 export type StorybookPrimitiveMode = 'custom' | 'default';

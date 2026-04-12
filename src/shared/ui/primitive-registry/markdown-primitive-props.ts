@@ -43,7 +43,7 @@ export type PopoverProps = {
   onTriggerMouseDown?: React.MouseEventHandler<HTMLButtonElement>;
   panelClassName?: string;
   panelLabel: string;
-  /** 포털 렌더링 시 trigger 기준 정렬 방향입니다. */
+  /** Preferred trigger edge alignment when the popover renders in a portal. */
   portalPlacement?: 'end' | 'start';
   renderInPortal?: boolean;
   rootClassName?: string;
@@ -57,7 +57,7 @@ export type PopoverProps = {
   triggerValueClassName?: string;
   triggerVariant?: ButtonVariant;
   value?: string;
-  /** viewport 바깥으로 넘치지 않도록 유지할 최소 여백(px)입니다. */
+  /** Minimum viewport inset in pixels used to keep the panel on-screen. */
   viewportPadding?: number;
 };
 
@@ -77,8 +77,8 @@ export type TooltipProps = {
   forceOpen?: boolean;
   openOnFocus?: boolean;
   portalClassName?: string;
-  /** tooltip이 먼저 시도할 기본 배치 방향입니다. */
+  /** Preferred initial placement before viewport collision handling runs. */
   preferredPlacement?: 'auto' | 'bottom' | 'top';
-  /** viewport 경계와 tooltip 사이에 유지할 최소 여백(px)입니다. */
+  /** Minimum viewport inset in pixels used to keep the tooltip on-screen. */
   viewportPadding?: number;
 };

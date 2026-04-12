@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { css, cx } from 'styled-system/css';
 
 /**
- * Introduction 계열 문서 스토리에서 공통으로 사용하는 제목, 설명, 판단 블록 모음입니다.
+ * Shared title, description, and decision blocks used across introduction docs stories.
  */
 
 type StorybookPageHeaderProps = {
@@ -58,7 +58,7 @@ type StorybookGuideListProps = {
 };
 
 /**
- * Storybook 문서 페이지의 기본 헤더를 렌더링합니다.
+ * Renders the default page header used across Storybook docs pages.
  */
 export const StorybookPageHeader = ({
   description,
@@ -72,7 +72,7 @@ export const StorybookPageHeader = ({
 );
 
 /**
- * Introduction 계열 문서의 hero 영역을 공통 스타일로 렌더링합니다.
+ * Renders the shared hero block used by introduction-style docs pages.
  */
 export const StorybookDocsHero = ({
   description,
@@ -92,7 +92,7 @@ export const StorybookDocsHero = ({
 };
 
 /**
- * Introduction 계열 문서의 섹션 제목과 설명을 공통 구조로 렌더링합니다.
+ * Renders a shared eyebrow, title, and description section header.
  */
 export const StorybookDocsSectionHeader = ({
   description,
@@ -116,7 +116,7 @@ export const StorybookDocsSectionHeader = ({
 };
 
 /**
- * 유지/호스트 소유권 판단 문장을 한 쌍으로 렌더링합니다.
+ * Renders paired "keep default" versus "host-owned" guidance copy.
  */
 export const StorybookDecisionPair = ({
   considerLabel = 'Consider host ownership when',
@@ -137,7 +137,7 @@ export const StorybookDecisionPair = ({
 );
 
 /**
- * Storybook 문서에서 사용하는 기본 bullet 리스트를 렌더링합니다.
+ * Renders the default bullet list pattern used in Storybook docs.
  */
 export const StorybookBulletList = ({ items }: StorybookBulletListProps) => (
   <ul className={storybookBulletListClass}>
@@ -150,7 +150,7 @@ export const StorybookBulletList = ({ items }: StorybookBulletListProps) => (
 );
 
 /**
- * Storybook 문서 페이지에서 탭형 인덱스를 공통 스타일로 렌더링합니다.
+ * Renders the shared tab bar used by docs pages with in-place variants.
  */
 export const StorybookDocsTabBar = <T extends string>({
   current,
@@ -178,7 +178,7 @@ export const StorybookDocsTabBar = <T extends string>({
 );
 
 /**
- * Overview 계열 문서에서 사용하는 eyebrow-title-body 리스트를 렌더링합니다.
+ * Renders the eyebrow-title-body guide list used by overview-style docs pages.
  */
 export const StorybookGuideList = ({ items }: StorybookGuideListProps) => (
   <div className={storybookGuideListClass}>

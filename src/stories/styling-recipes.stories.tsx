@@ -155,13 +155,13 @@ const recipeOverviewRows = [
 ] as const;
 
 /**
- * 선택한 recipe에 맞는 가이드 패널을 반환합니다.
+ * Resolves the active recipe definition for the current tab.
  */
 const getRecipeDefinition = (id: RecipeId) =>
   RECIPE_DEFINITIONS.find(recipe => recipe.id === id) ?? RECIPE_DEFINITIONS[0];
 
 /**
- * 선택한 recipe의 코드와 미리보기를 렌더링합니다.
+ * Renders the active recipe guidance, code snippet, and live preview.
  */
 const StylingRecipePanel = ({ recipe }: { recipe: RecipeDefinition }) => {
   if (recipe.kind === 'primitive') {

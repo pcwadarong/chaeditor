@@ -1,7 +1,7 @@
 import type { MarkdownEditorHostAdapters } from '@/react';
 
 /**
- * Storybook reference 스토리에서 공통으로 쓰는 in-memory adapter와 모드 요약을 정의합니다.
+ * Shared in-memory adapters and mode summaries used by Storybook reference stories.
  */
 
 const imageLibrary = [
@@ -25,7 +25,7 @@ type StorybookModeSummary = {
 };
 
 /**
- * 지정한 시간만큼 비동기 대기합니다.
+ * Waits for the requested duration to simulate asynchronous host work.
  */
 const wait = (durationMs: number) =>
   new Promise<void>(resolve => {
@@ -33,7 +33,7 @@ const wait = (durationMs: number) =>
   });
 
 /**
- * 데모용 이미지 URL을 순환 방식으로 반환합니다.
+ * Returns the next demo image URL in a rotating sequence.
  */
 const getNextDemoImageUrl = () => {
   const imageUrl = imageLibrary[uploadImageCallCount % imageLibrary.length];
@@ -43,7 +43,7 @@ const getNextDemoImageUrl = () => {
 };
 
 /**
- * Storybook reference 스토리에서 사용하는 기본 mock host adapter 세트를 생성합니다.
+ * Creates the default mock host adapter set used by reference stories.
  */
 export const createStorybookAdapters = (): MarkdownEditorHostAdapters => ({
   fetchLinkPreviewMeta: async url => {
@@ -123,7 +123,7 @@ export const createStorybookAdapters = (): MarkdownEditorHostAdapters => ({
 });
 
 /**
- * 기본 adapter 계약은 유지하면서 더 눈에 띄는 override를 보여주는 커스텀 adapter 세트를 생성합니다.
+ * Creates a custom adapter set that keeps the same contracts but makes overrides more visible.
  */
 export const createCustomStorybookAdapters = (): MarkdownEditorHostAdapters => {
   const baseAdapters = createStorybookAdapters();
@@ -178,7 +178,7 @@ export const createCustomStorybookAdapters = (): MarkdownEditorHostAdapters => {
 };
 
 /**
- * reference 스토리에서 사용할 adapter 세트를 모드에 따라 선택합니다.
+ * Selects the adapter set for the requested reference-story mode.
  */
 export const createStorybookAdapterSet = (
   mode: StorybookAdapterMode,
@@ -188,7 +188,7 @@ export const createStorybookAdapterSet = (
 };
 
 /**
- * 현재 adapter 모드가 surface에 주는 영향을 사람이 읽기 쉬운 설명으로 정리합니다.
+ * Converts the current adapter mode into reader-friendly summary copy.
  */
 export const getStorybookModeSummary = (mode: StorybookAdapterMode): StorybookModeSummary => {
   if (mode === 'none') {

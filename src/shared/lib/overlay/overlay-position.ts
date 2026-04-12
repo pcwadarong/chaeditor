@@ -36,7 +36,7 @@ export type TooltipViewportPosition = {
 };
 
 /**
- * 오버레이의 좌측 기준점을 viewport 안쪽으로 고정합니다.
+ * Clamps the overlay's left edge so the surface stays inside the viewport inset.
  */
 export const clampOverlayLeft = ({
   overlayWidth,
@@ -50,7 +50,7 @@ export const clampOverlayLeft = ({
 };
 
 /**
- * Popover의 선호 정렬을 유지하되 viewport 밖으로 넘치지 않는 좌표를 계산합니다.
+ * Resolves the popover's portal left position while preserving preferred alignment when possible.
  */
 export const resolvePopoverPortalLeft = ({
   placement,
@@ -71,7 +71,7 @@ export const resolvePopoverPortalLeft = ({
 };
 
 /**
- * Tooltip의 좌표와 실제 배치 방향을 viewport 기준으로 계산합니다.
+ * Resolves tooltip coordinates and the final top/bottom placement against viewport constraints.
  */
 export const resolveTooltipViewportPosition = ({
   gap,
@@ -83,6 +83,7 @@ export const resolveTooltipViewportPosition = ({
   viewportPadding,
   viewportWidth,
 }: TooltipViewportPositionInput): TooltipViewportPosition => {
+  // Center the tooltip on the trigger first, then clamp only if it would overflow.
   const preferredLeft = triggerRect.left + triggerRect.width / 2 - tooltipWidth / 2;
   const left = clampOverlayLeft({
     overlayWidth: tooltipWidth,
@@ -95,6 +96,7 @@ export const resolveTooltipViewportPosition = ({
   const bottomPlacementTop = triggerRect.bottom + gap;
   const canPlaceAbove = topPlacementTop >= viewportPadding;
   const canPlaceBelow = bottomPlacementTop + tooltipHeight <= viewportHeight - viewportPadding;
+  // Auto placement prefers the side with available space and falls back predictably.
   const placement: OverlayPreferredPlacement =
     preferredPlacement === 'bottom'
       ? 'bottom'
@@ -105,6 +107,7 @@ export const resolveTooltipViewportPosition = ({
           : 'bottom';
 
   const unclampedTop = placement === 'top' ? topPlacementTop : bottomPlacementTop;
+  // Keep the resolved top position inside the viewport even after placement is chosen.
   const top = Math.min(
     Math.max(unclampedTop, viewportPadding),
     Math.max(viewportPadding, viewportHeight - tooltipHeight - viewportPadding),
