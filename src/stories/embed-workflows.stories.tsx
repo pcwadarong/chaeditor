@@ -379,12 +379,13 @@ const imagePreviewMediaClass = css({
 });
 
 const linkPreviewMediaClass = css({
-  display: 'grid',
-  width: 'full',
+  display: 'flex',
+  flexDirection: 'column',
 });
 
 const helperGroupClass = css({
-  display: 'grid',
+  display: 'flex',
+  flexDirection: 'column',
   gap: '10',
 });
 
@@ -394,14 +395,16 @@ const modeTabSectionClass = css({
 });
 
 const helperSurfaceClass = css({
-  display: 'grid',
+  display: 'flex',
+  flexDirection: 'column',
   gap: '6',
   paddingTop: '4',
 });
 
 const helperItemClass = css({
-  display: 'grid',
-  placeItems: 'center',
+  alignItems: 'center',
+  display: 'flex',
+  justifyContent: 'center',
 });
 
 const helperGroupRowClass = css({
@@ -412,7 +415,8 @@ const helperGroupRowClass = css({
 });
 
 const payloadHeaderClass = css({
-  display: 'grid',
+  display: 'flex',
+  flexDirection: 'column',
   gap: '4',
   paddingTop: '2',
 });
@@ -435,7 +439,8 @@ const payloadInlineCodeClass = css({
 });
 
 const eventListClass = css({
-  display: 'grid',
+  display: 'flex',
+  flexDirection: 'column',
   gap: '4',
   paddingTop: '2',
 });
