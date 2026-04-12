@@ -65,7 +65,6 @@ export const MarkdownAttachment = ({
 const attachmentCardClass = css({
   display: 'flex',
   alignItems: {
-    base: 'stretch',
     lg: 'center',
   },
   flexWrap: {
@@ -88,7 +87,6 @@ const iconWrapClass = css({
   display: 'inline-flex',
   alignItems: 'center',
   justifyContent: 'center',
-  flex: 'none',
   width: '10',
   height: '10',
   borderRadius: 'full',
@@ -99,7 +97,8 @@ const iconWrapClass = css({
 });
 
 const contentWrapClass = css({
-  display: 'grid',
+  display: 'flex',
+  flexDirection: 'column',
   minWidth: '0',
   flexGrow: '1',
 });

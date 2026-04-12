@@ -127,7 +127,8 @@ export const MarkdownMermaid = ({ chart }: MarkdownMermaidProps) => {
 };
 
 const mermaidFrameClass = css({
-  display: 'grid',
+  display: 'flex',
+  flexDirection: 'column',
   gap: '3',
   width: 'full',
   px: '4',

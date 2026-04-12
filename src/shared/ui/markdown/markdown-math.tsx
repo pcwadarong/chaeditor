@@ -125,7 +125,8 @@ const mathFallbackInlineClass = css({
 });
 
 const mathFallbackBlockClass = css({
-  display: 'grid',
+  display: 'flex',
+  flexDirection: 'column',
   gap: '1.5',
   width: 'full',
   px: '3',
@@ -159,5 +160,4 @@ const mathFallbackHintClass = css({
 
 const mathFallbackInlineHintClass = css({
   fontSize: 'xs',
-  fontWeight: 'medium',
 });
