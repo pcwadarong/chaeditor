@@ -118,6 +118,44 @@ describe('Modal', () => {
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
+  it('Under a backdrop click, Modal must call onClose', async () => {
+    const onClose = vi.fn();
+
+    render(
+      <Modal closeAriaLabel="Close" isOpen onClose={onClose}>
+        <div>Content</div>
+      </Modal>,
+    );
+
+    const dialog = await screen.findByRole('dialog');
+    const backdrop = dialog.parentElement as HTMLElement;
+
+    fireEvent.click(backdrop);
+
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it('Under an open modal, Modal must lock body scroll until it closes', async () => {
+    const { rerender } = render(
+      <Modal closeAriaLabel="Close" isOpen onClose={vi.fn()}>
+        <div>Content</div>
+      </Modal>,
+    );
+
+    await screen.findByRole('dialog');
+    expect(document.body.style.overflow).toBe('hidden');
+
+    rerender(
+      <Modal closeAriaLabel="Close" isOpen={false} onClose={vi.fn()}>
+        <div>Content</div>
+      </Modal>,
+    );
+
+    await waitFor(() => {
+      expect(document.body.style.overflow).toBe('');
+    });
+  });
+
   it('Under slot className overrides, Modal must merge them into the backdrop frame and close button', async () => {
     render(
       <Modal

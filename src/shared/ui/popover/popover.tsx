@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useId, useLayoutEffect, useRef, useState
 import { createPortal } from 'react-dom';
 import { css, cx } from 'styled-system/css';
 
+import { resolvePopoverPortalLeft } from '@/shared/lib/overlay/overlay-position';
 import { useDialogFocusManagement } from '@/shared/lib/react/use-dialog-focus-management';
 import { Button } from '@/shared/ui/button/button';
 import type {
@@ -40,6 +41,7 @@ export const Popover = ({
   triggerValueClassName,
   triggerVariant = 'ghost',
   value,
+  viewportPadding = 8,
 }: PopoverProps) => {
   const [uncontrolledIsOpen, setUncontrolledIsOpen] = useState(false);
   const isControlled = typeof controlledIsOpen === 'boolean';
@@ -100,9 +102,10 @@ export const Popover = ({
      * Resolves the viewport position of the portal panel from the trigger.
      */
     const updatePortalPosition = () => {
-      if (!triggerRef.current) return;
+      if (!triggerRef.current || !panelRef.current) return;
 
       const triggerRect = triggerRef.current.getBoundingClientRect();
+      const panelRect = panelRef.current.getBoundingClientRect();
       const baseTop = triggerRect.bottom + 9;
       const baseStyle: React.CSSProperties = {
         maxWidth: 'calc(100vw - 1rem)',
@@ -111,17 +114,16 @@ export const Popover = ({
         width: 'max-content',
       };
 
-      if (portalPlacement === 'start') {
-        setPortalStyle({
-          ...baseStyle,
-          left: triggerRect.left,
-        });
-        return;
-      }
-
       setPortalStyle({
         ...baseStyle,
-        right: Math.max(window.innerWidth - triggerRect.right, 0),
+        left: resolvePopoverPortalLeft({
+          overlayWidth: panelRect.width,
+          placement: portalPlacement,
+          triggerLeft: triggerRect.left,
+          triggerRight: triggerRect.right,
+          viewportPadding,
+          viewportWidth: window.innerWidth,
+        }),
       });
     };
 
@@ -134,7 +136,7 @@ export const Popover = ({
       window.removeEventListener('resize', updatePortalPosition);
       window.removeEventListener('scroll', updatePortalPosition, true);
     };
-  }, [isOpen, portalPlacement, renderInPortal]);
+  }, [isOpen, portalPlacement, renderInPortal, viewportPadding]);
 
   useDialogFocusManagement({
     containerRef: panelRef,
@@ -245,6 +247,7 @@ const panelClass = css({
   top: '[calc(100% + 0.55rem)]',
   right: '0',
   minWidth: '48',
+  maxHeight: 'calc(100vh - 1rem)',
   p: '2',
   borderRadius: '2xl',
   border: '[1px solid var(--colors-border)]',
@@ -252,6 +255,7 @@ const panelClass = css({
   boxShadow: 'floating',
   display: 'grid',
   gap: '1',
+  overflowY: 'auto',
   zIndex: '30',
 });
 

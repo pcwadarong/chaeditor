@@ -118,6 +118,54 @@ describe('Popover', () => {
     expect(dialog.parentElement).toBe(document.body);
   });
 
+  it('Under a portal popover near the right edge, Popover must shift the panel left to stay inside the viewport', async () => {
+    Object.defineProperty(window, 'innerWidth', {
+      configurable: true,
+      value: 320,
+      writable: true,
+    });
+
+    render(
+      <Popover panelLabel="Link Insert" renderInPortal viewportPadding={12}>
+        {() => <button type="button">Insert</button>}
+      </Popover>,
+    );
+
+    const trigger = screen.getByRole('button', { name: 'Link Insert' });
+    vi.spyOn(trigger, 'getBoundingClientRect').mockReturnValue({
+      bottom: 80,
+      height: 24,
+      left: 260,
+      right: 300,
+      toJSON: () => undefined,
+      top: 56,
+      width: 40,
+      x: 260,
+      y: 56,
+    });
+
+    fireEvent.click(trigger);
+
+    const dialog = await screen.findByRole('dialog', { name: 'Link Insert' });
+    vi.spyOn(dialog, 'getBoundingClientRect').mockReturnValue({
+      bottom: 208,
+      height: 120,
+      left: 0,
+      right: 180,
+      toJSON: () => undefined,
+      top: 88,
+      width: 180,
+      x: 0,
+      y: 88,
+    });
+
+    fireEvent(window, new Event('resize'));
+
+    await waitFor(() => {
+      expect(dialog.style.left).toBe('120px');
+    });
+  });
+
   it('Under controlled mode, Popover must call onOpenChange and keep the DOM open state unchanged until props change', async () => {
     const onOpenChange = vi.fn();
     const { rerender } = render(

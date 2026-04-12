@@ -11,6 +11,7 @@ import React, {
 import { createPortal } from 'react-dom';
 import { css, cx } from 'styled-system/css';
 
+import { resolveTooltipViewportPosition } from '@/shared/lib/overlay/overlay-position';
 import type {
   TooltipProps,
   TooltipTriggerProps,
@@ -30,11 +31,13 @@ export const Tooltip = ({
   openOnFocus = true,
   portalClassName,
   preferredPlacement = 'top',
+  viewportPadding = 8,
 }: TooltipProps) => {
   const [isFocused, setIsFocused] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
   const [tooltipStyle, setTooltipStyle] = useState<React.CSSProperties>();
   const rootRef = useRef<HTMLSpanElement | null>(null);
+  const tooltipRef = useRef<HTMLSpanElement | null>(null);
   const tooltipId = useId();
   const isOpen = forceOpen || isHovering || (openOnFocus && isFocused);
 
@@ -58,23 +61,25 @@ export const Tooltip = ({
      * Resolves the tooltip viewport position from the trigger wrapper.
      */
     const updateTooltipPosition = () => {
-      if (!rootRef.current) return;
+      if (!rootRef.current || !tooltipRef.current) return;
 
       const triggerRect = rootRef.current.getBoundingClientRect();
-      const availableSpaceAbove = triggerRect.top;
-      const availableSpaceBelow = window.innerHeight - triggerRect.bottom;
-      const shouldPlaceBelow =
-        preferredPlacement === 'bottom'
-          ? true
-          : preferredPlacement === 'top'
-            ? false
-            : availableSpaceAbove < 40 && availableSpaceBelow >= availableSpaceAbove;
+      const tooltipRect = tooltipRef.current.getBoundingClientRect();
+      const position = resolveTooltipViewportPosition({
+        gap: 8,
+        preferredPlacement,
+        tooltipHeight: tooltipRect.height,
+        tooltipWidth: tooltipRect.width,
+        triggerRect,
+        viewportHeight: window.innerHeight,
+        viewportPadding,
+        viewportWidth: window.innerWidth,
+      });
 
       setTooltipStyle({
-        left: triggerRect.left + triggerRect.width / 2,
+        left: position.left,
         position: 'fixed',
-        top: shouldPlaceBelow ? triggerRect.bottom + 8 : triggerRect.top - 8,
-        transform: shouldPlaceBelow ? 'translate(-50%, 0)' : 'translate(-50%, -100%)',
+        top: position.top,
       });
     };
 
@@ -87,7 +92,7 @@ export const Tooltip = ({
       window.removeEventListener('resize', updateTooltipPosition);
       window.removeEventListener('scroll', updateTooltipPosition, true);
     };
-  }, [isOpen, preferredPlacement]);
+  }, [isOpen, preferredPlacement, viewportPadding]);
 
   return (
     <span
@@ -112,6 +117,7 @@ export const Tooltip = ({
             <span
               className={cx(tooltipPortalClass, portalClassName)}
               id={tooltipId}
+              ref={tooltipRef}
               role="tooltip"
               style={{
                 ...tooltipStyle,

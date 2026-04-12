@@ -48,6 +48,7 @@ These are not simple color demos. Each template shows:
 - connect `onChange`, `value`, and `contentType` to your real editor state
 - connect `adapters` too if your app needs host-owned upload or preview behavior
 - retune modal backdrop, popover panel, and tooltip shell styling to your product tone
+- verify overlay behavior, not just styling, for `Popover`, `Tooltip`, and `Modal`
 
 ## What these presets do not include
 
@@ -115,6 +116,7 @@ They intentionally do not solve:
 - `onChange`, `value`, `contentType`를 실제 editor 상태와 연결
 - host adapter가 필요하면 `adapters`도 함께 연결
 - 모달 배경, popover panel, tooltip shell 색을 제품 톤에 맞게 조정
+- `Popover`, `Tooltip`, `Modal`을 바꿨다면 overlay 동작도 함께 검증
 
 ## 포함하지 않는 범위
 

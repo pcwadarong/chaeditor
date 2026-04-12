@@ -56,6 +56,7 @@ export type PopoverProps = {
   triggerValueClassName?: string;
   triggerVariant?: ButtonVariant;
   value?: string;
+  viewportPadding?: number;
 };
 
 export type TextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
@@ -75,4 +76,5 @@ export type TooltipProps = {
   openOnFocus?: boolean;
   portalClassName?: string;
   preferredPlacement?: 'auto' | 'bottom' | 'top';
+  viewportPadding?: number;
 };
