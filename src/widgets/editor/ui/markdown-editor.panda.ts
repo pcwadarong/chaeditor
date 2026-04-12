@@ -16,6 +16,10 @@ export const bodyClass = css({
   display: 'grid',
   gap: '4',
   minWidth: '0',
+  alignItems: {
+    base: 'stretch',
+    md: 'start',
+  },
   gridTemplateColumns: {
     base: '1fr',
     md: 'repeat(2, minmax(0, 1fr))',
@@ -26,6 +30,8 @@ export const editorPaneClass = css({
   display: 'flex',
   minWidth: '0',
   minHeight: '0',
+  width: 'full',
+  height: '[min(70vh,36rem)]',
   borderWidth: '1px',
   borderStyle: 'solid',
   borderColor: 'border',
@@ -33,6 +39,11 @@ export const editorPaneClass = css({
   backgroundColor: 'surface',
   overflow: 'hidden',
   p: '4',
+  resize: {
+    base: 'none',
+    md: 'vertical',
+  },
+  overscrollBehaviorY: 'contain',
   _focusWithin: {
     outline: '[2px solid var(--colors-primary)]',
     outlineOffset: '[2px]',
@@ -42,6 +53,8 @@ export const editorPaneClass = css({
 export const previewPaneClass = css({
   minWidth: '0',
   minHeight: '0',
+  width: 'full',
+  height: '[min(70vh,36rem)]',
   borderWidth: '1px',
   borderStyle: 'solid',
   borderColor: 'border',
@@ -50,11 +63,15 @@ export const previewPaneClass = css({
   overflowY: 'auto',
   overscrollBehaviorY: 'contain',
   p: '4',
+  resize: {
+    base: 'none',
+    md: 'vertical',
+  },
 });
 
 export const editorTextareaClass = css({
   width: 'full',
-  minHeight: '80',
+  minHeight: 'full',
   height: 'full',
   borderWidth: '0',
   borderRadius: '[0px]',
