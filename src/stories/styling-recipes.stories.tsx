@@ -329,13 +329,14 @@ const recipeTabRegionClass = css({
 });
 
 const recipePanelClass = css({
-  display: 'grid',
-  gap: '0',
+  display: 'flex',
+  flexDirection: 'column',
   marginTop: '4',
 });
 
 const recipeBlockClass = css({
-  display: 'grid',
+  display: 'flex',
+  flexDirection: 'column',
   gap: '4',
   paddingBottom: '10',
 });
