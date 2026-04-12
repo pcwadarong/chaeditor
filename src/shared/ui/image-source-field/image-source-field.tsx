@@ -117,7 +117,8 @@ export const ImageSourceField = ({
 };
 
 const rootClass = css({
-  display: 'grid',
+  display: 'flex',
+  flexDirection: 'column',
   gap: '3',
 });
 
@@ -129,7 +130,6 @@ const labelClass = css({
 
 const rowClass = css({
   display: 'flex',
-  alignItems: 'stretch',
   gap: '3',
   flexDirection: {
     base: 'column',
@@ -156,7 +156,6 @@ const uploadButtonWrapClass = css({
   bg: 'surface',
   color: 'text',
   cursor: 'pointer',
-  flex: 'none',
 });
 
 const uploadButtonLabelClass = css({
