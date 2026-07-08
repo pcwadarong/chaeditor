@@ -127,7 +127,7 @@ const MarkdownEditorBody = ({
     if (event.key === 'Enter') {
       const nextValue = continueMarkdownList(event.currentTarget);
 
-      if (!nextValue) return;
+      if (nextValue === null) return;
 
       event.preventDefault();
       applyTransform(() => nextValue);
