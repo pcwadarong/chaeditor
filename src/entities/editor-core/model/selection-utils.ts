@@ -22,7 +22,14 @@ const setPendingSelection = (textarea: HTMLTextAreaElement, start: number, end: 
 const getSelectedLineRange = (textarea: HTMLTextAreaElement) => {
   const { selectionEnd, selectionStart, value } = textarea;
   const lineStart = selectionStart === 0 ? 0 : value.lastIndexOf('\n', selectionStart - 1) + 1;
-  const nextLineBreakIndex = value.indexOf('\n', selectionEnd);
+  // When the selection ends right after a line break (e.g. a triple-click or
+  // Shift+Down that grabs the trailing newline), the last line has no selected
+  // characters, so don't extend the range into the following line.
+  const effectiveEnd =
+    selectionEnd > selectionStart && value[selectionEnd - 1] === '\n'
+      ? selectionEnd - 1
+      : selectionEnd;
+  const nextLineBreakIndex = value.indexOf('\n', effectiveEnd);
   const lineEnd = nextLineBreakIndex === -1 ? value.length : nextLineBreakIndex;
 
   return {
@@ -308,6 +315,31 @@ export const continueMarkdownList = (textarea: HTMLTextAreaElement) => {
   const lineEnd = value.indexOf('\n', selectionStart);
   const resolvedLineEnd = lineEnd === -1 ? value.length : lineEnd;
   const currentLine = value.slice(lineStart, resolvedLineEnd);
+
+  // GFM task list items (`- [ ] ...`) must continue with a fresh unchecked box,
+  // so check for them before the generic unordered-list rule below.
+  const taskListMatch = currentLine.match(/^(\s*)([-*])\s+\[[ xX]\]\s*(.*)$/);
+  if (taskListMatch) {
+    const [, indent, marker, content] = taskListMatch;
+
+    // An empty task item exits the list by dropping the marker.
+    if (content.trim().length === 0) {
+      const nextValue = [value.slice(0, lineStart), indent, value.slice(resolvedLineEnd)].join('');
+      const nextCursor = lineStart + indent.length;
+
+      setPendingSelection(textarea, nextCursor, nextCursor);
+
+      return nextValue;
+    }
+
+    const nextLine = `\n${indent}${marker} [ ] `;
+    const nextValue = `${value.slice(0, selectionStart)}${nextLine}${value.slice(selectionEnd)}`;
+    const nextCursor = selectionStart + nextLine.length;
+
+    setPendingSelection(textarea, nextCursor, nextCursor);
+
+    return nextValue;
+  }
 
   const unorderedMatch = currentLine.match(unorderedListPattern);
   if (unorderedMatch) {

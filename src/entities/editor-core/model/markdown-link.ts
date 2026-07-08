@@ -30,9 +30,14 @@ export const createMarkdownLink = (label: string, url: string, title?: string) =
   }
 
   const resolvedLabel = normalizedLabel ? label : normalizedUrl;
-  const serializedTitle = title ? ` "${title}"` : '';
+  // Escape characters that would otherwise break the link syntax: brackets in
+  // the label, parentheses/whitespace in the destination (wrapped in angle
+  // brackets), and double quotes in the title.
+  const escapedLabel = resolvedLabel.replace(/([[\]])/gu, '\\$1');
+  const destination = /[()\s]/u.test(normalizedUrl) ? `<${normalizedUrl}>` : normalizedUrl;
+  const serializedTitle = title ? ` "${title.replace(/"/gu, '\\"')}"` : '';
 
-  return `[${resolvedLabel}](${normalizedUrl}${serializedTitle})`;
+  return `[${escapedLabel}](${destination}${serializedTitle})`;
 };
 
 /**
@@ -60,7 +65,7 @@ export const createMarkdownLinkByMode = ({ label, mode, url }: CreateMarkdownLin
  * Extracts markdown link data from a pasted "text + URL" value.
  */
 const extractLabelAndUrl = (clipboardText: string) => {
-  const match = clipboardText.trim().match(/^(?<label>.+?)\s+(?<url>https?:\/\/\S+)$/su);
+  const match = clipboardText.trim().match(/^(?<label>.+?)\s+(?<url>https?:\/\/\S+)$/u);
   const label = match?.groups?.label?.trim() ?? '';
   const url = normalizeHttpUrl(match?.groups?.url);
 
