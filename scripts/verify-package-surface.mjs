@@ -68,7 +68,9 @@ const verifyNoConsumerRootImports = async () => {
 
   for (const relativePath of consumerExampleRoots) {
     const absolutePath = path.join(rootDir, relativePath);
-    const stat = await fs.stat(absolutePath);
+    const stat = await fs.stat(absolutePath).catch(() => null);
+
+    if (!stat) continue;
 
     if (stat.isDirectory()) {
       candidateFiles.push(...(await listFiles(absolutePath)));
@@ -97,6 +99,30 @@ const verifyNoConsumerRootImports = async () => {
         'Consumer-facing examples should prefer subpath imports from chaeditor/react or chaeditor/core.',
         'Found root imports in:',
         ...matches.map(filePath => `- ${filePath}`),
+      ].join('\n'),
+    );
+  }
+};
+
+/**
+ * Guards against install-time lifecycle scripts (preinstall, install, postinstall)
+ * leaking into the published package. These run in every consumer install and
+ * commonly reference devDependencies that are absent there, breaking `npm install`.
+ * The smoke install below uses `--ignore-scripts`, so it cannot catch this on its
+ * own; this static check does.
+ */
+const verifyNoInstallScripts = async () => {
+  const manifestPath = path.join(rootDir, 'package.json');
+  const manifest = JSON.parse(await fs.readFile(manifestPath, 'utf8'));
+  const forbiddenScripts = ['preinstall', 'install', 'postinstall'];
+  const present = forbiddenScripts.filter(name => manifest.scripts?.[name]);
+
+  if (present.length > 0) {
+    throw new Error(
+      [
+        'Published packages must not define install-time lifecycle scripts.',
+        'They run in every consumer install and commonly reference devDependencies.',
+        `Found: ${present.join(', ')}`,
       ].join('\n'),
     );
   }
@@ -192,6 +218,7 @@ assert.equal(
 
 const main = async () => {
   await verifyNoConsumerRootImports();
+  await verifyNoInstallScripts();
 
   const packOutput = run('npm', ['pack', '--json', '--silent'], rootDir);
   const [{ filename }] = parsePackJson(packOutput);

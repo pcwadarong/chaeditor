@@ -3,15 +3,8 @@ import 'chaeditor/styles.css';
 import { style } from '@vanilla-extract/css';
 
 import { createChaeditorThemeVars } from 'chaeditor/core';
-import {
-  Button,
-  Input,
-  MarkdownEditor,
-  Modal,
-  Popover,
-  Textarea,
-  Tooltip,
-} from 'chaeditor/react';
+import { Button, Input, Modal, Popover, Textarea, Tooltip } from 'chaeditor/panda-primitives';
+import { MarkdownEditor } from 'chaeditor/react';
 
 const themeScope = style({
   vars: createChaeditorThemeVars({
