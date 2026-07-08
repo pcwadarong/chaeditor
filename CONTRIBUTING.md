@@ -92,7 +92,7 @@ If you change public exports, install paths, or publish behavior, update all rel
 - `package.json`
 - `README.md`
 - `README.ko.md`
-- related wiki pages under `docs/wiki/`
+- related pages in the [project wiki](https://github.com/pcwadarong/chaeditor/wiki)
 
 ### Styling and runtime boundaries
 
@@ -107,7 +107,7 @@ At minimum, consider:
 
 - `README.md`
 - `README.ko.md`
-- wiki pages under `docs/wiki/`
+- pages in the [project wiki](https://github.com/pcwadarong/chaeditor/wiki)
 - host preset templates in `recipes/host-presets`
 
 If you add or change a public function, hook, prop, or package entrypoint:
@@ -201,5 +201,5 @@ If your change affects how consumers install, import, or render the package, ver
 
 The release-specific smoke-test flow now lives in:
 
-- [Release Checklist](./docs/wiki/release-checklist.md)
-- [Release Checklist (Korean)](./docs/wiki/ko/release-checklist.md)
+- [Release Checklist](https://github.com/pcwadarong/chaeditor/wiki/Release-Checklist)
+- [Release Checklist (Korean)](https://github.com/pcwadarong/chaeditor/wiki/릴리즈-전-체크리스트)

@@ -3,3 +3,7 @@ node_modules
 dist
 coverage
 pnpm-lock.yaml
+
+# Generated CSS bundles (rebuilt by `prepare`; not hand-formatted)
+styles.css
+styles-lite.css

@@ -92,7 +92,7 @@ pnpm build-storybook
 - `package.json`
 - `README.md`
 - `README.ko.md`
-- `docs/wiki/` 아래 관련 문서
+- [프로젝트 위키](https://github.com/pcwadarong/chaeditor/wiki)의 관련 문서
 
 ### 스타일과 런타임 경계
 
@@ -107,7 +107,7 @@ pnpm build-storybook
 
 - `README.md`
 - `README.ko.md`
-- `docs/wiki/` 아래 관련 문서
+- [프로젝트 위키](https://github.com/pcwadarong/chaeditor/wiki)의 관련 문서
 - `recipes/host-presets`의 템플릿
 
 공개 함수, hook, prop, 패키지 entrypoint를 추가하거나 바꾸는 경우에는 아래도 같이 확인해 주세요.
@@ -201,5 +201,5 @@ PR에는 아래 내용이 들어가야 합니다.
 
 릴리즈 전 체크 흐름은 아래 문서로 분리했습니다.
 
-- [Release Checklist](./docs/wiki/release-checklist.md)
-- [릴리즈 체크리스트](./docs/wiki/ko/release-checklist.md)
+- [Release Checklist](https://github.com/pcwadarong/chaeditor/wiki/Release-Checklist)
+- [릴리즈 체크리스트](https://github.com/pcwadarong/chaeditor/wiki/릴리즈-전-체크리스트)

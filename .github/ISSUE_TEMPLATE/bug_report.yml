@@ -1,0 +1,100 @@
+name: Bug Report
+description: Report a reproducible problem in chaeditor
+title: '[Bug] '
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for filing a bug. Please search existing issues first, then fill in
+        as much detail as you can — a clear reproduction is the fastest path to a fix.
+
+  - type: input
+    id: version
+    attributes:
+      label: chaeditor version
+      placeholder: e.g. 0.1.4
+    validations:
+      required: true
+
+  - type: dropdown
+    id: import-path
+    attributes:
+      label: Import path in use
+      description: Which subpath were you importing from when the bug occurred?
+      multiple: true
+      options:
+        - chaeditor/react
+        - chaeditor/core
+        - chaeditor/default-host
+        - chaeditor/panda-primitives
+        - chaeditor (root)
+        - not sure
+    validations:
+      required: true
+
+  - type: dropdown
+    id: css-entry
+    attributes:
+      label: CSS entry imported
+      options:
+        - chaeditor/styles.css
+        - chaeditor/styles-lite.css
+        - none
+        - not sure
+    validations:
+      required: false
+
+  - type: input
+    id: environment
+    attributes:
+      label: Framework and runtime
+      description: Framework, its version, and Node/browser versions.
+      placeholder: e.g. Next.js 15.5, React 19.1, Node 24, Chrome 130
+    validations:
+      required: true
+
+  - type: dropdown
+    id: surface
+    attributes:
+      label: Where does it happen?
+      options:
+        - In my real app
+        - In Storybook
+        - Only after packing / publishing
+        - Not sure
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction steps
+      description: Minimal steps, or a link to a repo / sandbox that reproduces it.
+      placeholder: |
+        1.
+        2.
+        3.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-actual
+    attributes:
+      label: Expected vs actual behavior
+      placeholder: |
+        Expected:
+
+        Actual:
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Error output or screenshots
+      description: Paste any error text or attach screenshots. Code blocks render automatically.
+      render: shell
+    validations:
+      required: false

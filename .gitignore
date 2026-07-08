@@ -73,3 +73,9 @@ styled-system/
 *storybook.log
 storybook-static
 chromatic-diagnostics.json
+
+# Editor / IDE
+*.code-workspace
+
+# Local-only study notes
+learn/
