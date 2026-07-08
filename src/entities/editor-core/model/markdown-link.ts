@@ -30,12 +30,12 @@ export const createMarkdownLink = (label: string, url: string, title?: string) =
   }
 
   const resolvedLabel = normalizedLabel ? label : normalizedUrl;
-  // Escape characters that would otherwise break the link syntax: brackets in
-  // the label, parentheses/whitespace in the destination (wrapped in angle
-  // brackets), and double quotes in the title.
-  const escapedLabel = resolvedLabel.replace(/([[\]])/gu, '\\$1');
+  // Escape characters that would otherwise break the link syntax. Backslash is
+  // escaped alongside the brackets/quotes (in one pass) so a label or title that
+  // already contains a backslash is not mis-escaped.
+  const escapedLabel = resolvedLabel.replace(/([\\[\]])/gu, '\\$1');
   const destination = /[()\s]/u.test(normalizedUrl) ? `<${normalizedUrl}>` : normalizedUrl;
-  const serializedTitle = title ? ` "${title.replace(/"/gu, '\\"')}"` : '';
+  const serializedTitle = title ? ` "${title.replace(/([\\"])/gu, '\\$1')}"` : '';
 
   return `[${escapedLabel}](${destination}${serializedTitle})`;
 };

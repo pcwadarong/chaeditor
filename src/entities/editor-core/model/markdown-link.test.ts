@@ -14,6 +14,13 @@ describe('createMarkdownLink', () => {
     );
   });
 
+  it('escapes an existing backslash in the label so it is not mis-escaped', () => {
+    // Label text is literally `a\]b`; both the backslash and the bracket escape.
+    expect(createMarkdownLink('a\\]b', 'https://example.com')).toBe(
+      '[a\\\\\\]b](https://example.com/)',
+    );
+  });
+
   it('escapes double quotes in the title', () => {
     expect(createMarkdownLink('Docs', 'https://example.com', 'a"b')).toBe(
       '[Docs](https://example.com/ "a\\"b")',
