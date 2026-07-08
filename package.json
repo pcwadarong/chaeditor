@@ -23,29 +23,54 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.cjs"
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/index.mjs"
+      },
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.cjs"
+      }
     },
     "./core": {
-      "types": "./dist/core.d.ts",
-      "import": "./dist/core.mjs",
-      "require": "./dist/core.cjs"
+      "import": {
+        "types": "./dist/core.d.mts",
+        "default": "./dist/core.mjs"
+      },
+      "require": {
+        "types": "./dist/core.d.ts",
+        "default": "./dist/core.cjs"
+      }
     },
     "./react": {
-      "types": "./dist/react.d.ts",
-      "import": "./dist/react.mjs",
-      "require": "./dist/react.cjs"
+      "import": {
+        "types": "./dist/react.d.mts",
+        "default": "./dist/react.mjs"
+      },
+      "require": {
+        "types": "./dist/react.d.ts",
+        "default": "./dist/react.cjs"
+      }
     },
     "./default-host": {
-      "types": "./dist/default-host.d.ts",
-      "import": "./dist/default-host.mjs",
-      "require": "./dist/default-host.cjs"
+      "import": {
+        "types": "./dist/default-host.d.mts",
+        "default": "./dist/default-host.mjs"
+      },
+      "require": {
+        "types": "./dist/default-host.d.ts",
+        "default": "./dist/default-host.cjs"
+      }
     },
     "./panda-primitives": {
-      "types": "./dist/panda-primitives.d.ts",
-      "import": "./dist/panda-primitives.mjs",
-      "require": "./dist/panda-primitives.cjs"
+      "import": {
+        "types": "./dist/panda-primitives.d.mts",
+        "default": "./dist/panda-primitives.mjs"
+      },
+      "require": {
+        "types": "./dist/panda-primitives.d.ts",
+        "default": "./dist/panda-primitives.cjs"
+      }
     },
     "./styles.css": "./styles.css",
     "./styles-lite.css": "./styles-lite.css",
@@ -58,7 +83,6 @@
     "recipes/host-presets",
     "styles.css",
     "styles-lite.css",
-    "styled-system/styles.css",
     "README.md"
   ],
   "scripts": {
@@ -69,9 +93,8 @@
     "format": "prettier --check .",
     "format:write": "prettier --write .",
     "lint": "eslint .",
-    "postinstall": "husky",
     "prepack": "pnpm run build",
-    "prepare": "panda codegen && panda cssgen --outfile styled-system/styles.css && node ./scripts/build-package-styles.mjs",
+    "prepare": "husky && panda codegen && panda cssgen --outfile styled-system/styles.css && node ./scripts/build-package-styles.mjs",
     "test": "pnpm run test:vitest",
     "test:vitest": "vitest run --project node --project dom-ui",
     "test:node": "vitest run --project node",
@@ -92,7 +115,7 @@
     "access": "public"
   },
   "sideEffects": [
-    "./styled-system/styles.css"
+    "**/*.css"
   ],
   "config": {
     "commitizen": {
