@@ -20,6 +20,9 @@ export const EDITOR_ATTACHMENT_ALLOWED_EXTENSIONS = [
 
 export const EDITOR_ATTACHMENT_ALLOWED_MIME_TYPES = [
   'application/msword',
+  // Browsers (notably Windows) often report this generic type for valid files
+  // such as .hwp/.csv/.md; the extension allowlist is the real gate.
+  'application/octet-stream',
   'application/hwp+zip',
   'application/pdf',
   'application/vnd.hancom.hwpx',
