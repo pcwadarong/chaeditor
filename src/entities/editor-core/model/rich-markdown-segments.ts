@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 
 import { collectMarkdownImages } from '@/entities/editor-core/model/collect-markdown-images';
+import { sanitizeEmbedResourceUrl } from '@/shared/lib/url/sanitize-embed-url';
 
 type MarkdownFragmentRenderer = (markdown: string, key: string) => ReactNode;
 
@@ -276,7 +277,9 @@ export const parseRichMarkdownSegments = (markdown: string): MarkdownSegment[] =
       flushMarkdown();
       segments.push({
         provider: videoMatch[1],
-        src: videoMatch[3] ? decodeHtmlAttributeEntities(videoMatch[3]) : undefined,
+        src: videoMatch[3]
+          ? (sanitizeEmbedResourceUrl(decodeHtmlAttributeEntities(videoMatch[3])) ?? undefined)
+          : undefined,
         type: 'video',
         videoId: videoMatch[2] ? decodeHtmlAttributeEntities(videoMatch[2]) : undefined,
       });
@@ -298,16 +301,25 @@ export const parseRichMarkdownSegments = (markdown: string): MarkdownSegment[] =
     const attachmentMatch = line.match(attachmentPattern);
 
     if (attachmentMatch) {
-      flushMarkdown();
-      segments.push({
-        contentType: attachmentMatch[4]
-          ? decodeHtmlAttributeEntities(attachmentMatch[4])
-          : undefined,
-        fileName: decodeHtmlAttributeEntities(attachmentMatch[2]),
-        fileSize: attachmentMatch[3] ? Number(attachmentMatch[3]) : undefined,
-        href: decodeHtmlAttributeEntities(attachmentMatch[1]),
-        type: 'attachment',
-      });
+      const attachmentHref = sanitizeEmbedResourceUrl(
+        decodeHtmlAttributeEntities(attachmentMatch[1]),
+      );
+
+      // Drop attachments whose href is not a safe http(s) or root-relative URL,
+      // instead of rendering a download link to an unsafe scheme.
+      if (attachmentHref) {
+        flushMarkdown();
+        segments.push({
+          contentType: attachmentMatch[4]
+            ? decodeHtmlAttributeEntities(attachmentMatch[4])
+            : undefined,
+          fileName: decodeHtmlAttributeEntities(attachmentMatch[2]),
+          fileSize: attachmentMatch[3] ? Number(attachmentMatch[3]) : undefined,
+          href: attachmentHref,
+          type: 'attachment',
+        });
+      }
+
       continue;
     }
 

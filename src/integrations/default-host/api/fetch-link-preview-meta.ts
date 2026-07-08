@@ -1,5 +1,6 @@
 import type { FetchLinkPreviewMeta } from '@/entities/editor-core/model/host-adapters';
 import type { LinkEmbedData } from '@/shared/lib/markdown/link-embed';
+import { normalizeHttpUrl } from '@/shared/lib/url/normalize-http-url';
 
 type CreateFetchLinkPreviewMetaOptions = {
   endpoint?: string;
@@ -17,6 +18,14 @@ type FetchLinkPreviewResponseBody = Partial<LinkEmbedData> & {
  */
 const buildLinkPreviewRequestUrl = (endpoint: string, url: string) =>
   `${endpoint}${endpoint.includes('?') ? '&' : '?'}url=${encodeURIComponent(url)}`;
+
+/**
+ * Returns the value only when it is a string. The response body is untrusted at
+ * runtime (its declared type is just a cast), so a malformed endpoint returning
+ * a non-string field must not break rendering.
+ */
+const readStringField = (value: unknown): string | undefined =>
+  typeof value === 'string' ? value : undefined;
 
 /**
  * Creates a host adapter that fetches link preview metadata from a JSON endpoint.
@@ -54,12 +63,20 @@ export const createFetchLinkPreviewMeta =
       return null;
     }
 
+    // The preview endpoint is host-owned but may be misconfigured or compromised,
+    // so treat every field it returns as untrusted: guard the type before use
+    // and reject non-http(s) URL schemes.
+    const resolvedUrl = normalizeHttpUrl(readStringField(body.url)) ?? normalizeHttpUrl(url);
+    if (!resolvedUrl) {
+      return null;
+    }
+
     return {
-      description: body.description ?? '',
-      favicon: typeof body.favicon === 'string' ? body.favicon : null,
-      image: typeof body.image === 'string' ? body.image : null,
-      siteName: body.siteName ?? '',
-      title: body.title ?? body.url ?? url,
-      url: body.url ?? url,
+      description: readStringField(body.description) ?? '',
+      favicon: normalizeHttpUrl(readStringField(body.favicon)),
+      image: normalizeHttpUrl(readStringField(body.image)),
+      siteName: readStringField(body.siteName) ?? '',
+      title: readStringField(body.title) ?? resolvedUrl,
+      url: resolvedUrl,
     };
   };

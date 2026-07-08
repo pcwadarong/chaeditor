@@ -35,9 +35,17 @@ export const buildAttachmentDownloadPath = ({
 
 /**
  * Extracts the attachment storage location from a Supabase public URL.
+ *
+ * @param href The stored attachment URL.
+ * @param supabaseBaseUrl The Supabase project URL. Defaults to
+ *   `NEXT_PUBLIC_SUPABASE_URL` so this stays usable without the Next.js env var
+ *   when a host passes the value explicitly.
  */
-export const parseAttachmentStoragePath = (href: string): AttachmentStorageLocation | null => {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim();
+export const parseAttachmentStoragePath = (
+  href: string,
+  supabaseBaseUrl: string | undefined = process.env.NEXT_PUBLIC_SUPABASE_URL,
+): AttachmentStorageLocation | null => {
+  const supabaseUrl = supabaseBaseUrl?.trim();
   if (!supabaseUrl) return null;
 
   try {
@@ -61,9 +69,15 @@ export const parseAttachmentStoragePath = (href: string): AttachmentStorageLocat
     const encodedAttachmentPath = encodedFilePath.slice(ATTACHMENT_PATH_PREFIX.length);
     if (!encodedAttachmentPath) return null;
 
+    const filePath = decodeURIComponent(encodedAttachmentPath);
+
+    // Reject path traversal so a crafted URL cannot escape the attachments
+    // prefix once the decoded path is forwarded to the download route.
+    if (filePath.split('/').includes('..')) return null;
+
     return {
       bucketName,
-      filePath: decodeURIComponent(encodedAttachmentPath),
+      filePath,
     };
   } catch {
     return null;
@@ -76,11 +90,13 @@ export const parseAttachmentStoragePath = (href: string): AttachmentStorageLocat
 export const resolveAttachmentDownloadHref = ({
   fileName,
   href,
+  supabaseBaseUrl,
 }: {
   fileName: string;
   href: string;
+  supabaseBaseUrl?: string;
 }) => {
-  const storageLocation = parseAttachmentStoragePath(href);
+  const storageLocation = parseAttachmentStoragePath(href, supabaseBaseUrl);
   if (!storageLocation) return href;
 
   return buildAttachmentDownloadPath({
