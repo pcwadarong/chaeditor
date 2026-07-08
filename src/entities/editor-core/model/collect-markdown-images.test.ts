@@ -30,6 +30,17 @@ describe('collectMarkdownImages', () => {
     expect(collectMarkdownImages('![]( )')).toEqual([]);
   });
 
+  it('Under escaped brackets and parentheses, collectMarkdownImages must decode the alt and src', () => {
+    expect(collectMarkdownImages('![a\\]b](https://x.com/foo\\(bar\\))')).toEqual([
+      {
+        alt: 'a]b',
+        sourceOffset: 0,
+        src: 'https://x.com/foo(bar)',
+        viewerId: 'markdown-image-0',
+      },
+    ]);
+  });
+
   it('Under a leading gallery block, collectMarkdownImages must assign viewer ids only to regular markdown images', () => {
     const markdown = [
       ':::gallery',

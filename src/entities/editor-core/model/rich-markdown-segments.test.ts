@@ -108,6 +108,21 @@ describe('rich-markdown segment parser', () => {
     ]);
   });
 
+  it('Under a custom block nested inside a toggle, parseRichMarkdownSegments must keep the nested block in the toggle body', () => {
+    expect(
+      parseRichMarkdownSegments(
+        [':::toggle Title', ':::align center', 'hello', ':::', ':::'].join('\n'),
+      ),
+    ).toEqual([
+      {
+        content: [':::align center', 'hello', ':::'].join('\n'),
+        headingLevel: null,
+        title: 'Title',
+        type: 'toggle',
+      },
+    ]);
+  });
+
   it('Under an attachment href with an unsafe scheme, parseRichMarkdownSegments must drop the segment', () => {
     expect(
       parseRichMarkdownSegments(

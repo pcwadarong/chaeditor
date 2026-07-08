@@ -149,7 +149,19 @@ export const parseToggleTitle = (rawTitle: string) => {
 };
 
 /**
- * Consumes a custom block body while ignoring closing markers inside fenced code blocks.
+ * Detects whether a line opens a nestable custom block.
+ *
+ * @param line Current markdown line.
+ * @returns Whether the line starts a toggle, gallery, or align block.
+ */
+const isCustomBlockOpener = (line: string): boolean =>
+  line.startsWith(toggleStartPrefix) ||
+  galleryStartPattern.test(line) ||
+  alignStartPattern.test(line);
+
+/**
+ * Consumes a custom block body while ignoring closing markers inside fenced code
+ * blocks and keeping nested custom blocks intact for recursive rendering.
  *
  * @param lines Full markdown line list.
  * @param startIndex First body line index.
@@ -158,6 +170,7 @@ export const parseToggleTitle = (rawTitle: string) => {
 const consumeCustomBlockBody = (lines: string[], startIndex: number) => {
   const bodyLines: string[] = [];
   let activeFence: FenceState = null;
+  let depth = 0;
   let cursor = startIndex;
 
   while (cursor < lines.length) {
@@ -171,8 +184,15 @@ const consumeCustomBlockBody = (lines: string[], startIndex: number) => {
       continue;
     }
 
-    if (!activeFence && line === ':::') {
-      break;
+    if (!activeFence) {
+      if (line === ':::') {
+        // Only the closer at depth 0 ends this block; deeper closers belong to
+        // nested blocks and stay in the body so they can be re-parsed.
+        if (depth === 0) break;
+        depth -= 1;
+      } else if (isCustomBlockOpener(line)) {
+        depth += 1;
+      }
     }
 
     bodyLines.push(line);

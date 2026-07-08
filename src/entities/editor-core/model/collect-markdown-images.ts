@@ -6,7 +6,13 @@ export type MarkdownImageViewerItem = {
 };
 
 const markdownImagePattern =
-  /!\[(?<alt>[^\]]*)\]\((?<src>[^)\s]+)(?:\s+(?:"[^"]*"|'[^']*'|\([^)]*\)))?\)/g;
+  /!\[(?<alt>(?:\\.|[^\\\]])*)\]\((?<src>(?:\\.|[^)\s\\])+)(?:\s+(?:"[^"]*"|'[^']*'|\([^)]*\)))?\)/g;
+
+/**
+ * Reverses markdown backslash escaping (e.g. `\]`, `\(`) applied by the
+ * serializer, so the collected alt/src match what react-markdown renders.
+ */
+const unescapeMarkdown = (value: string) => value.replace(/\\(.)/g, '$1');
 const galleryStartPattern = /^:::gallery\s*$/;
 const galleryEndPattern = /^:::\s*$/;
 
@@ -38,8 +44,8 @@ export const collectMarkdownImages = (markdown: string): MarkdownImageViewerItem
     }
 
     for (const matched of line.matchAll(markdownImagePattern)) {
-      const alt = matched.groups?.alt?.trim() ?? '';
-      const src = matched.groups?.src?.trim() ?? '';
+      const alt = unescapeMarkdown(matched.groups?.alt ?? '').trim();
+      const src = unescapeMarkdown(matched.groups?.src ?? '').trim();
 
       if (!src) continue;
 
