@@ -109,6 +109,7 @@ export {
   MarkdownEditor,
   MarkdownRenderer,
   MarkdownToolbar,
+  MathEmbedPopover,
   renderRichMarkdown,
   resolveMarkdownToolbarUiRegistry,
   TextBackgroundColorPopover,

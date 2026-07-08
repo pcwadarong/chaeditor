@@ -87,7 +87,7 @@ const overviewGuideSections = [
         label: 'Open Theme Contract',
       },
     ],
-    title: 'Review the defaults for advanced UI before you override them',
+    title: 'Decide how much styling the package should own',
   },
 ] as const;
 
