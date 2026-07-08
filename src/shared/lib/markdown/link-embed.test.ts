@@ -24,4 +24,12 @@ describe('link-embed utils', () => {
       url: 'https://example.com/docs',
     });
   });
+
+  it('Under an attribute value containing the other quote character, extractEmbedMetaFromHtml must not truncate it', () => {
+    const html = `<meta property="og:title" content="Don't stop believing">`;
+
+    expect(extractEmbedMetaFromHtml('https://example.com/song', html).title).toBe(
+      "Don't stop believing",
+    );
+  });
 });

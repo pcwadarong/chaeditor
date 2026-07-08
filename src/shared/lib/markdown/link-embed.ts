@@ -21,11 +21,13 @@ type HtmlAttributeMap = Record<string, string>;
 const extractHtmlAttributes = (tag: string): HtmlAttributeMap => {
   const attributes: HtmlAttributeMap = {};
 
-  for (const match of tag.matchAll(/([^\s=/>]+)\s*=\s*["']([^"']*)["']/giu)) {
-    const [, key, value] = match;
+  // Match each quote style separately so a value can contain the other quote
+  // character (e.g. an apostrophe inside a double-quoted `content`).
+  for (const match of tag.matchAll(/([^\s=/>]+)\s*=\s*(?:"([^"]*)"|'([^']*)')/giu)) {
+    const [, key, doubleQuoted, singleQuoted] = match;
     if (!key) continue;
 
-    attributes[key.toLowerCase()] = value.trim();
+    attributes[key.toLowerCase()] = (doubleQuoted ?? singleQuoted ?? '').trim();
   }
 
   return attributes;
