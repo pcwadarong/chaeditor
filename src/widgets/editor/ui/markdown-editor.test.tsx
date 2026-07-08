@@ -1,8 +1,10 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
+import { renderToString } from 'react-dom/server';
 
 import { mediaQueryDown } from '@/shared/config/breakpoints';
 import { Button } from '@/shared/ui/button';
+import { Textarea } from '@/shared/ui/textarea';
 import { MarkdownEditor } from '@/widgets/editor';
 
 import '@testing-library/jest-dom/vitest';
@@ -205,6 +207,42 @@ describe('MarkdownEditor', () => {
     expect(screen.getByRole('button', { name: 'Bold' })).toHaveAttribute(
       'data-primitive',
       'custom-button',
+    );
+  });
+
+  it('Under server rendering, MarkdownEditor must produce the desktop layout so hydration matches', () => {
+    // Even when the media query would match mobile, the server render must start
+    // from the desktop layout (no tablist) so the first client render agrees.
+    installMatchMediaMock(true);
+
+    const html = renderToString(
+      <MarkdownEditor contentType="article" onChange={() => {}} value="" />,
+    );
+
+    expect(html).not.toContain('role="tablist"');
+  });
+
+  it('Under a custom primitive registry, MarkdownEditor must apply the Textarea override to the main editor input', () => {
+    installMatchMediaMock(false);
+
+    const HostTextarea = React.forwardRef<
+      HTMLTextAreaElement,
+      React.ComponentProps<typeof Textarea>
+    >((props, ref) => <Textarea {...props} data-primitive="custom-textarea" ref={ref} />);
+    HostTextarea.displayName = 'HostTextarea';
+
+    render(
+      <MarkdownEditor
+        contentType="article"
+        onChange={() => {}}
+        primitiveRegistry={{ Textarea: HostTextarea }}
+        value=""
+      />,
+    );
+
+    expect(screen.getByRole('textbox', { name: 'Markdown editor input' })).toHaveAttribute(
+      'data-primitive',
+      'custom-textarea',
     );
   });
 });
