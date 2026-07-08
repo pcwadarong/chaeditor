@@ -10,6 +10,12 @@ type UseDialogFocusManagementParams = {
   restoreFocusRef?: RefObject<boolean>;
 };
 
+// Tracks the stack of currently-open dialogs. Only the top-most dialog reacts to
+// Escape and Tab, so stacked dialogs (e.g. an image viewer opened from inside a
+// modal) do not all close or trap focus on a single key press. `stopPropagation`
+// alone cannot do this because it does not stop other listeners on `window`.
+const dialogStack: symbol[] = [];
+
 /**
  * Focuses an element without forcing the viewport to scroll when the browser supports it.
  */
@@ -41,6 +47,11 @@ export const useDialogFocusManagement = ({
   useEffect(() => {
     if (!isEnabled) return;
 
+    // Register this dialog as the top-most open dialog.
+    const dialogToken = Symbol('dialog');
+    dialogStack.push(dialogToken);
+    const isTopDialog = () => dialogStack[dialogStack.length - 1] === dialogToken;
+
     // Store the current active element so focus can be restored on close.
     previousActiveElementRef.current =
       document.activeElement instanceof HTMLElement ? document.activeElement : null;
@@ -59,6 +70,9 @@ export const useDialogFocusManagement = ({
     const rafId = window.requestAnimationFrame(requestFocus);
 
     const handleKeydown = (event: KeyboardEvent) => {
+      // Let only the top-most dialog handle keys so stacked dialogs don't all react.
+      if (!isTopDialog()) return;
+
       if (event.key === 'Escape') {
         event.preventDefault();
         event.stopPropagation();
@@ -110,6 +124,11 @@ export const useDialogFocusManagement = ({
     return () => {
       window.cancelAnimationFrame(rafId);
       window.removeEventListener('keydown', handleKeydown);
+      // Remove this dialog from the stack so the one below becomes top-most.
+      const stackIndex = dialogStack.lastIndexOf(dialogToken);
+      if (stackIndex >= 0) {
+        dialogStack.splice(stackIndex, 1);
+      }
       // Restore focus to the previous active element when the dialog closes.
       if (restoreFocusRef?.current !== false) {
         const previousActiveElement = previousActiveElementRef.current;
