@@ -20,6 +20,14 @@ const buildLinkPreviewRequestUrl = (endpoint: string, url: string) =>
   `${endpoint}${endpoint.includes('?') ? '&' : '?'}url=${encodeURIComponent(url)}`;
 
 /**
+ * Returns the value only when it is a string. The response body is untrusted at
+ * runtime (its declared type is just a cast), so a malformed endpoint returning
+ * a non-string field must not break rendering.
+ */
+const readStringField = (value: unknown): string | undefined =>
+  typeof value === 'string' ? value : undefined;
+
+/**
  * Creates a host adapter that fetches link preview metadata from a JSON endpoint.
  *
  * The endpoint is expected to return a JSON payload shaped like `LinkEmbedData`.
@@ -56,18 +64,19 @@ export const createFetchLinkPreviewMeta =
     }
 
     // The preview endpoint is host-owned but may be misconfigured or compromised,
-    // so treat the URLs it returns as untrusted and reject non-http(s) schemes.
-    const resolvedUrl = normalizeHttpUrl(body.url) ?? normalizeHttpUrl(url);
+    // so treat every field it returns as untrusted: guard the type before use
+    // and reject non-http(s) URL schemes.
+    const resolvedUrl = normalizeHttpUrl(readStringField(body.url)) ?? normalizeHttpUrl(url);
     if (!resolvedUrl) {
       return null;
     }
 
     return {
-      description: body.description ?? '',
-      favicon: normalizeHttpUrl(body.favicon),
-      image: normalizeHttpUrl(body.image),
-      siteName: body.siteName ?? '',
-      title: body.title ?? resolvedUrl,
+      description: readStringField(body.description) ?? '',
+      favicon: normalizeHttpUrl(readStringField(body.favicon)),
+      image: normalizeHttpUrl(readStringField(body.image)),
+      siteName: readStringField(body.siteName) ?? '',
+      title: readStringField(body.title) ?? resolvedUrl,
       url: resolvedUrl,
     };
   };

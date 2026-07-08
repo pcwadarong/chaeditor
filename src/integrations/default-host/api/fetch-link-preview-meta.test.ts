@@ -117,6 +117,32 @@ describe('default-host link preview helpers', () => {
     });
   });
 
+  it('Under non-string fields in a malformed response, createFetchLinkPreviewMeta must not throw and fall back', async () => {
+    const fetchFn = vi.fn().mockResolvedValue({
+      json: async () => ({
+        description: 42,
+        favicon: 7,
+        image: { nested: true },
+        title: 'Title',
+        url: 123,
+      }),
+      ok: true,
+      statusText: 'OK',
+    });
+    const fetchLinkPreviewMeta = createFetchLinkPreviewMeta({
+      fetchFn: fetchFn as unknown as typeof fetch,
+    });
+
+    await expect(fetchLinkPreviewMeta('https://example.com/article')).resolves.toEqual({
+      description: '',
+      favicon: null,
+      image: null,
+      siteName: '',
+      title: 'Title',
+      url: 'https://example.com/article',
+    });
+  });
+
   it('Under createDefaultHostAdapters, the helper must include upload adapters and a link preview fetcher', async () => {
     const fetchFn = vi.fn().mockResolvedValue({
       json: async () => ({
