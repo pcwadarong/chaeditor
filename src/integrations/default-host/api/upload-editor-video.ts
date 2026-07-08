@@ -110,7 +110,10 @@ export const uploadEditorVideo = async ({
 
     if (signal) {
       if (signal.aborted) {
-        xhr.abort();
+        // The request has not been sent yet, so `xhr.abort()` would not fire an
+        // `abort` event and the promise would hang. Reject directly instead.
+        cleanup();
+        reject(createAbortUploadError());
         return;
       }
 

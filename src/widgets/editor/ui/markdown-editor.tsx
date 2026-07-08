@@ -57,10 +57,15 @@ type MarkdownEditorProps = {
 
 type MobilePane = 'edit' | 'preview';
 
+type MarkdownEditorBodyProps = Omit<MarkdownEditorProps, 'primitiveRegistry'>;
+
 /**
- * Renders a textarea-based markdown editor with a toolbar and live preview.
+ * Renders the editor body. Kept as a separate component so it resolves
+ * `useMarkdownPrimitives()` inside the provider that `MarkdownEditor` renders,
+ * ensuring a host `primitiveRegistry` also applies to the main textarea — not
+ * only to the toolbar popovers.
  */
-export const MarkdownEditor = ({
+const MarkdownEditorBody = ({
   adapters,
   className,
   contentType,
@@ -68,11 +73,10 @@ export const MarkdownEditor = ({
   onChange,
   placeholder = 'Write markdown content',
   previewEmptyText = 'Nothing to preview yet.',
-  primitiveRegistry,
   renderers,
   uiRegistry,
   value,
-}: MarkdownEditorProps) => {
+}: MarkdownEditorBodyProps) => {
   const { Textarea } = useMarkdownPrimitives();
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const [mobilePane, setMobilePane] = useState<MobilePane>('edit');
@@ -239,10 +243,24 @@ export const MarkdownEditor = ({
     </section>
   );
 
+  return editorNode;
+};
+
+/**
+ * Renders a textarea-based markdown editor with a toolbar and live preview.
+ *
+ * When a `primitiveRegistry` is provided, the whole body (including the main
+ * textarea) is rendered inside a `MarkdownPrimitiveProvider`. When it is not,
+ * the body inherits any ambient primitive context so a host-level provider
+ * still applies.
+ */
+export const MarkdownEditor = ({ primitiveRegistry, ...bodyProps }: MarkdownEditorProps) => {
+  const body = <MarkdownEditorBody {...bodyProps} />;
+
   return primitiveRegistry ? (
-    <MarkdownPrimitiveProvider registry={primitiveRegistry}>{editorNode}</MarkdownPrimitiveProvider>
+    <MarkdownPrimitiveProvider registry={primitiveRegistry}>{body}</MarkdownPrimitiveProvider>
   ) : (
-    editorNode
+    body
   );
 };
 
@@ -250,13 +268,9 @@ export const MarkdownEditor = ({
  * Tracks whether the mobile editor layout should be active.
  */
 const useMobileEditorLayout = () => {
-  const [isMobile, setIsMobile] = React.useState(() => {
-    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
-      return false;
-    }
-
-    return window.matchMedia(mediaQueryDown.md).matches;
-  });
+  // Always start from `false` so the server render and the first client render
+  // agree; the layout effect below flips it to the real value after hydration.
+  const [isMobile, setIsMobile] = React.useState(false);
 
   React.useLayoutEffect(() => {
     if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return;
