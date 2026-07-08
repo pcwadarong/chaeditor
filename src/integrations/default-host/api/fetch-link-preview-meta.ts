@@ -1,5 +1,6 @@
 import type { FetchLinkPreviewMeta } from '@/entities/editor-core/model/host-adapters';
 import type { LinkEmbedData } from '@/shared/lib/markdown/link-embed';
+import { normalizeHttpUrl } from '@/shared/lib/url/normalize-http-url';
 
 type CreateFetchLinkPreviewMetaOptions = {
   endpoint?: string;
@@ -54,12 +55,19 @@ export const createFetchLinkPreviewMeta =
       return null;
     }
 
+    // The preview endpoint is host-owned but may be misconfigured or compromised,
+    // so treat the URLs it returns as untrusted and reject non-http(s) schemes.
+    const resolvedUrl = normalizeHttpUrl(body.url) ?? normalizeHttpUrl(url);
+    if (!resolvedUrl) {
+      return null;
+    }
+
     return {
       description: body.description ?? '',
-      favicon: typeof body.favicon === 'string' ? body.favicon : null,
-      image: typeof body.image === 'string' ? body.image : null,
+      favicon: normalizeHttpUrl(body.favicon),
+      image: normalizeHttpUrl(body.image),
       siteName: body.siteName ?? '',
-      title: body.title ?? body.url ?? url,
-      url: body.url ?? url,
+      title: body.title ?? resolvedUrl,
+      url: resolvedUrl,
     };
   };

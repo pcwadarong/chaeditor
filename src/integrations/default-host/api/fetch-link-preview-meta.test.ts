@@ -69,6 +69,54 @@ describe('default-host link preview helpers', () => {
     });
   });
 
+  it('Under unsafe favicon and image URLs in the response, createFetchLinkPreviewMeta must drop them to null', async () => {
+    const fetchFn = vi.fn().mockResolvedValue({
+      json: async () => ({
+        favicon: 'javascript:alert(1)',
+        image: 'data:text/html,<script>alert(1)</script>',
+        title: 'Title',
+        url: 'https://example.com/article',
+      }),
+      ok: true,
+      statusText: 'OK',
+    });
+    const fetchLinkPreviewMeta = createFetchLinkPreviewMeta({
+      fetchFn: fetchFn as unknown as typeof fetch,
+    });
+
+    await expect(fetchLinkPreviewMeta('https://example.com/article')).resolves.toEqual({
+      description: '',
+      favicon: null,
+      image: null,
+      siteName: '',
+      title: 'Title',
+      url: 'https://example.com/article',
+    });
+  });
+
+  it('Under an unsafe url in the response, createFetchLinkPreviewMeta must fall back to the requested http url', async () => {
+    const fetchFn = vi.fn().mockResolvedValue({
+      json: async () => ({
+        title: 'Title',
+        url: 'javascript:alert(1)',
+      }),
+      ok: true,
+      statusText: 'OK',
+    });
+    const fetchLinkPreviewMeta = createFetchLinkPreviewMeta({
+      fetchFn: fetchFn as unknown as typeof fetch,
+    });
+
+    await expect(fetchLinkPreviewMeta('https://example.com/article')).resolves.toEqual({
+      description: '',
+      favicon: null,
+      image: null,
+      siteName: '',
+      title: 'Title',
+      url: 'https://example.com/article',
+    });
+  });
+
   it('Under createDefaultHostAdapters, the helper must include upload adapters and a link preview fetcher', async () => {
     const fetchFn = vi.fn().mockResolvedValue({
       json: async () => ({

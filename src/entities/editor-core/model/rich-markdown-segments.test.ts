@@ -107,4 +107,39 @@ describe('rich-markdown segment parser', () => {
       },
     ]);
   });
+
+  it('Under an attachment href with an unsafe scheme, parseRichMarkdownSegments must drop the segment', () => {
+    expect(
+      parseRichMarkdownSegments(
+        '<Attachment href="javascript:alert(1)" name="x.pdf" size="1" type="application/pdf" />',
+      ),
+    ).toEqual([]);
+  });
+
+  it('Under an attachment href that is a root-relative path, parseRichMarkdownSegments must keep the segment', () => {
+    expect(
+      parseRichMarkdownSegments('<Attachment href="/storage/x.pdf" name="x.pdf" size="1" />'),
+    ).toEqual([
+      {
+        contentType: undefined,
+        fileName: 'x.pdf',
+        fileSize: 1,
+        href: '/storage/x.pdf',
+        type: 'attachment',
+      },
+    ]);
+  });
+
+  it('Under an uploaded video src with an unsafe scheme, parseRichMarkdownSegments must strip the src', () => {
+    expect(
+      parseRichMarkdownSegments('<Video provider="upload" src="javascript:alert(1)" />'),
+    ).toEqual([
+      {
+        provider: 'upload',
+        src: undefined,
+        type: 'video',
+        videoId: undefined,
+      },
+    ]);
+  });
 });
